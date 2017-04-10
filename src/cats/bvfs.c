@@ -521,7 +521,7 @@ void Bvfs::get_all_file_versions(DBId_t pathid, const char *fname, const char *c
 {
    Dmsg3(dbglevel, "get_all_file_versions(%lld, %s, %s)\n", (uint64_t)pathid,
          fname, client);
-   char ed1[50], ed2[50];
+   char ed1[50];
    POOL_MEM q;
    if (see_copies) {
       Mmsg(q, " AND Job.Type IN ('C', 'B') ");
@@ -548,7 +548,7 @@ void Bvfs::get_all_file_versions(DBId_t pathid, const char *fname, const char *c
   "AND Job.ClientId = Client.ClientId "
   "AND Client.Name = '%s' "
   "%s ORDER BY FileId LIMIT %d OFFSET %d"
-        ,fname, edit_uint64(pathid, ed2), client, q.c_str(),
+        ,fname, edit_uint64(pathid, ed1), client, q.c_str(),
         limit, offset);
    Dmsg1(dbglevel_sql, "q=%s\n", query.c_str());
    db_sql_query(db, query.c_str(), list_entries, user_data);
@@ -588,7 +588,7 @@ int Bvfs::_handle_path(void *ctx, int fields, char **row)
 void Bvfs::ls_special_dirs()
 {
    Dmsg1(dbglevel, "ls_special_dirs(%lld)\n", (uint64_t)pwd_id);
-   char ed1[50], ed2[50];
+   char ed1[50];
    if (*jobids == 0) {
       return;
    }
@@ -625,7 +625,7 @@ void Bvfs::ls_special_dirs()
 bool Bvfs::ls_dirs()
 {
    Dmsg1(dbglevel, "ls_dirs(%lld)\n", (uint64_t)pwd_id);
-   char ed1[50], ed2[50];
+   char ed1[50];
    if (*jobids == 0) {
       return false;
    }
@@ -687,16 +687,17 @@ void build_ls_files_query(B_DB *db, POOL_MEM &query,
                           const char *JobId, const char *PathId,
                           const char *filter, int64_t limit, int64_t offset)
 {
-   if (db_get_type_index(db) == SQL_TYPE_POSTGRESQL) {
+   if (db->db_get_type_index() == SQL_TYPE_POSTGRESQL) {
       Mmsg(query, sql_bvfs_list_files[db_get_type_index(db)],
-           JobId, PathId, JobId, PathId,
-           filter, limit, offset);
+            JobId, PathId, JobId, PathId,
+            filter, limit, offset);
    } else {
       Mmsg(query, sql_bvfs_list_files[db_get_type_index(db)],
-           JobId, PathId, JobId, PathId,
-           limit, offset, filter, JobId, JobId);
+            JobId, PathId, JobId, PathId,
+            limit, offset, filter, JobId, JobId);
    }
 }
+
 
 /* Returns true if we have files to read */
 bool Bvfs::ls_files()

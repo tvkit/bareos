@@ -55,13 +55,13 @@ static bool db_get_file_record(JCR *jcr, B_DB *mdb, JOB_DBR *jr, FILE_DBR *fdbr)
  *  Returns: 0 on failure
  *           1 on success with the File record in FILE_DBR
  */
-bool db_get_file_attributes_record(JCR *jcr, B_DB *mdb, char *fname, JOB_DBR *jr, FILE_DBR *fdbr)
+bool db_get_file_attributes_record(JCR *jcr, B_DB *mdb, char *filename, JOB_DBR *jr, FILE_DBR *fdbr)
 {
    bool retval;
-   Dmsg1(100, "db_get_file_attributes_record fname=%s \n", fname);
+   Dmsg1(100, "db_get_file_attributes_record filename=%s \n", filename);
 
    db_lock(mdb);
-   split_path_and_file(jcr, mdb, fname);
+   split_path_and_file(jcr, mdb, filename);
 
    fdbr->PathId = db_get_path_record(jcr, mdb);
 

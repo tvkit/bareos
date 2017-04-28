@@ -658,7 +658,7 @@ bool Bvfs::ls_dirs()
       "AND PathVisibility1.JobId IN (%s) "
       "AND PathVisibility1.PathId NOT IN ( "
           "SELECT PathId FROM File "
-          "WHERE FilenameId = %s "
+          "WHERE File.Name = '' "
                 "AND JobId = ( "
                     "SELECT MAX(JobId) FROM PathVisibility "
                     "WHERE PathId = PathVisibility1.PathId "
@@ -677,7 +677,6 @@ bool Bvfs::ls_dirs()
     ") AS A ORDER BY 2,3 DESC LIMIT %d OFFSET %d",
         edit_uint64(pwd_id, ed1),
         jobids,
-        edit_uint64(dir_filenameid, ed2),
         jobids,
         filter.c_str(),
         jobids,

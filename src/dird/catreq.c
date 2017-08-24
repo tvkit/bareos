@@ -261,12 +261,16 @@ void catalog_request(JCR *jcr, BSOCK *bs)
           * Insanity check for VolFiles get set to a smaller value
           */
          if (sdmr.VolFiles < mr.VolFiles) {
-            Jmsg(jcr, M_FATAL, 0, _("Volume Files at %u being set to %u"
-                 " for Volume \"%s\". This is incorrect.\n"),
+            /*
+             * There seem to be problems with VirtualFull jobs causing
+             * probably unecesarily failed jobs due to this check when
+             * it's considered fatal. It seems to be harmless to retain
+             * the the old value in the DB.
+             */
+            Jmsg(jcr, M_INFO, 0, _("Volume Files at %u being set to %u"
+                 " for Volume \"%s\". This is incorrect but harmless on disk volumes.\n"),
                mr.VolFiles, sdmr.VolFiles, mr.VolumeName);
-            bs->fsend(_("1992 Update Media error. VolFiles=%u, CatFiles=%u\n"),
-               sdmr.VolFiles, mr.VolFiles);
-            goto bail_out;
+            sdmr.VolFiles = mr.VolFiles;
 
          }
       }

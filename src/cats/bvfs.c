@@ -582,45 +582,6 @@ int Bvfs::_handle_path(void *ctx, int fields, char **row)
    return 0;
 }
 
-/*
- * Retrieve . and .. information
- */
-void Bvfs::ls_special_dirs()
-{
-   Dmsg1(dbglevel, "ls_special_dirs(%lld)\n", (uint64_t)pwd_id);
-   char ed1[50];
-   if (*jobids == 0) {
-      return;
-   }
-
-   /* Will fetch directories  */
-   *prev_dir = 0;
-
-   POOL_MEM query;
-   Mmsg(query,
-"(SELECT PPathId AS PathId, '..' AS Path "
-    "FROM  PathHierarchy "
-   "WHERE  PathId = %s "
-"UNION "
- "SELECT %s AS PathId, '.' AS Path)",
-        edit_uint64(pwd_id, ed1), ed1);
-
-   POOL_MEM query2;
-   Mmsg(query2,// 1      2     3        4     5       6
-"SELECT 'D', tmp.PathId, 0, tmp.Path, JobId, LStat, FileId "
-  "FROM %s AS tmp  LEFT JOIN ( " // get attributes if any
-       "SELECT File1.PathId AS PathId, File1.JobId AS JobId, "
-              "File1.LStat AS LStat, File1.FileId AS FileId FROM File AS File1 "
-       "WHERE File1.Name = '' "
-       "AND File1.JobId IN (%s)) AS listfile1 "
-  "ON (tmp.PathId = listfile1.PathId) "
-  "ORDER BY tmp.Path, JobId DESC ",
-        query.c_str(), jobids);
-
-   Dmsg1(dbglevel_sql, "q=%s\n", query2.c_str());
-   db_sql_query(db, query2.c_str(), path_handler, this);
-}
-
 /* Returns true if we have dirs to read */
 bool Bvfs::ls_dirs()
 {
@@ -642,44 +603,71 @@ bool Bvfs::ls_dirs()
 
    Mmsg(query,
 //       0     1     2   3      4     5
-"SELECT 'D', PathId, 0, Path, JobId, LStat, FileId FROM ( "
-    "SELECT Path1.PathId AS PathId, Path1.Path AS Path, "
-           "lower(Path1.Path) AS lpath, "
-           "listfile1.JobId AS JobId, listfile1.LStat AS LStat, "
-           "listfile1.FileId AS FileId "
-    "FROM ( "
-      "SELECT listpath1.PathId AS PathId "
-      "FROM ( "
-         "SELECT DISTINCT PathHierarchy1.PathId AS PathId "
-         "FROM PathHierarchy AS PathHierarchy1 "
-         "INNER JOIN Path AS Path2 "
-         "ON (PathHierarchy1.PathId = Path2.PathId) "
-         "INNER JOIN PathVisibility AS PathVisibility1 "
-         "ON (PathHierarchy1.PathId = PathVisibility1.PathId) "
-         "WHERE PathHierarchy1.PPathId = %s "
-         "AND PathVisibility1.JobId IN (%s) "
-         ") AS listpath1 "
-      "LEFT JOIN ( "
-          "SELECT PVD1.PathId AS PathId "
-          "FROM ( "
-             "SELECT PV1.PathId AS PathId, MAX(JobId) AS MaxJobId "
-             "FROM PathVisibility AS PV1 WHERE JobId IN (%s) GROUP BY PathId "
-             ") AS PVD1 "
-             "INNER JOIN File AS F2 "
-             "ON (F2.PathId = PVD1.PathId AND F2.JobId = PVD1.MaxJobId AND F2.Name = '' AND F2.FileIndex = 0) "
-      ") AS listpath2 "
-      "ON (listpath1.PathId = listpath2.PathId) "
-      "WHERE listpath2.PathId IS NULL "
+"( "
+"SELECT DISTINCT ON (PathId) 'D', SpecialDir.PathId, 0, SpecialDir.Path, JobId, LStat, FileId "
+"FROM ( "
+	"SELECT %s AS PathId, '.' AS Path "
+	"UNION "
+	"SELECT PPathId AS PathId, '..' AS Path "
+	"FROM PathHierarchy "
+	"WHERE PathId = %s "
+	") AS SpecialDir "
+"LEFT JOIN ( "
+	"SELECT PathId, JobId, LStat, FileId "
+	"FROM FILE "
+	"WHERE FILE.Name = '' "
+		"AND FILE.JobId IN (%s) "
+   "ORDER BY PathId ASC, JobId DESC "
+	") AS DirAttribute ON (SpecialDir.PathId = DirAttribute.PathId) "
+") "
+"UNION "
+"( "
+"SELECT DISTINCT ON (Path) 'D', PathId, 0, Path, JobId, LStat, FileId "
+"FROM ( "
+	"SELECT Path1.PathId AS PathId, Path1.Path AS Path, lower(Path1.Path) AS lpath, listfile1.JobId AS JobId, listfile1.LStat AS LStat, listfile1.FileId AS FileId "
+	"FROM ( "
+		"SELECT listpath1.PathId AS PathId "
+		"FROM ( "
+			"SELECT DISTINCT PathHierarchy1.PathId AS PathId "
+			"FROM PathHierarchy AS PathHierarchy1 "
+			"INNER JOIN Path AS Path2 ON (PathHierarchy1.PathId = Path2.PathId) "
+			"INNER JOIN PathVisibility AS PathVisibility1 ON (PathHierarchy1.PathId = PathVisibility1.PathId) "
+			"WHERE PathHierarchy1.PPathId = %s "
+				"AND PathVisibility1.JobId IN (%s) "
+			") AS listpath1 "
+		"LEFT JOIN ( "
+			"SELECT PVD1.PathId AS PathId "
+			"FROM ( "
+				"SELECT PV1.PathId AS PathId, MAX(JobId) AS MaxJobId "
+				"FROM PathVisibility AS PV1 "
+				"WHERE JobId IN (%s) "
+				"GROUP BY PathId "
+				") AS PVD1 "
+			"INNER JOIN FILE AS F2 ON ( "
+					"F2.PathId = PVD1.PathId "
+					"AND F2.JobId = PVD1.MaxJobId "
+					"AND F2.FileIndex = 0 "
+					"AND F2.Name = '' "
+					") "
+			") AS listpath2 ON (listpath1.PathId = listpath2.PathId) "
+		"WHERE listpath2.PathId IS NULL "
       "%s "
-   ") AS listpath3 "
-   "INNER JOIN Path AS Path1 ON (listpath3.PathId = Path1.PathId) "
-   "LEFT JOIN ( " /* get attributes if any */
-       "SELECT File1.PathId AS PathId, File1.JobId AS JobId, "
-              "File1.LStat AS LStat, File1.FileId AS FileId FROM File AS File1 "
-       "WHERE File1.Name = '' "
-       "AND File1.JobId IN (%s)) AS listfile1 "
-       "ON (listpath3.PathId = listfile1.PathId) "
-    ") AS A ORDER BY 2, 3 DESC LIMIT %d OFFSET %d ",
+		") AS listpath3 "
+	"INNER JOIN Path AS Path1 ON (listpath3.PathId = Path1.PathId) "
+	"LEFT JOIN ( "
+		"SELECT File1.PathId AS PathId, File1.JobId AS JobId, File1.LStat AS LStat, File1.FileId AS FileId "
+		"FROM FILE AS File1 "
+		"WHERE File1.Name = '' "
+			"AND File1.JobId IN (%s) "
+		") AS listfile1 ON (listpath3.PathId = listfile1.PathId) "
+   ") AS A "
+"ORDER BY Path ASC, JobId DESC "
+") "
+"ORDER BY Path ASC, JobId DESC "
+"LIMIT %d OFFSET %d ",
+        edit_uint64(pwd_id, ed1),
+        edit_uint64(pwd_id, ed1),
+        jobids,
         edit_uint64(pwd_id, ed1),
         jobids,
         jobids,

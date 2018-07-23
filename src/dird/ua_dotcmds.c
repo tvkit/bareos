@@ -530,7 +530,6 @@ bool dot_bvfs_lsdirs_cmd(UAContext *ua, const char *cmd)
    fs.set_offset(offset);
 
    ua->send->array_start("directories");
-   fs.ls_special_dirs();
    fs.ls_dirs();
    ua->send->array_end("directories");
 

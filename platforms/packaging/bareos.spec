@@ -760,11 +760,11 @@ export MTX=/usr/sbin/mtx
   --enable-includes
 
 #Add flags
-%__make CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags};
+%__make CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="-std=gnu++11 $RPM_OPT_FLAGS" %{?_smp_mflags};
 
 %check
 # run unit tests
-%__make CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags} check;
+%__make CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="-std=gnu++11 $RPM_OPT_FLAGS" %{?_smp_mflags} check;
 
 %install
 %if 0%{?suse_version}

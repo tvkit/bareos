@@ -33321,12 +33321,12 @@ CFLAGS=${CFLAGS--O}
 if test x$have_gcc = xyes ; then
    CPPFLAGS="$CPPFLAGS -fno-strict-aliasing"
    CFLAGS="$CFLAGS -fno-strict-aliasing"
-   CXXFLAGS="$CFLAGS -fno-strict-aliasing -std=gnu++11"
+   CXXFLAGS="$CFLAGS -fno-strict-aliasing"
 fi
 LDFLAGS=${LDFLAGS--O}
 CPPFLAGS="$CPPFLAGS"
 CFLAGS="$CFLAGS"
-CXXFLAGS="$CXXFLAGS"
+CXXFLAGS="$CXXFLAGS -std=gnu++11"
 
 
 

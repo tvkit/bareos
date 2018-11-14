@@ -875,10 +875,12 @@ void invalidate_vol_list(STORERES *store)
 slot_number_t get_element_address_by_index(STORERES *store, slot_type slot_type, slot_number_t index)
 {
    if (slot_type == slot_type_storage) {
-      return (store->rss->storage_mapping.se_addr + index);
+      return (store->rss->storage_mapping.se_addr + index
+            - 1); // normal slots count start from 1
 
    } else if(slot_type == slot_type_import) {
-      return (store->rss->storage_mapping.iee_addr + index);
+      return (store->rss->storage_mapping.iee_addr + index
+            - 1); // normal slots count start from 1
 
    } else if (slot_type == slot_type_picker) {
       return (store->rss->storage_mapping.mte_addr + index);
@@ -900,10 +902,12 @@ slot_number_t get_element_address_by_index(STORERES *store, slot_type slot_type,
 slot_number_t get_index_by_element_address(STORERES *store, slot_type slot_type, slot_number_t element_addr)
 {
    if (slot_type == slot_type_storage) {
-      return (element_addr - store->rss->storage_mapping.se_addr);
+      return (element_addr - store->rss->storage_mapping.se_addr
+            + 1); // slots count start from 1
 
    } else if(slot_type == slot_type_import) {
-      return (element_addr - store->rss->storage_mapping.iee_addr);
+      return (element_addr - store->rss->storage_mapping.iee_addr
+            + 1); // slots count start from 1
 
    } else if (slot_type == slot_type_picker) {
       return (element_addr - store->rss->storage_mapping.mte_addr);

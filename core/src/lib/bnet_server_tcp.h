@@ -21,6 +21,8 @@
 #ifndef BAREOS_LIB_BNET_SEVER_TCP_H_
 #define BAREOS_LIB_BNET_SEVER_TCP_H_
 
+#include <atomic>
+
 class ConfigurationParser;
 
 enum class BnetServerState {

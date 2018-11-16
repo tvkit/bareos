@@ -146,7 +146,7 @@ void BnetThreadServerTcp(dlist *addr_list,
                             void *HandleConnectionRequest(ConfigurationParser *config,
                                                         void *bsock),
                             ConfigurationParser *config,
-                            std::atomic<BnetServerState> *const server_state)
+                            std::atomic<int> *const server_state)
 {
    int newsockfd, status;
    socklen_t clilen;
@@ -169,7 +169,7 @@ void BnetThreadServerTcp(dlist *addr_list,
 
    BNetThreadServerCleanupObject cleanup_object(sockfds, client_wq);
 
-   if (server_state) { server_state->store(BnetServerState::kStarting); }
+   if (server_state) { server_state->store(kStarting); }
 
    /*
     * Remove any duplicate addresses.
@@ -254,7 +254,7 @@ void BnetThreadServerTcp(dlist *addr_list,
          BErrNo be;
          Emsg2(M_ERROR, 0, _("Cannot bind port %d: ERR=%s.\n"), ntohs(fd_ptr->port),
                be.bstrerror());
-         if (server_state) { server_state->store(BnetServerState::kError); }
+         if (server_state) { server_state->store(kError); }
          return;
       }
 
@@ -301,7 +301,7 @@ void BnetThreadServerTcp(dlist *addr_list,
    }
 #endif
 
-   if (server_state) { server_state->store(BnetServerState::kStarted); }
+   if (server_state) { server_state->store(kStarted); }
 
    while (!quit) {
 #ifndef HAVE_POLL
@@ -322,7 +322,7 @@ void BnetThreadServerTcp(dlist *addr_list,
          if (errno == EINTR) {
             continue;
          }
-         if(server_state) { server_state->store(BnetServerState::kError); }
+         if(server_state) { server_state->store(kError); }
          Emsg1(M_FATAL, 0, _("Error in select: %s\n"), be.bstrerror());
          break;
       }
@@ -413,5 +413,5 @@ void BnetThreadServerTcp(dlist *addr_list,
          }
       }
    }
-   if(server_state) { server_state->store(BnetServerState::kEnded); }
+   if(server_state) { server_state->store(kEnded); }
 }

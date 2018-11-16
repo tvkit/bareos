@@ -50,7 +50,7 @@ static alist *sock_fds = NULL;
 static pthread_t tcp_server_tid;
 static ConnectionPool *client_connections = NULL;
 
-static std::atomic<BnetServerState> server_state;
+static std::atomic<int> server_state;
 
 struct s_addr_port {
   char *addr;
@@ -146,7 +146,7 @@ bool StartSocketServer(dlist *addrs)
 
   if (client_connections == nullptr) { client_connections = New(ConnectionPool()); }
 
-  std::atomic_init(&server_state, BnetServerState::kUndefined);
+  std::atomic_init(&server_state, (int)kUndefined);
   if ((status = pthread_create(&tcp_server_tid, nullptr, connect_thread, (void *)myaddrs)) != 0) {
     BErrNo be;
     Emsg1(M_ABORT, 0, _("Cannot create UA thread: %s\n"), be.bstrerror(status));
@@ -156,12 +156,12 @@ bool StartSocketServer(dlist *addrs)
   int wait_ms = 100;
   do {
     Bmicrosleep(0, wait_ms * 1000);
-    if (server_state.load() == BnetServerState::kStarted) {
+    if (server_state.load() == kStarted) {
       break;
     }
   } while (--tries);
 
-  if (server_state != BnetServerState::kStarted) {
+  if (server_state != kStarted) {
     if (client_connections) {
       delete (client_connections);
       client_connections = nullptr;

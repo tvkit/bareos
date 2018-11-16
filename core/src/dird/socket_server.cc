@@ -146,7 +146,6 @@ bool StartSocketServer(dlist *addrs)
 
   if (client_connections == nullptr) { client_connections = New(ConnectionPool()); }
 
-  std::atomic_init(&server_state, (int)kUndefined);
   if ((status = pthread_create(&tcp_server_tid, nullptr, connect_thread, (void *)myaddrs)) != 0) {
     BErrNo be;
     Emsg1(M_ABORT, 0, _("Cannot create UA thread: %s\n"), be.bstrerror(status));

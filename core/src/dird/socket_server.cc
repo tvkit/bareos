@@ -50,7 +50,7 @@ static alist *sock_fds = NULL;
 static pthread_t tcp_server_tid;
 static ConnectionPool *client_connections = NULL;
 
-static std::atomic<int> server_state;
+static std::atomic<int> server_state (kUndefined);
 
 struct s_addr_port {
   char *addr;

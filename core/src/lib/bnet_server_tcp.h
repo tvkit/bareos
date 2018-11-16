@@ -23,6 +23,14 @@
 
 class ConfigurationParser;
 
+enum class BnetServerState {
+  kUndefined,
+  kStarting,
+  kError,
+  kStarted,
+  kEnded
+};
+
 void BnetThreadServerTcp(dlist *addr_list,
                             int max_clients,
                             alist *sockfds,
@@ -31,7 +39,7 @@ void BnetThreadServerTcp(dlist *addr_list,
                             void *HandleConnectionRequest(ConfigurationParser *config,
                                                         void *bsock),
                             ConfigurationParser *config,
-                            bool * const tcp_server_ready = nullptr);
+                            std::atomic<BnetServerState> * const server_state = nullptr);
 void BnetStopAndWaitForThreadServerTcp(pthread_t tid);
 
 #endif // BAREOS_LIB_BNET_SEVER_TCP_H_

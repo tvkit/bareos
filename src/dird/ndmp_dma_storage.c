@@ -588,7 +588,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
       /*
        * Map physical storage address to logical one using the storage mappings.
        */
-      vl->Slot = get_index_by_element_address(store, slot_type_storage, edp->src_se_addr);
+      vl->Slot = get_index_by_element_address(store, slot_type_storage, edp->element_address);
 
       if (vl->VolName) {
          Dmsg6(100, "Add index = %hd slot=%hd loaded=%hd type=%hd content=%hd Vol=%s to SD list.\n",

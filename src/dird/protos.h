@@ -361,8 +361,8 @@ int compare_storage_mapping(void *e1, void *e2);
 /* slot_number_t lookup_storage_mapping(STORERES *store, slot_type slot_type, */
 /*                                      s_mapping_type map_type, slot_number_t slot); */
 
-slot_number_t get_slotnumber_by_element_address(STORERES *store, slot_type slot_type, slot_number_t element_addr);
-slot_number_t get_element_address_by_slotnumber(STORERES *store, slot_type slot_type, slot_number_t index);
+slot_number_t get_logical_slotnumber_by_physical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t element_addr);
+slot_number_t get_physical_slotnumber_by_logical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t index);
 
 /* ua_cmds.c */
 bool do_a_command(UAContext *ua);

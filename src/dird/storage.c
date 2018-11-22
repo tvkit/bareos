@@ -779,7 +779,7 @@ vol_list_t *vol_is_loaded_in_drive(STORERES *store, changer_vol_list_t *vol_list
    while (vl) {
       switch (vl->Type) {
       case slot_type_drive:
-         Dmsg2(100, "Checking drive %hd for loaded volume == %hd\n", vl->LogicalDriveNumber, vl->CurrentlyLoadedSlot);
+         Dmsg2(100, "Checking drive %hd for loaded volume == %hd\n", vl->LogicalSlotNumber, vl->CurrentlyLoadedSlot);
          if (vl->CurrentlyLoadedSlot == slot) {
             return vl;
          }
@@ -872,7 +872,7 @@ void invalidate_vol_list(STORERES *store)
 /**
  * calculate the element address for given slotnumber and slot_type
  */
-slot_number_t get_element_address_by_slotnumber(STORERES *store, slot_type slot_type, slot_number_t slotnumber)
+slot_number_t get_physical_slotnumber_by_logical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t slotnumber)
 {
    if (slot_type == slot_type_storage) {
       return (store->rss->storage_mapping.se_addr + slotnumber
@@ -900,7 +900,7 @@ slot_number_t get_element_address_by_slotnumber(STORERES *store, slot_type slot_
 /**
  * calculate the slotnumber for element address and slot_type
  */
-slot_number_t get_slotnumber_by_element_address(STORERES *store, slot_type slot_type, slot_number_t element_addr)
+slot_number_t get_logical_slotnumber_by_physical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t element_addr)
 {
    if (slot_type == slot_type_storage) {
       return (element_addr - store->rss->storage_mapping.se_addr

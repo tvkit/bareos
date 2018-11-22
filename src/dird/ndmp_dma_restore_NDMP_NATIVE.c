@@ -303,7 +303,7 @@ static bool do_ndmp_native_restore(JCR *jcr)
 
    for (ndmmedia *media = ndmp_job.media_tab.head; media; media = media->next) {
       Jmsg(jcr, M_INFO, 0, _("Logical slot for volume %s is %d\n"), media->label, media->slot_addr);
-      ndmp_slot = get_element_address_by_slotnumber(store, slot_type_storage, media->slot_addr);
+      ndmp_slot = get_physical_slotnumber_by_logical_slotnumber(store, slot_type_storage, media->slot_addr);
       media->slot_addr = ndmp_slot;
       Jmsg(jcr, M_INFO, 0, _("Physical(NDMP) slot for volume %s is %d\n"), media->label, media->slot_addr);
       Jmsg(jcr, M_INFO, 0, _("Media Index of volume %s is %d\n"), media->label, media->index);

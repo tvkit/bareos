@@ -133,7 +133,7 @@ enum s_mapping_type {
 struct vol_list_t {
    dlink link;                       /** Link for list */
    slot_number_t PhysicalSlotNumber; /**< Unique Slot Number */
-   slot_number_t LogicalDriveNumber; /**< Drive number when slot_type_drive or actual slot number */
+   slot_number_t LogicalSlotNumber; /**< Drive number when slot_type_drive or actual slot number */
    slot_number_t CurrentlyLoadedSlot;/**< Volume loaded in drive when slot_type_drive */
    slot_flags_t Flags;            /**< Slot specific flags see e_slot_flag enum */
    slot_type Type;                /**< See slot_type_* */

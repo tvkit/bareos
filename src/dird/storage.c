@@ -533,10 +533,10 @@ int storage_compare_vol_list_entry(void *e1, void *e2)
    ASSERT(v1);
    ASSERT(v2);
 
-   if (v1->Index == v2->Index) {
+   if (v1->SlotNumber == v2->SlotNumber) {
       return 0;
    } else {
-      return (v1->Index < v2->Index) ? -1 : 1;
+      return (v1->SlotNumber < v2->SlotNumber) ? -1 : 1;
    }
 }
 
@@ -779,8 +779,8 @@ vol_list_t *vol_is_loaded_in_drive(STORERES *store, changer_vol_list_t *vol_list
    while (vl) {
       switch (vl->Type) {
       case slot_type_drive:
-         Dmsg2(100, "Checking drive %hd for loaded volume == %hd\n", vl->Slot, vl->Loaded);
-         if (vl->Loaded == slot) {
+         Dmsg2(100, "Checking drive %hd for loaded volume == %hd\n", vl->SlotOrDriveNumber, vl->CurrentlyLoadedSlot);
+         if (vl->CurrentlyLoadedSlot == slot) {
             return vl;
          }
          break;

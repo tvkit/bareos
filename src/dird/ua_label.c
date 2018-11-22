@@ -321,10 +321,10 @@ static void label_from_barcodes(UAContext *ua, drive_number_t drive,
                   "Slot  Volume\n"
                   "==============\n"));
    foreach_dlist(vl, vol_list->contents) {
-      if (!vl->VolName || !bit_is_set(vl->Slot - 1, slot_list)) {
+      if (!vl->VolName || !bit_is_set(vl->SlotOrDriveNumber - 1, slot_list)) {
          continue;
       }
-      ua->send_msg("%4d  %s\n", vl->Slot, vl->VolName);
+      ua->send_msg("%4d  %s\n", vl->SlotOrDriveNumber, vl->VolName);
    }
 
    if (!yes &&
@@ -344,7 +344,7 @@ static void label_from_barcodes(UAContext *ua, drive_number_t drive,
     * Fire off the label requests
     */
    foreach_dlist(vl, vol_list->contents) {
-      if (!vl->VolName || !bit_is_set(vl->Slot - 1, slot_list)) {
+      if (!vl->VolName || !bit_is_set(vl->SlotOrDriveNumber - 1, slot_list)) {
          continue;
       }
       memset(&mr, 0, sizeof(mr));
@@ -353,8 +353,8 @@ static void label_from_barcodes(UAContext *ua, drive_number_t drive,
       if (ua->db->get_media_record(ua->jcr, &mr)) {
          if (mr.VolBytes != 0) {
             ua->warning_msg(_("Media record for Slot %hd Volume \"%s\" already exists.\n"),
-                            vl->Slot, mr.VolumeName);
-            mr.Slot = vl->Slot;
+                            vl->SlotOrDriveNumber, mr.VolumeName);
+            mr.Slot = vl->SlotOrDriveNumber;
             mr.InChanger = mr.Slot > 0;  /* if slot give assume in changer */
             set_storageid_in_mr(store, &mr);
             if (!ua->db->update_media_record(ua->jcr, &mr)) {
@@ -413,8 +413,8 @@ static void label_from_barcodes(UAContext *ua, drive_number_t drive,
          }
       }
 
-      mr.Slot = vl->Slot;
-      send_label_request(ua, store, &mr, NULL, &pr, media_record_exists, false, drive, vl->Slot);
+      mr.Slot = vl->SlotOrDriveNumber;
+      send_label_request(ua, store, &mr, NULL, &pr, media_record_exists, false, drive, vl->SlotOrDriveNumber);
    }
 
 bail_out:

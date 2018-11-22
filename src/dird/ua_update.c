@@ -1140,15 +1140,15 @@ static void update_slots(UAContext *ua)
     */
    memset(&mr, 0, sizeof(mr));
    foreach_dlist(vl, vol_list->contents) {
-      if (vl->Slot > max_slots) {
-         ua->warning_msg(_("Slot %d greater than max %d ignored.\n"), vl->Slot, max_slots);
+      if (vl->SlotOrDriveNumber > max_slots) {
+         ua->warning_msg(_("Slot %d greater than max %d ignored.\n"), vl->SlotOrDriveNumber, max_slots);
          continue;
       }
       /*
        * Check if user wants us to look at this slot
        */
-      if (!bit_is_set(vl->Slot - 1, slot_list)) {
-         Dmsg1(100, "Skipping slot=%d\n", vl->Slot);
+      if (!bit_is_set(vl->SlotOrDriveNumber - 1, slot_list)) {
+         Dmsg1(100, "Skipping slot=%d\n", vl->SlotOrDriveNumber);
          continue;
       }
       /*
@@ -1159,12 +1159,12 @@ static void update_slots(UAContext *ua)
             free(vl->VolName);
             vl->VolName = NULL;
          }
-         vl->VolName = get_volume_name_from_SD(ua, vl->Slot, drive);
-         Dmsg2(100, "Got Vol=%s from SD for Slot=%d\n", vl->VolName, vl->Slot);
+         vl->VolName = get_volume_name_from_SD(ua, vl->SlotOrDriveNumber, drive);
+         Dmsg2(100, "Got Vol=%s from SD for Slot=%d\n", vl->VolName, vl->SlotOrDriveNumber);
       }
-      clear_bit(vl->Slot - 1, slot_list); /* clear Slot */
+      clear_bit(vl->SlotOrDriveNumber - 1, slot_list); /* clear Slot */
       set_storageid_in_mr(store.store, &mr);
-      mr.Slot = vl->Slot;
+      mr.Slot = vl->SlotOrDriveNumber;
       mr.InChanger = 1;
       mr.MediaId = 0;                 /* Get by VolumeName */
       if (vl->VolName) {
@@ -1186,8 +1186,8 @@ static void update_slots(UAContext *ua)
             mr.VolumeName, mr.Slot, mr.InChanger, mr.StorageId);
 
       if (!vl->VolName) {
-         Dmsg1(100, "No VolName for Slot=%d setting InChanger to zero.\n", vl->Slot);
-         ua->info_msg(_("No VolName for Slot=%d InChanger set to zero.\n"), vl->Slot);
+         Dmsg1(100, "No VolName for Slot=%d setting InChanger to zero.\n", vl->SlotOrDriveNumber);
+         ua->info_msg(_("No VolName for Slot=%d InChanger set to zero.\n"), vl->SlotOrDriveNumber);
          continue;
       }
 
@@ -1200,8 +1200,8 @@ static void update_slots(UAContext *ua)
          /*
           * If Slot, Inchanger, and StorageId have changed, update the Media record
           */
-         if (mr.Slot != vl->Slot || !mr.InChanger || mr.StorageId != store.store->StorageId) {
-            mr.Slot = vl->Slot;
+         if (mr.Slot != vl->SlotOrDriveNumber || !mr.InChanger || mr.StorageId != store.store->StorageId) {
+            mr.Slot = vl->SlotOrDriveNumber;
             mr.InChanger = 1;
             if (have_enabled) {
                mr.Enabled = Enabled;
@@ -1218,7 +1218,7 @@ static void update_slots(UAContext *ua)
          }
       } else {
          ua->warning_msg(_("Volume \"%s\" not found in catalog. Slot=%d InChanger set to zero.\n"),
-                         mr.VolumeName, vl->Slot);
+                         mr.VolumeName, vl->SlotOrDriveNumber);
       }
       db_unlock(ua->db);
    }
@@ -1289,7 +1289,7 @@ void update_slots_from_vol_list(UAContext *ua, STORERES *store, changer_vol_list
       /*
        * Only update entries of slots marked in the slot_list.
        */
-      if (!bit_is_set(vl->Slot - 1, slot_list)) {
+      if (!bit_is_set(vl->SlotOrDriveNumber - 1, slot_list)) {
          continue;
       }
 
@@ -1297,7 +1297,7 @@ void update_slots_from_vol_list(UAContext *ua, STORERES *store, changer_vol_list
        * Set InChanger to zero for this Slot
        */
       memset(&mr, 0, sizeof(mr));
-      mr.Slot = vl->Slot;
+      mr.Slot = vl->SlotOrDriveNumber;
       mr.InChanger = 1;
       mr.MediaId = 0;                 /* Get by VolumeName */
       if (vl->VolName) {
@@ -1323,10 +1323,10 @@ void update_slots_from_vol_list(UAContext *ua, STORERES *store, changer_vol_list
       /*
        * See if there is anything in the slot.
        */
-      switch (vl->Content) {
-      case slot_content_full:
+      switch (vl->SlotStatus) {
+      case slot_status_full:
          if (!vl->VolName) {
-            Dmsg1(100, "No VolName for Slot=%d setting InChanger to zero.\n", vl->Slot);
+            Dmsg1(100, "No VolName for Slot=%d setting InChanger to zero.\n", vl->SlotOrDriveNumber);
             continue;
          }
          break;
@@ -1345,8 +1345,8 @@ void update_slots_from_vol_list(UAContext *ua, STORERES *store, changer_vol_list
          Dmsg4(100, "After get MR: Vol=%s slot=%d inchanger=%d sid=%d\n",
             mr.VolumeName, mr.Slot, mr.InChanger, mr.StorageId);
          /* If Slot, Inchanger, and StorageId have changed, update the Media record */
-         if (mr.Slot != vl->Slot || !mr.InChanger || mr.StorageId != store->StorageId) {
-            mr.Slot = vl->Slot;
+         if (mr.Slot != vl->SlotOrDriveNumber || !mr.InChanger || mr.StorageId != store->StorageId) {
+            mr.Slot = vl->SlotOrDriveNumber;
             mr.InChanger = 1;
             set_storageid_in_mr(store, &mr);
             if (!ua->db->update_media_record(ua->jcr, &mr)) {
@@ -1355,7 +1355,7 @@ void update_slots_from_vol_list(UAContext *ua, STORERES *store, changer_vol_list
          }
       } else {
          ua->warning_msg(_("Volume \"%s\" not found in catalog. Slot=%d InChanger set to zero.\n"),
-                         mr.VolumeName, vl->Slot);
+                         mr.VolumeName, vl->SlotOrDriveNumber);
       }
       db_unlock(ua->db);
    }
@@ -1394,7 +1394,7 @@ void update_inchanger_for_export(UAContext *ua, STORERES *store, changer_vol_lis
       /*
        * Only update entries of slots marked in the slot_list.
        */
-      if (!bit_is_set(vl->Slot - 1, slot_list)) {
+      if (!bit_is_set(vl->SlotOrDriveNumber - 1, slot_list)) {
          continue;
       }
 
@@ -1402,7 +1402,7 @@ void update_inchanger_for_export(UAContext *ua, STORERES *store, changer_vol_lis
        * Set InChanger to zero for this Slot
        */
       memset(&mr, 0, sizeof(mr));
-      mr.Slot = vl->Slot;
+      mr.Slot = vl->SlotOrDriveNumber;
       mr.InChanger = 1;
       mr.MediaId = 0;                 /* Get by VolumeName */
       if (vl->VolName) {

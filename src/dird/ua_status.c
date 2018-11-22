@@ -1428,12 +1428,12 @@ static void status_content_api(UAContext *ua, STORERES *store)
    foreach_dlist(vl1, vol_list->contents) {
       switch (vl1->Type) {
       case slot_type_drive:
-         switch (vl1->Content) {
-         case slot_content_full:
-            ua->send_msg(slot_api_drive_full_format, 'D', vl1->Slot, vl1->Loaded, vl1->VolName);
+         switch (vl1->SlotStatus) {
+         case slot_status_full:
+            ua->send_msg(slot_api_drive_full_format, 'D', vl1->SlotOrDriveNumber, vl1->CurrentlyLoadedSlot, vl1->VolName);
             break;
-         case slot_content_empty:
-            ua->send_msg(slot_api_drive_empty_format, 'D', vl1->Slot);
+         case slot_status_empty:
+            ua->send_msg(slot_api_drive_empty_format, 'D', vl1->SlotOrDriveNumber);
             break;
          default:
             break;
@@ -1441,32 +1441,32 @@ static void status_content_api(UAContext *ua, STORERES *store)
          break;
       case slot_type_storage:
       case slot_type_import:
-         switch (vl1->Content) {
-         case slot_content_full:
+         switch (vl1->SlotStatus) {
+         case slot_status_full:
             switch (vl1->Type) {
             case slot_type_storage:
-               content_send_info_api(ua, 'S', vl1->Slot, vl1->VolName);
+               content_send_info_api(ua, 'S', vl1->SlotOrDriveNumber, vl1->VolName);
                break;
             case slot_type_import:
-               content_send_info_api(ua, 'I', vl1->Slot, vl1->VolName);
+               content_send_info_api(ua, 'I', vl1->SlotOrDriveNumber, vl1->VolName);
                break;
             default:
                break;
             }
             break;
-         case slot_content_empty:
+         case slot_status_empty:
             /*
              * See if this empty slot is empty because the volume is loaded
              * in one of the drives.
              */
-            vl2 = vol_is_loaded_in_drive(store, vol_list, vl1->Slot);
+            vl2 = vol_is_loaded_in_drive(store, vol_list, vl1->SlotOrDriveNumber);
             if (vl2) {
                switch (vl1->Type) {
                case slot_type_storage:
-                  content_send_info_api(ua, 'S', vl1->Slot, vl2->VolName);
+                  content_send_info_api(ua, 'S', vl1->SlotOrDriveNumber, vl2->VolName);
                   break;
                case slot_type_import:
-                  content_send_info_api(ua, 'I', vl1->Slot, vl2->VolName);
+                  content_send_info_api(ua, 'I', vl1->SlotOrDriveNumber, vl2->VolName);
                   break;
                default:
                   break;
@@ -1476,10 +1476,10 @@ static void status_content_api(UAContext *ua, STORERES *store)
 
             switch (vl1->Type) {
             case slot_type_storage:
-               ua->send_msg(slot_api_slot_empty_format, 'S', vl1->Slot);
+               ua->send_msg(slot_api_slot_empty_format, 'S', vl1->SlotOrDriveNumber);
                break;
             case slot_type_import:
-               ua->send_msg(slot_api_slot_empty_format, 'I', vl1->Slot);
+               ua->send_msg(slot_api_slot_empty_format, 'I', vl1->SlotOrDriveNumber);
                break;
             default:
                break;
@@ -1524,14 +1524,14 @@ static void status_content_json(UAContext *ua, STORERES *store)
       case slot_type_drive:
          ua->send->object_start();
          ua->send->object_key_value("type", "drive", "%s\n");
-         ua->send->object_key_value("slotnr", vl1->Slot, "%hd\n");
-         switch (vl1->Content) {
-         case slot_content_full:
+         ua->send->object_key_value("slotnr", vl1->SlotOrDriveNumber, "%hd\n");
+         switch (vl1->SlotStatus) {
+         case slot_status_full:
             ua->send->object_key_value("content", "full", "%s\n");
-            ua->send->object_key_value("loaded", vl1->Loaded, "%hd\n");
+            ua->send->object_key_value("loaded", vl1->CurrentlyLoadedSlot, "%hd\n");
             ua->send->object_key_value("volname", vl1->VolName, "%s\n");
             break;
-         case slot_content_empty:
+         case slot_status_empty:
             ua->send->object_key_value("content", "empty", "%s\n");
             break;
          default:
@@ -1541,32 +1541,32 @@ static void status_content_json(UAContext *ua, STORERES *store)
          break;
       case slot_type_storage:
       case slot_type_import:
-         switch (vl1->Content) {
-         case slot_content_full:
+         switch (vl1->SlotStatus) {
+         case slot_status_full:
             switch (vl1->Type) {
             case slot_type_storage:
-               content_send_info_json(ua, "slot", vl1->Slot, vl1->VolName);
+               content_send_info_json(ua, "slot", vl1->SlotOrDriveNumber, vl1->VolName);
                break;
             case slot_type_import:
-               content_send_info_json(ua, "import_slot", vl1->Slot, vl1->VolName);
+               content_send_info_json(ua, "import_slot", vl1->SlotOrDriveNumber, vl1->VolName);
                break;
             default:
                break;
             }
             break;
-         case slot_content_empty:
+         case slot_status_empty:
             /*
              * See if this empty slot is empty because the volume is loaded
              * in one of the drives.
              */
-            vl2 = vol_is_loaded_in_drive(store, vol_list, vl1->Slot);
+            vl2 = vol_is_loaded_in_drive(store, vol_list, vl1->SlotOrDriveNumber);
             if (vl2) {
                switch (vl1->Type) {
                case slot_type_storage:
-                  content_send_info_json(ua, "slot", vl1->Slot, vl2->VolName);
+                  content_send_info_json(ua, "slot", vl1->SlotOrDriveNumber, vl2->VolName);
                   break;
                case slot_type_import:
-                  content_send_info_json(ua, "import_slot", vl1->Slot, vl2->VolName);
+                  content_send_info_json(ua, "import_slot", vl1->SlotOrDriveNumber, vl2->VolName);
                   break;
                default:
                   break;
@@ -1578,14 +1578,14 @@ static void status_content_json(UAContext *ua, STORERES *store)
             case slot_type_storage:
                ua->send->object_start();
                ua->send->object_key_value("type", "slot", "%s\n");
-               ua->send->object_key_value("slotnr", vl1->Slot, "%hd\n");
+               ua->send->object_key_value("slotnr", vl1->SlotOrDriveNumber, "%hd\n");
                ua->send->object_key_value("content", "empty", "%s\n");
                ua->send->object_end();
                break;
             case slot_type_import:
                ua->send->object_start();
                ua->send->object_key_value("type", "import_slot", "%s\n");
-               ua->send->object_key_value("slotnr", vl1->Slot, "%hd\n");
+               ua->send->object_key_value("slotnr", vl1->SlotOrDriveNumber, "%hd\n");
                ua->send->object_key_value("content", "empty", "%s\n");
                ua->send->object_end();
                break;
@@ -1672,52 +1672,52 @@ static void status_slots(UAContext *ua, STORERES *store)
          continue;
       case slot_type_storage:
       case slot_type_import:
-         if (vl1->Slot > max_slots) {
+         if (vl1->SlotOrDriveNumber > max_slots) {
             ua->warning_msg(_("Slot %hd greater than max %hd ignored.\n"),
-                            vl1->Slot, max_slots);
+                            vl1->SlotOrDriveNumber, max_slots);
             continue;
          }
          /*
           * Check if user wants us to look at this slot
           */
-         if (!bit_is_set(vl1->Slot - 1, slot_list)) {
-            Dmsg1(100, "Skipping slot=%hd\n", vl1->Slot);
+         if (!bit_is_set(vl1->SlotOrDriveNumber - 1, slot_list)) {
+            Dmsg1(100, "Skipping slot=%hd\n", vl1->SlotOrDriveNumber);
             continue;
          }
 
-         switch (vl1->Content) {
-         case slot_content_empty:
+         switch (vl1->SlotStatus) {
+         case slot_status_empty:
             if (vl1->Type == slot_type_storage) {
                /*
                 * See if this empty slot is empty because the volume is loaded
                 * in one of the drives.
                 */
-               vl2 = vol_is_loaded_in_drive(store, vol_list, vl1->Slot);
+               vl2 = vol_is_loaded_in_drive(store, vol_list, vl1->SlotOrDriveNumber);
                if (!vl2) {
                   ua->send_msg(slot_hformat,
-                               vl1->Slot, '*',
+                               vl1->SlotOrDriveNumber, '*',
                                "?", "?", "?", "?");
                   continue;
                }
             } else {
                ua->send_msg(slot_hformat,
-                            vl1->Slot, '@',
+                            vl1->SlotOrDriveNumber, '@',
                             "?", "?", "?", "?");
                continue;
             }
             /*
              * Note, fall through wanted
              */
-         case slot_content_full:
+         case slot_status_full:
             /*
              * We get here for all slots with content and for empty
              * slots with their volume loaded in a drive.
              */
-            if (vl1->Content == slot_content_full) {
+            if (vl1->SlotStatus == slot_status_full) {
                if (!vl1->VolName) {
-                  Dmsg1(100, "No VolName for Slot=%hd.\n", vl1->Slot);
+                  Dmsg1(100, "No VolName for Slot=%hd.\n", vl1->SlotOrDriveNumber);
                   ua->send_msg(slot_hformat,
-                               vl1->Slot,
+                               vl1->SlotOrDriveNumber,
                               (vl1->Type == slot_type_import) ? '@' : '*',
                                "?", "?", "?", "?");
                   continue;
@@ -1727,9 +1727,9 @@ static void status_slots(UAContext *ua, STORERES *store)
                bstrncpy(mr.VolumeName, vl1->VolName, sizeof(mr.VolumeName));
             } else {
                if (!vl2 || !vl2->VolName) {
-                  Dmsg1(100, "No VolName for Slot=%hd.\n", vl1->Slot);
+                  Dmsg1(100, "No VolName for Slot=%hd.\n", vl1->SlotOrDriveNumber);
                   ua->send_msg(slot_hformat,
-                               vl1->Slot,
+                               vl1->SlotOrDriveNumber,
                               (vl1->Type == slot_type_import) ? '@' : '*',
                                "?", "?", "?", "?");
                   continue;
@@ -1751,17 +1751,17 @@ static void status_slots(UAContext *ua, STORERES *store)
                 */
                if (vl1->Type == slot_type_import) {
                   ua->send_msg(slot_hformat,
-                               vl1->Slot, '@',
+                               vl1->SlotOrDriveNumber, '@',
                                mr.VolumeName, mr.VolStatus, mr.MediaType, pr.Name);
                } else {
                   ua->send_msg(slot_hformat,
-                               vl1->Slot,
-                               ((vl1->Slot == mr.Slot) ? (vl2 ? '%' : ' ') : '*'),
+                               vl1->SlotOrDriveNumber,
+                               ((vl1->SlotOrDriveNumber == mr.Slot) ? (vl2 ? '%' : ' ') : '*'),
                                mr.VolumeName, mr.VolStatus, mr.MediaType, pr.Name);
                }
             } else {
                ua->send_msg(slot_hformat,
-                            vl1->Slot,
+                            vl1->SlotOrDriveNumber,
                            (vl1->Type == slot_type_import) ? '@' : '*',
                             mr.VolumeName, "?", "?", "?");
             }

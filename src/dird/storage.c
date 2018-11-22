@@ -874,20 +874,40 @@ void invalidate_vol_list(STORERES *store)
  */
 slot_number_t get_physical_slotnumber_by_logical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t slotnumber)
 {
+
+
+   unsigned storage_slots_base = store->rss->storage_mapping.se_addr;
+   unsigned storage_slots_count = store->rss->storage_mapping.se_count;
+
+   unsigned impexp_slots_base = store->rss->storage_mapping.iee_addr;
+   unsigned impexp_slots_count = store->rss->storage_mapping.iee_count;
+
+   unsigned drive_base = store->rss->storage_mapping.dte_addr;
+   unsigned drive_count = store->rss->storage_mapping.dte_count;
+
+   unsigned picker_base = store->rss->storage_mapping.mte_addr;
+   unsigned picker_count = store->rss->storage_mapping.mte_count;
+
    if (slot_type == slot_type_storage) {
-      return (store->rss->storage_mapping.se_addr + slotnumber
+      return (slotnumber
+            + storage_slots_base
             - 1); // normal slots count start from 1
 
    } else if(slot_type == slot_type_import) {
-      return (store->rss->storage_mapping.iee_addr + slotnumber
-            - store->rss->storage_mapping.se_count // i/e slots follow after normal slots
+      return (slotnumber
+            + impexp_slots_base
+            - storage_slots_count // i/e slots follow after normal slots
             - 1); // normal slots count start from 1
 
    } else if (slot_type == slot_type_picker) {
-      return (store->rss->storage_mapping.mte_addr + slotnumber);
+      return (slotnumber
+            - picker_base
+              );
 
    } else if (slot_type == slot_type_drive) {
-      return (store->rss->storage_mapping.dte_addr + slotnumber);
+      return (slotnumber
+            - drive_base
+            );
 
    } else if (slot_type == slot_type_unknown){
       return -1;
@@ -902,20 +922,40 @@ slot_number_t get_physical_slotnumber_by_logical_slotnumber(STORERES *store, slo
  */
 slot_number_t get_logical_slotnumber_by_physical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t element_addr)
 {
+
+   unsigned storage_slots_base = store->rss->storage_mapping.se_addr;
+   unsigned storage_slots_count = store->rss->storage_mapping.se_count;
+
+   unsigned impexp_slots_base = store->rss->storage_mapping.iee_addr;
+   unsigned impexp_slots_count = store->rss->storage_mapping.iee_count;
+
+   unsigned drive_base = store->rss->storage_mapping.dte_addr;
+   unsigned drive_count = store->rss->storage_mapping.dte_count;
+
+   unsigned picker_base = store->rss->storage_mapping.mte_addr;
+   unsigned picker_count = store->rss->storage_mapping.mte_count;
+
    if (slot_type == slot_type_storage) {
-      return (element_addr - store->rss->storage_mapping.se_addr
+      return (element_addr
+            - storage_slots_base
             + 1); // slots count start from 1
 
    } else if(slot_type == slot_type_import) {
-      return (element_addr - store->rss->storage_mapping.iee_addr
-            + store->rss->storage_mapping.se_count // i/e slots follow after normal slots
+      return (element_addr
+            - impexp_slots_base
+            + storage_slots_count // i/e slots follow after normal slots
             + 1); // slots count start from 1
 
-   } else if (slot_type == slot_type_picker) {
-      return (element_addr - store->rss->storage_mapping.mte_addr);
 
    } else if (slot_type == slot_type_drive) {
-      return (element_addr - store->rss->storage_mapping.dte_addr);
+      return (element_addr
+            - drive_base
+             );
+
+   } else if (slot_type == slot_type_picker) {
+      return (element_addr
+            - picker_base
+            );
 
    } else if (slot_type == slot_type_unknown){
       return -1;

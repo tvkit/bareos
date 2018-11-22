@@ -569,7 +569,6 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
             vl->PhysicalSlotNumber = edp->element_address;
             if (edp->Full) {
                slot_number_t slot_mapping;
-
                vl->SlotStatus = slot_status_full;
                slot_mapping = get_logical_slotnumber_by_physical_slotnumber(store, slot_type_storage, edp->src_se_addr);
                vl->CurrentlyLoadedSlot = slot_mapping;
@@ -591,10 +590,10 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
       vl->LogicalSlotNumber = get_logical_slotnumber_by_physical_slotnumber(store, vl->Type, edp->element_address);
 
       if (vl->VolName) {
-         Dmsg6(100, "Add index = %hd slot=%hd loaded=%hd type=%hd content=%hd Vol=%s to SD list.\n",
+         Dmsg6(100, "Add phys_slot = %hd logi_slot=%hd loaded=%hd type=%hd status=%hd Vol=%s to SD list.\n",
                vl->PhysicalSlotNumber, vl->LogicalSlotNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus, NPRT(vl->VolName));
       } else {
-         Dmsg5(100, "Add index = %hd slot=%hd loaded=%hd type=%hd content=%hd Vol=NULL to SD list.\n",
+         Dmsg5(100, "Add phys_slot = %hd logi_slot=%hd loaded=%hd type=%hd status=%hd Vol=NULL to SD list.\n",
                vl->PhysicalSlotNumber, vl->LogicalSlotNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus);
       }
 

@@ -117,10 +117,10 @@ typedef enum {
 } slot_type;
 
 typedef enum {
-   slot_content_unknown,          /**< Slot content is unknown */
-   slot_content_empty,            /**< Slot is empty */
-   slot_content_full              /**< Slot is full */
-} slot_content;
+   slot_status_unknown,          /**< Slot status is unknown */
+   slot_status_empty,            /**< Slot is empty */
+   slot_status_full              /**< Slot is full */
+} slot_status;
 
 enum s_mapping_type {
    LOGICAL_TO_PHYSICAL,
@@ -132,12 +132,12 @@ enum s_mapping_type {
  */
 struct vol_list_t {
    dlink link;                    /**< Link for list */
-   slot_number_t Index;           /**< Unique index */
+   slot_number_t SlotNumber;      /**< Unique Slot Number */
    slot_flags_t Flags;            /**< Slot specific flags see e_slot_flag enum */
    slot_type Type;                /**< See slot_type_* */
-   slot_content Content;          /**< See slot_content_* */
-   slot_number_t Slot;            /**< Drive number when slot_type_drive or actual slot number */
-   slot_number_t Loaded;          /**< Volume loaded in drive when slot_type_drive */
+   slot_status SlotStatus;        /**< See slot_status_* */
+   slot_number_t SlotOrDriveNumber; /**< Drive number when slot_type_drive or actual slot number */
+   slot_number_t CurrentlyLoadedSlot; /**< Volume loaded in drive when slot_type_drive */
    char *VolName;                 /**< Actual Volume Name */
 };
 
@@ -145,7 +145,7 @@ struct changer_vol_list_t {
    int16_t reference_count;       /**< Number of references to this vol_list */
    vol_list_type type;            /**< Type of vol_list see vol_list_type enum */
    utime_t timestamp;             /**< When was this vol_list created */
-   dlist *contents;               /**< Contents of autochanger */
+   dlist *contents;               /**< SlotStatuss of autochanger */
 };
 
 

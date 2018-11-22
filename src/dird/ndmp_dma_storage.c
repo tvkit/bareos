@@ -210,7 +210,7 @@ void do_ndmp_native_storage_status(UAContext *ua, STORERES *store, char *cmd)
    int i = 0;
    if (store->rss->ndmp_deviceinfo) {
       ua->info_msg("NDMP Devices for storage %s:(%s)\n", store->name(), store->rss->smc_ident);
-      ua->info_msg(" SlotNumber   Device   Model   (JobId)   \n");
+      ua->info_msg(" PhysicalSlotNumber   Device   Model   (JobId)   \n");
       for (auto devinfo = store->rss->ndmp_deviceinfo->begin();
             devinfo != store->rss->ndmp_deviceinfo->end();
             devinfo++)  {
@@ -484,7 +484,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
             } else {
                vl->SlotStatus = slot_status_empty;
             }
-            vl->SlotNumber = edp->element_address;
+            vl->PhysicalSlotNumber = edp->element_address;
             break;
          default:
             free(vl);
@@ -500,7 +500,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
              * Normal slot
              */
             vl->Type = slot_type_storage;
-            vl->SlotNumber = edp->element_address;
+            vl->PhysicalSlotNumber = edp->element_address;
             if (!edp->Full) {
                free(vl);
                continue;
@@ -529,7 +529,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
              * Normal slot
              */
             vl->Type = slot_type_storage;
-            vl->SlotNumber = edp->element_address;
+            vl->PhysicalSlotNumber = edp->element_address;
             if (edp->Full) {
                vl->SlotStatus = slot_status_full;
                fill_volume_name(vl, edp);
@@ -539,10 +539,10 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
             break;
          case SMC_ELEM_TYPE_IEE:
             /*
-             * Import/Export SlotOrDriveNumber
+             * Import/Export LogicalDriveNumber
              */
             vl->Type = slot_type_import;
-            vl->SlotNumber = edp->element_address;
+            vl->PhysicalSlotNumber = edp->element_address;
             if (edp->Full) {
                vl->SlotStatus = slot_status_full;
                fill_volume_name(vl, edp);
@@ -566,7 +566,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
              * Drive
              */
             vl->Type = slot_type_drive;
-            vl->SlotNumber = edp->element_address;
+            vl->PhysicalSlotNumber = edp->element_address;
             if (edp->Full) {
                slot_number_t slot_mapping;
 
@@ -580,7 +580,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
             break;
          default:
             vl->Type = slot_type_unknown;
-            vl->SlotNumber = edp->element_address;
+            vl->PhysicalSlotNumber = edp->element_address;
             break;
          }
       }
@@ -588,14 +588,14 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
       /*
        * Map physical storage address to logical one using the storage mappings.
        */
-      vl->SlotOrDriveNumber = get_slotnumber_by_element_address(store, slot_type_storage, edp->element_address);
+      vl->LogicalDriveNumber = get_slotnumber_by_element_address(store, vl->Type, edp->element_address);
 
       if (vl->VolName) {
          Dmsg6(100, "Add index = %hd slot=%hd loaded=%hd type=%hd content=%hd Vol=%s to SD list.\n",
-               vl->SlotNumber, vl->SlotOrDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus, NPRT(vl->VolName));
+               vl->PhysicalSlotNumber, vl->LogicalDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus, NPRT(vl->VolName));
       } else {
          Dmsg5(100, "Add index = %hd slot=%hd loaded=%hd type=%hd content=%hd Vol=NULL to SD list.\n",
-               vl->SlotNumber, vl->SlotOrDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus);
+               vl->PhysicalSlotNumber, vl->LogicalDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus);
       }
 
       vol_list->binary_insert(vl, storage_compare_vol_list_entry);
@@ -664,7 +664,8 @@ slot_number_t ndmp_get_num_slots(UAContext *ua, STORERES *store)
          return slots;
    }
 
-   return store->rss->storage_mapping.se_count;
+   return store->rss->storage_mapping.se_count
+        + store->rss->storage_mapping.iee_count;
 }
 
 /**

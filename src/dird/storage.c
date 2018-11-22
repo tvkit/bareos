@@ -533,10 +533,10 @@ int storage_compare_vol_list_entry(void *e1, void *e2)
    ASSERT(v1);
    ASSERT(v2);
 
-   if (v1->SlotNumber == v2->SlotNumber) {
+   if (v1->PhysicalSlotNumber == v2->PhysicalSlotNumber) {
       return 0;
    } else {
-      return (v1->SlotNumber < v2->SlotNumber) ? -1 : 1;
+      return (v1->PhysicalSlotNumber < v2->PhysicalSlotNumber) ? -1 : 1;
    }
 }
 
@@ -779,7 +779,7 @@ vol_list_t *vol_is_loaded_in_drive(STORERES *store, changer_vol_list_t *vol_list
    while (vl) {
       switch (vl->Type) {
       case slot_type_drive:
-         Dmsg2(100, "Checking drive %hd for loaded volume == %hd\n", vl->SlotOrDriveNumber, vl->CurrentlyLoadedSlot);
+         Dmsg2(100, "Checking drive %hd for loaded volume == %hd\n", vl->LogicalDriveNumber, vl->CurrentlyLoadedSlot);
          if (vl->CurrentlyLoadedSlot == slot) {
             return vl;
          }
@@ -870,23 +870,24 @@ void invalidate_vol_list(STORERES *store)
 }
 
 /**
- * calculate the element address for given index and slot_type
+ * calculate the element address for given slotnumber and slot_type
  */
-slot_number_t get_element_address_by_slotnumber(STORERES *store, slot_type slot_type, slot_number_t index)
+slot_number_t get_element_address_by_slotnumber(STORERES *store, slot_type slot_type, slot_number_t slotnumber)
 {
    if (slot_type == slot_type_storage) {
-      return (store->rss->storage_mapping.se_addr + index
+      return (store->rss->storage_mapping.se_addr + slotnumber
             - 1); // normal slots count start from 1
 
    } else if(slot_type == slot_type_import) {
-      return (store->rss->storage_mapping.iee_addr + index
+      return (store->rss->storage_mapping.iee_addr + slotnumber
+            - store->rss->storage_mapping.se_count // i/e slots follow after normal slots
             - 1); // normal slots count start from 1
 
    } else if (slot_type == slot_type_picker) {
-      return (store->rss->storage_mapping.mte_addr + index);
+      return (store->rss->storage_mapping.mte_addr + slotnumber);
 
    } else if (slot_type == slot_type_drive) {
-      return (store->rss->storage_mapping.dte_addr + index);
+      return (store->rss->storage_mapping.dte_addr + slotnumber);
 
    } else if (slot_type == slot_type_unknown){
       return -1;
@@ -897,7 +898,7 @@ slot_number_t get_element_address_by_slotnumber(STORERES *store, slot_type slot_
 }
 
 /**
- * calculate the index for element address and slot_type
+ * calculate the slotnumber for element address and slot_type
  */
 slot_number_t get_slotnumber_by_element_address(STORERES *store, slot_type slot_type, slot_number_t element_addr)
 {
@@ -907,6 +908,7 @@ slot_number_t get_slotnumber_by_element_address(STORERES *store, slot_type slot_
 
    } else if(slot_type == slot_type_import) {
       return (element_addr - store->rss->storage_mapping.iee_addr
+            + store->rss->storage_mapping.se_count // i/e slots follow after normal slots
             + 1); // slots count start from 1
 
    } else if (slot_type == slot_type_picker) {

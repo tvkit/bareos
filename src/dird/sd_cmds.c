@@ -34,7 +34,7 @@
 
 /* Commands sent to Storage daemon */
 static char readlabelcmd[] =
-   "readlabel %s SlotOrDriveNumber=%hd drive=%hd\n";
+   "readlabel %s LogicalDriveNumber=%hd drive=%hd\n";
 static char changerlistallcmd[] =
    "autochanger listall %s \n";
 static char changerlistcmd[] =
@@ -72,7 +72,7 @@ static char OKSecureEraseCmd[] =
 
 /* Commands received from storage daemon that need scanning */
 static char readlabelresponse[] =
-   "3001 Volume=%s SlotOrDriveNumber=%hd";
+   "3001 Volume=%s LogicalDriveNumber=%hd";
 static char changerslotsresponse[] =
    "slots=%hd\n";
 static char changerdrivesresponse[] =
@@ -169,7 +169,7 @@ void close_sd_bsock(UAContext *ua)
 /**
  * We get the volume name from the SD
  */
-char *get_volume_name_from_SD(UAContext *ua, slot_number_t SlotOrDriveNumber, drive_number_t drive)
+char *get_volume_name_from_SD(UAContext *ua, slot_number_t LogicalDriveNumber, drive_number_t drive)
 {
    BSOCK *sd;
    STORERES *store = ua->jcr->res.wstore;
@@ -190,11 +190,11 @@ char *get_volume_name_from_SD(UAContext *ua, slot_number_t SlotOrDriveNumber, dr
     * specific slot of the autochanger using the drive number given.
     * This could change the loaded volume in the drive.
     */
-   sd->fsend(readlabelcmd, dev_name, SlotOrDriveNumber, drive);
+   sd->fsend(readlabelcmd, dev_name, LogicalDriveNumber, drive);
    Dmsg1(100, "Sent: %s", sd->msg);
 
    /*
-    * Get Volume name in this SlotOrDriveNumber
+    * Get Volume name in this LogicalDriveNumber
     */
    while (sd->recv() >= 0) {
       ua->send_msg("%s", sd->msg);
@@ -222,23 +222,23 @@ char *get_volume_name_from_SD(UAContext *ua, slot_number_t SlotOrDriveNumber, dr
  *
  * Input (output of mxt-changer list):
  *
- * 0:vol2                SlotOrDriveNumber num:Volume Name
+ * 0:vol2                LogicalDriveNumber num:Volume Name
  *
  * Input (output of mxt-changer listall):
  *
- * Drive content:         D:Drive num:F:SlotOrDriveNumber loaded:Volume Name
+ * Drive content:         D:Drive num:F:LogicalDriveNumber loaded:Volume Name
  * D:0:F:2:vol2        or D:Drive num:E
  * D:1:F:42:vol42
  * D:3:E
  *
- * SlotOrDriveNumber content:
- * S:1:F:vol1             S:SlotOrDriveNumber num:F:Volume Name
- * S:2:E               or S:SlotOrDriveNumber num:E
+ * LogicalDriveNumber content:
+ * S:1:F:vol1             S:LogicalDriveNumber num:F:Volume Name
+ * S:2:E               or S:LogicalDriveNumber num:E
  * S:3:F:vol4
  *
  * Import/Export tray slots:
- * I:10:F:vol10           I:SlotOrDriveNumber num:F:Volume Name
- * I:11:E              or I:SlotOrDriveNumber num:E
+ * I:10:F:vol10           I:LogicalDriveNumber num:F:Volume Name
+ * I:11:E              or I:LogicalDriveNumber num:E
  * I:12:F:vol40
  *
  * If a drive is loaded, the slot *should* be empty
@@ -360,9 +360,9 @@ dlist *native_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool sc
          /*
           * Scanning -- require only valid slot
           */
-         vl->SlotOrDriveNumber = atoi(field1);
-         if (vl->SlotOrDriveNumber <= 0) {
-            ua->error_msg(_("Invalid SlotOrDriveNumber number: %s\n"), sd->msg);
+         vl->LogicalDriveNumber = atoi(field1);
+         if (vl->LogicalDriveNumber <= 0) {
+            ua->error_msg(_("Invalid LogicalDriveNumber number: %s\n"), sd->msg);
             free(vl);
             continue;
          }
@@ -374,7 +374,7 @@ dlist *native_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool sc
          } else {
             vl->SlotStatus = slot_status_empty;
          }
-         vl->SlotNumber = INDEX_SLOT_OFFSET + vl->SlotOrDriveNumber;
+         vl->PhysicalSlotNumber = INDEX_SLOT_OFFSET + vl->LogicalDriveNumber;
       } else if (!listall) {
          /*
           * Not scanning and not listall.
@@ -384,8 +384,8 @@ dlist *native_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool sc
             continue;
          }
 
-         if (!is_an_integer(field1) || (vl->SlotOrDriveNumber = atoi(field1)) <= 0) {
-            ua->error_msg(_("Invalid SlotOrDriveNumber number: %s\n"), field1);
+         if (!is_an_integer(field1) || (vl->LogicalDriveNumber = atoi(field1)) <= 0) {
+            ua->error_msg(_("Invalid LogicalDriveNumber number: %s\n"), field1);
             free(vl);
             continue;
          }
@@ -399,7 +399,7 @@ dlist *native_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool sc
          vl->Type = slot_type_storage;
          vl->SlotStatus = slot_status_full;
          vl->VolName = bstrdup(field2);
-         vl->SlotNumber = INDEX_SLOT_OFFSET + vl->SlotOrDriveNumber;
+         vl->PhysicalSlotNumber = INDEX_SLOT_OFFSET + vl->LogicalDriveNumber;
       } else {
          /*
           * Listall.
@@ -425,31 +425,31 @@ dlist *native_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool sc
          }
 
          /*
-          * For drives the SlotOrDriveNumber is the actual drive number.
+          * For drives the LogicalDriveNumber is the actual drive number.
           * For any other type its the actual slot number.
           */
          switch (vl->Type) {
          case slot_type_drive:
-            if (!is_an_integer(field2) || (vl->SlotOrDriveNumber = atoi(field2)) < 0) {
+            if (!is_an_integer(field2) || (vl->LogicalDriveNumber = atoi(field2)) < 0) {
                ua->error_msg(_("Invalid Drive number: %s\n"), field2);
                free(vl);
                continue;
             }
-            vl->SlotNumber = INDEX_DRIVE_OFFSET + vl->SlotOrDriveNumber;
-            if (vl->SlotNumber >= INDEX_MAX_DRIVES) {
+            vl->PhysicalSlotNumber = INDEX_DRIVE_OFFSET + vl->LogicalDriveNumber;
+            if (vl->PhysicalSlotNumber >= INDEX_MAX_DRIVES) {
                ua->error_msg(_("Drive number %hd greater then INDEX_MAX_DRIVES(%hd) please increase define\n"),
-                             vl->SlotOrDriveNumber, INDEX_MAX_DRIVES);
+                             vl->LogicalDriveNumber, INDEX_MAX_DRIVES);
                free(vl);
                continue;
             }
             break;
          default:
-            if (!is_an_integer(field2) || (vl->SlotOrDriveNumber = atoi(field2)) <= 0) {
-               ua->error_msg(_("Invalid SlotOrDriveNumber number: %s\n"), field2);
+            if (!is_an_integer(field2) || (vl->LogicalDriveNumber = atoi(field2)) <= 0) {
+               ua->error_msg(_("Invalid LogicalDriveNumber number: %s\n"), field2);
                free(vl);
                continue;
             }
-            vl->SlotNumber = INDEX_SLOT_OFFSET + vl->SlotOrDriveNumber;
+            vl->PhysicalSlotNumber = INDEX_SLOT_OFFSET + vl->LogicalDriveNumber;
             break;
          }
 
@@ -486,10 +486,10 @@ dlist *native_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool sc
 
       if (vl->VolName) {
          Dmsg6(100, "Add index = %hd slot=%hd loaded=%hd type=%hd content=%hd Vol=%s to SD list.\n",
-               vl->SlotNumber, vl->SlotOrDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus, NPRT(vl->VolName));
+               vl->PhysicalSlotNumber, vl->LogicalDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus, NPRT(vl->VolName));
       } else {
          Dmsg5(100, "Add index = %hd slot=%hd loaded=%hd type=%hd content=%hd Vol=NULL to SD list.\n",
-               vl->SlotNumber, vl->SlotOrDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus);
+               vl->PhysicalSlotNumber, vl->LogicalDriveNumber, vl->CurrentlyLoadedSlot, vl->Type, vl->SlotStatus);
       }
 
       vol_list->binary_insert(vl, storage_compare_vol_list_entry);

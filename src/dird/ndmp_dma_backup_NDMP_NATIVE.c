@@ -134,7 +134,7 @@ int ndmp_load_next(struct ndm_session *sess) {
          goto bail_out;
       }
 
-      slot_number_t slotnumber = get_element_address_by_index(store, slot_type_storage, mr.Slot);
+      slot_number_t slotnumber = get_element_address_by_slotnumber(store, slot_type_storage, mr.Slot);
       /*
        * check if lookup_storage_mapping was successful
        */
@@ -546,7 +546,7 @@ static inline bool extract_post_backup_stats_ndmp_native(JCR *jcr,
        * translate Physical to Logical Slot before storing into database
        */
 
-      media->slot_addr = get_index_by_element_address (jcr->res.wstore, slot_type_storage, media->slot_addr);
+      media->slot_addr = get_slotnumber_by_element_address (jcr->res.wstore, slot_type_storage, media->slot_addr);
 #if 0
       Jmsg(jcr, M_INFO, 0, _("Physical Slot is %d\n"), media->slot_addr);
       Jmsg(jcr, M_INFO, 0, _("Logical slot is : %d\n"), media->slot_addr);

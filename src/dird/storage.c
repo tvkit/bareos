@@ -872,7 +872,7 @@ void invalidate_vol_list(STORERES *store)
 /**
  * calculate the element address for given index and slot_type
  */
-slot_number_t get_element_address_by_index(STORERES *store, slot_type slot_type, slot_number_t index)
+slot_number_t get_element_address_by_slotnumber(STORERES *store, slot_type slot_type, slot_number_t index)
 {
    if (slot_type == slot_type_storage) {
       return (store->rss->storage_mapping.se_addr + index
@@ -899,7 +899,7 @@ slot_number_t get_element_address_by_index(STORERES *store, slot_type slot_type,
 /**
  * calculate the index for element address and slot_type
  */
-slot_number_t get_index_by_element_address(STORERES *store, slot_type slot_type, slot_number_t element_addr)
+slot_number_t get_slotnumber_by_element_address(STORERES *store, slot_type slot_type, slot_number_t element_addr)
 {
    if (slot_type == slot_type_storage) {
       return (element_addr - store->rss->storage_mapping.se_addr

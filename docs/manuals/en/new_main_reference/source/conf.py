@@ -210,3 +210,13 @@ texinfo_documents = [
      author, 'BareosMainReference', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+
+import re
+# settings for sphinxcontrib-versioning
+scv_whitelist_branches = (re.compile(r'^master$'),
+        re.compile('sphinx-versioning$'),
+        re.compile(r'^bareos-18.2$'))
+scv_show_banner = True
+scv_priority = 'branches'
+

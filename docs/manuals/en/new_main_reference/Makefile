@@ -9,8 +9,8 @@ SOURCEDIR     = source
 BUILDDIR      = BareosMainReference
 
 
-# Put it first so that "make" without argument is like "make help".
 all:
+	git clone git://gitmirror/bareos
 	./convert_all_tex_files_to_rst.sh
 	sphinx-versioning -l source/conf.py  build docs/manuals/en/new_main_reference/source/ docs/manuals/en/new_main_reference/BareosMainReference/
 	#@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

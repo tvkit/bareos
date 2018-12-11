@@ -14,10 +14,14 @@ General Release Information
    * - **Release Ticket**
      - #123
    * - **URL**
-     - http://url
+     - http://
+
+..
+   * - **LOC**
+     - 123456+ 12345-
 
 .. csv-table:: binary package availablility
-   :header: "distribution", "architecture"
+   :header: "Distribution", "Architecture"
    :widths: auto
 
    CentOS_6, "x86_64"

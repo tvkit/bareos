@@ -10,6 +10,7 @@ BUILDDIR      = BareosMainReference
 
 
 all:
+	mv  file:///usr/src/packages/SOURCES/sphinxcontrib-versioning-2.2.1.tar.gz_ file:///usr/src/packages/SOURCES/sphinxcontrib-versioning-2.2.1.tar.gz
 	pip install file:///usr/src/packages/SOURCES/sphinxcontrib-versioning-2.2.1.tar.gz_
 	git clone git://10.20.40.13/bareos
 	cd bareos/docs/manuals/en/new_main_reference/source &&  ./convert_all_tex_files_to_rst.sh && cd -

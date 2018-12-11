@@ -10,8 +10,7 @@ BUILDDIR      = BareosMainReference
 
 
 all:
-	printf "search intern.bareos\nnameserver 10.20.40.21\n" > /etc/resolv.conf
-	git clone git://gitmirror/bareos
+	git clone git://10.20.40.13/bareos
 	./convert_all_tex_files_to_rst.sh
 	sphinx-versioning -l source/conf.py  build docs/manuals/en/new_main_reference/source/ docs/manuals/en/new_main_reference/BareosMainReference/
 	#@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

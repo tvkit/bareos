@@ -16,6 +16,28 @@ General Release Information
    * - **URL**
      - http://url
 
+.. csv-table:: binary package availablility
+   :header: "distribution", "architecture"
+   :widths: auto
+
+   CentOS_6, "x86_64"
+   CentOS_7, "x86_64"
+   Debian_8.0, "i586,x86_64"
+   Debian_9.0, "i586,x86_64"
+   Fedora_28, "x86_64"
+   Fedora_29, "x86_64"
+   openSUSE_Leap_15.0, "x86_64"
+   RHEL_6, "x86_64"
+   RHEL_7, "x86_64"
+   SLE_12_SP3, "x86_64"
+   SLE_12_SP4, "x86_64"
+   SLE_15, "x86_64"
+   Univention_4.3, "x86_64"
+   win_cross, "x86_64"
+   xUbuntu_14.04, "i586,x86_64"
+   xUbuntu_16.04, "i586,x86_64"
+   xUbuntu_18.04, "x86_64"
+
 New Features
 ------------
 

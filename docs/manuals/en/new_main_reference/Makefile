@@ -12,7 +12,7 @@ BUILDDIR      = BareosMainReference
 all:
 	git clone git://10.20.40.13/bareos
 	./convert_all_tex_files_to_rst.sh
-	sphinx-versioning -l source/conf.py  build docs/manuals/en/new_main_reference/source/ docs/manuals/en/new_main_reference/BareosMainReference/
+	sphinx-versioning -l bareos/docs/manuals/en/new_main_reference/source/conf.py  build bareos/docs/manuals/en/new_main_reference/source/ BareosMainReference/
 	#@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	#@$(SPHINXBUILD) -M latexpdf "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 

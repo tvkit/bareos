@@ -533,10 +533,10 @@ int storage_compare_vol_list_entry(void *e1, void *e2)
    ASSERT(v1);
    ASSERT(v2);
 
-   if (v1->PhysicalSlotNumber == v2->PhysicalSlotNumber) {
+   if (v1->LogicalSlotNumber == v2->LogicalSlotNumber) {
       return 0;
    } else {
-      return (v1->PhysicalSlotNumber < v2->PhysicalSlotNumber) ? -1 : 1;
+      return (v1->LogicalSlotNumber < v2->LogicalSlotNumber) ? -1 : 1;
    }
 }
 
@@ -901,17 +901,16 @@ slot_number_t get_physical_slotnumber_by_logical_slotnumber(STORERES *store, slo
 
    } else if (slot_type == slot_type_picker) {
       return (slotnumber
-            - picker_base
+            + picker_base
               );
 
    } else if (slot_type == slot_type_drive) {
       return (slotnumber
-            - drive_base
+            + drive_base
             );
 
    } else if (slot_type == slot_type_unknown){
       return -1;
-
    } else {
       return -1;
    }
@@ -946,7 +945,7 @@ slot_number_t get_logical_slotnumber_by_physical_slotnumber(STORERES *store, slo
             + storage_slots_count // i/e slots follow after normal slots
             + 1); // slots count start from 1
 
-
+/*
    } else if (slot_type == slot_type_drive) {
       return (element_addr
             - drive_base
@@ -959,7 +958,7 @@ slot_number_t get_logical_slotnumber_by_physical_slotnumber(STORERES *store, slo
 
    } else if (slot_type == slot_type_unknown){
       return -1;
-
+*/
    } else {
       return -1;
    }

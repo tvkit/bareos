@@ -363,8 +363,8 @@ void invalidate_vol_list(STORERES *store);
 int compare_storage_mapping(void *e1, void *e2);
 
 struct smc_element_aa;
-slot_number_t get_logical_slotnumber_by_physical_slotnumber(smc_element_aa* smc_elem_aa, slot_type slot_type, slot_number_t element_addr);
-slot_number_t get_physical_slotnumber_by_logical_slotnumber(smc_element_aa* smc_elem_aa, slot_type slot_type, slot_number_t element_addr);
+slot_number_t get_slotnumber_by_element_addr(smc_element_aa* smc_elem_aa, slot_type slot_type, slot_number_t element_addr);
+slot_number_t get_element_addr_by_slotnumber(smc_element_aa* smc_elem_aa, slot_type slot_type, slot_number_t element_addr);
 
 /* ua_cmds.c */
 bool do_a_command(UAContext *ua);

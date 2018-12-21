@@ -570,7 +570,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
             if (edp->Full) {
                slot_number_t slot_mapping;
                vl->SlotStatus = slot_status_full;
-               slot_mapping = get_logical_slotnumber_by_physical_slotnumber(store, slot_type_storage, edp->src_se_addr);
+               slot_mapping = get_logical_slotnumber_by_physical_slotnumber(&store->rss->storage_mapping, slot_type_storage, edp->src_se_addr);
                vl->CurrentlyLoadedSlot = slot_mapping;
                fill_volume_name(vl, edp);
             } else {
@@ -587,7 +587,7 @@ dlist *ndmp_get_vol_list(UAContext *ua, STORERES *store, bool listall, bool scan
       /*
        * Map physical storage address to logical one using the storage mappings.
        */
-      vl->LogicalSlotNumber = get_logical_slotnumber_by_physical_slotnumber(store, vl->Type, edp->element_address);
+      vl->LogicalSlotNumber = get_logical_slotnumber_by_physical_slotnumber(&store->rss->storage_mapping, vl->Type, edp->element_address);
 
       if (vl->VolName) {
          Dmsg6(100, "Add phys_slot = %hd logi_slot=%hd loaded=%hd type=%hd status=%hd Vol=%s to SD list.\n",
@@ -718,7 +718,7 @@ bool ndmp_transfer_volume(UAContext *ua, STORERES *store,
     * to physical slot numbers for the actual NDMP operation.
     */
    /* slot_mapping = lookup_storage_mapping(store, slot_type_storage, LOGICAL_TO_PHYSICAL, src_slot); */
-   slot_mapping = get_physical_slotnumber_by_logical_slotnumber(store, slot_type_storage, src_slot);
+   slot_mapping = get_physical_slotnumber_by_logical_slotnumber(&store->rss->storage_mapping, slot_type_storage, src_slot);
    if (slot_mapping == -1) {
       ua->error_msg("No slot mapping for slot %hd\n", src_slot);
       return retval;
@@ -726,7 +726,7 @@ bool ndmp_transfer_volume(UAContext *ua, STORERES *store,
    ndmp_job.from_addr = slot_mapping;
    ndmp_job.from_addr_given = 1;
 
-   slot_mapping = get_physical_slotnumber_by_logical_slotnumber(store, slot_type_storage, dst_slot);
+   slot_mapping = get_physical_slotnumber_by_logical_slotnumber(&store->rss->storage_mapping, slot_type_storage, dst_slot);
    if (slot_mapping == -1) {
       ua->error_msg("No slot mapping for slot %hd\n", dst_slot);
       return retval;
@@ -922,7 +922,7 @@ bool ndmp_autochanger_volume_operation(UAContext *ua, STORERES *store, const cha
       /*
        * Map the logical address to a physical one.
        */
-      slot_mapping = get_physical_slotnumber_by_logical_slotnumber(store, slot_type_storage, slot);
+      slot_mapping = get_physical_slotnumber_by_logical_slotnumber(&store->rss->storage_mapping, slot_type_storage, slot);
       if (slot_mapping == -1) {
          ua->error_msg("No slot mapping for slot %hd\n", slot);
          return retval;
@@ -934,7 +934,7 @@ bool ndmp_autochanger_volume_operation(UAContext *ua, STORERES *store, const cha
    /*
     * Map the logical address to a physical one.
     */
-   drive_mapping = get_physical_slotnumber_by_logical_slotnumber(store, slot_type_drive, slot);
+   drive_mapping = get_physical_slotnumber_by_logical_slotnumber(&store->rss->storage_mapping, slot_type_drive, slot);
    if (drive_mapping == -1) {
       ua->error_msg("No slot mapping for drive %hd\n", drive);
       return retval;
@@ -1031,7 +1031,7 @@ bool ndmp_send_label_request(UAContext *ua, STORERES *store, MEDIA_DBR *mr,
    if (slot > 0) {
       slot_number_t slot_mapping;
 
-      slot_mapping = get_physical_slotnumber_by_logical_slotnumber(store, slot_type_storage, slot);
+      slot_mapping = get_physical_slotnumber_by_logical_slotnumber(&store->rss->storage_mapping, slot_type_storage, slot);
       if (slot_mapping == -1) {
          ua->error_msg("No slot mapping for slot %hd\n", slot);
          return retval;
@@ -1112,7 +1112,7 @@ bool ndmp_native_setup_robot_and_tape_for_native_backup_job(JCR* jcr, STORERES* 
       return retval;
    }
 
-   driveaddress = get_physical_slotnumber_by_logical_slotnumber(store, slot_type_drive, driveindex);
+   driveaddress = get_physical_slotnumber_by_logical_slotnumber(&store->rss->storage_mapping, slot_type_drive, driveindex);
    if (driveaddress == -1) {
       Jmsg(jcr, M_ERROR, 0, _("Could not lookup driveaddress for driveindex %d\n"),
             driveaddress);

@@ -154,7 +154,7 @@ struct changer_vol_list_t {
  * same as smc_element_address_assignment
  * from ndmp/smc.h
  */
-struct smc_element_address_assignment {
+struct smc_element_aa {
 
 	unsigned	mte_addr;   /* media transport element */
 	unsigned	mte_count;
@@ -185,7 +185,7 @@ struct runtime_storage_status_t {
    slot_number_t slots;           /**< Number of slots in autochanger */
    pthread_mutex_t changer_lock;  /**< Any access to the autochanger is controlled by this lock */
    unsigned char	smc_ident[32];  /**< smc ident info = changer name */
-   smc_element_address_assignment storage_mapping;   /**< smc element assignment */
+   smc_element_aa storage_mapping;   /**< smc element assignment */
    changer_vol_list_t *vol_list;  /**< Cached content of autochanger */
    std::list<ndmp_deviceinfo_t> *ndmp_deviceinfo; /**< NDMP device info for devices in this Storage */
    pthread_mutex_t ndmp_deviceinfo_lock;  /**< Any access to the list devices is controlled by this lock */

@@ -872,7 +872,7 @@ void invalidate_vol_list(STORERES *store)
 /**
  * calculate the element address for given slotnumber and slot_type
  */
-slot_number_t get_physical_slotnumber_by_logical_slotnumber(smc_element_assignment *smc_elem_aa, slot_type slot_type, slot_number_t slotnumber)
+slot_number_t get_physical_slotnumber_by_logical_slotnumber(smc_element_aa *smc_elem_aa, slot_type slot_type, slot_number_t slotnumber)
 {
   if (slot_type == slot_type_storage) {
     if ( (slotnumber > (smc_elem_aa->se_count) )
@@ -924,7 +924,7 @@ slot_number_t get_physical_slotnumber_by_logical_slotnumber(smc_element_assignme
 /**
  * calculate the slotnumber for element address and slot_type
  */
-slot_number_t get_logical_slotnumber_by_physical_slotnumber(smc_element_assignment *smc_elem_aa, slot_type slot_type, slot_number_t element_addr)
+slot_number_t get_logical_slotnumber_by_physical_slotnumber(smc_element_aa *smc_elem_aa, slot_type slot_type, slot_number_t element_addr)
 {
   if (slot_type == slot_type_storage) {
     if ( (element_addr < smc_elem_aa->se_addr)

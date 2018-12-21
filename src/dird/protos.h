@@ -328,6 +328,9 @@ int start_statistics_thread(void);
 void stop_statistics_thread();
 void stats_job_started();
 
+
+
+
 /* storage.c */
 void copy_rwstorage(JCR *jcr, alist *storage, const char *where);
 void set_rwstorage(JCR *jcr, USTORERES *store);
@@ -359,8 +362,9 @@ void storage_free_vol_list(STORERES *store, changer_vol_list_t *vol_list);
 void invalidate_vol_list(STORERES *store);
 int compare_storage_mapping(void *e1, void *e2);
 
-slot_number_t get_logical_slotnumber_by_physical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t element_addr);
-slot_number_t get_physical_slotnumber_by_logical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t index);
+struct smc_element_aa;
+slot_number_t get_logical_slotnumber_by_physical_slotnumber(smc_element_aa* smc_elem_aa, slot_type slot_type, slot_number_t element_addr);
+slot_number_t get_physical_slotnumber_by_logical_slotnumber(smc_element_aa* smc_elem_aa, slot_type slot_type, slot_number_t element_addr);
 
 /* ua_cmds.c */
 bool do_a_command(UAContext *ua);

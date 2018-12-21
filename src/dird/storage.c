@@ -872,96 +872,101 @@ void invalidate_vol_list(STORERES *store)
 /**
  * calculate the element address for given slotnumber and slot_type
  */
-slot_number_t get_physical_slotnumber_by_logical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t slotnumber)
+slot_number_t get_physical_slotnumber_by_logical_slotnumber(smc_element_assignment *smc_elem_aa, slot_type slot_type, slot_number_t slotnumber)
 {
-
-
-   unsigned storage_slots_base = store->rss->storage_mapping.se_addr;
-   unsigned storage_slots_count = store->rss->storage_mapping.se_count;
-
-   unsigned impexp_slots_base = store->rss->storage_mapping.iee_addr;
-   unsigned impexp_slots_count = store->rss->storage_mapping.iee_count;
-
-   unsigned drive_base = store->rss->storage_mapping.dte_addr;
-   unsigned drive_count = store->rss->storage_mapping.dte_count;
-
-   unsigned picker_base = store->rss->storage_mapping.mte_addr;
-   unsigned picker_count = store->rss->storage_mapping.mte_count;
-
-   if (slot_type == slot_type_storage) {
+  if (slot_type == slot_type_storage) {
+    if ( (slotnumber > (smc_elem_aa->se_count) )
+         || ( slotnumber < 1 ) ) {
+      return -1;
+    } else {
       return (slotnumber
-            + storage_slots_base
-            - 1); // normal slots count start from 1
-
-   } else if(slot_type == slot_type_import) {
-      return (slotnumber
-            + impexp_slots_base
-            - storage_slots_count // i/e slots follow after normal slots
-            - 1); // normal slots count start from 1
-
+          + smc_elem_aa->se_addr
+          - 1); // normal slots count start from 1
+    }
+  } else if(slot_type == slot_type_import) {
+    if ( (slotnumber < (smc_elem_aa->se_count + 1) )
+         || ( slotnumber > (smc_elem_aa->se_count + smc_elem_aa->iee_count + 1)) ) {
+       return -1;
+     } else {
+         return (slotnumber
+             - smc_elem_aa->se_count // i/e slots follow after normal slots
+             - 1 // normal slots count start from 1
+             + smc_elem_aa->iee_addr
+             );
+       }
    } else if (slot_type == slot_type_picker) {
-      return (slotnumber
-            + picker_base
-              );
-
+     if ( (slotnumber < 0) ||
+       slotnumber > (smc_elem_aa->mte_count - 1) ) {
+         return -1;
+       } else{
+         return (slotnumber
+             + smc_elem_aa->mte_addr
+             );
+       }
    } else if (slot_type == slot_type_drive) {
-      return (slotnumber
-            + drive_base
-            );
-
+     if ( (slotnumber > (smc_elem_aa->dte_count) - 1 )
+         || (slotnumber < 0 ) ) {
+       return -1;
+     }else{
+       return (slotnumber
+           + smc_elem_aa->dte_addr
+           );
+     }
    } else if (slot_type == slot_type_unknown){
       return -1;
    } else {
       return -1;
    }
+
+
 }
 
 /**
  * calculate the slotnumber for element address and slot_type
  */
-slot_number_t get_logical_slotnumber_by_physical_slotnumber(STORERES *store, slot_type slot_type, slot_number_t element_addr)
+slot_number_t get_logical_slotnumber_by_physical_slotnumber(smc_element_assignment *smc_elem_aa, slot_type slot_type, slot_number_t element_addr)
 {
-
-   unsigned storage_slots_base = store->rss->storage_mapping.se_addr;
-   unsigned storage_slots_count = store->rss->storage_mapping.se_count;
-
-   unsigned impexp_slots_base = store->rss->storage_mapping.iee_addr;
-   unsigned impexp_slots_count = store->rss->storage_mapping.iee_count;
-
-   unsigned drive_base = store->rss->storage_mapping.dte_addr;
-   unsigned drive_count = store->rss->storage_mapping.dte_count;
-
-   unsigned picker_base = store->rss->storage_mapping.mte_addr;
-   unsigned picker_count = store->rss->storage_mapping.mte_count;
-
-   if (slot_type == slot_type_storage) {
-      return (element_addr
-            - storage_slots_base
-            + 1); // slots count start from 1
-
-   } else if(slot_type == slot_type_import) {
-      return (element_addr
-            - impexp_slots_base
-            + storage_slots_count // i/e slots follow after normal slots
-            + 1); // slots count start from 1
-
-/*
-   } else if (slot_type == slot_type_drive) {
-      return (element_addr
-            - drive_base
-             );
-
-   } else if (slot_type == slot_type_picker) {
-      return (element_addr
-            - picker_base
-            );
-
-   } else if (slot_type == slot_type_unknown){
+  if (slot_type == slot_type_storage) {
+    if ( (element_addr < smc_elem_aa->se_addr)
+        || (element_addr > smc_elem_aa->se_addr + smc_elem_aa->se_count - 1 ) ) {
       return -1;
-*/
-   } else {
+    } else {
+      return (element_addr
+          - smc_elem_aa->se_addr
+          + 1); // slots count start from 1
+
+
+    }
+  } else if(slot_type == slot_type_import) {
+    if ( (element_addr < smc_elem_aa->iee_addr)
+        || (element_addr > smc_elem_aa->iee_addr + smc_elem_aa->iee_count - 1 ) ) {
       return -1;
-   }
+    } else {
+      return (element_addr
+          + smc_elem_aa->se_count // i/e slots follow after normal slots
+          - smc_elem_aa->iee_addr
+          + 1
+          ); // slots count start from 1
+    }
+  } else if (slot_type == slot_type_drive) {
+    if ( (element_addr < smc_elem_aa->dte_addr)
+        || (element_addr > smc_elem_aa->dte_addr + smc_elem_aa->dte_count - 1) ) {
+      return -1;
+    } else {
+      return (element_addr
+          - smc_elem_aa->dte_addr
+          );
+    }
+  } else if (slot_type == slot_type_picker) {
+    return (element_addr
+        - smc_elem_aa->mte_addr
+        );
+
+  } else if (slot_type == slot_type_unknown){
+    return -1;
+
+  } else {
+    return -1;
+  }
 
 }
-

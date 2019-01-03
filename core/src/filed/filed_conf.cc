@@ -85,6 +85,7 @@ static int32_t res_all_size = sizeof(res_all);
  * information.
  */
 
+/* clang-format off */
 /**
  * Client or File daemon "Global" resources
  */
@@ -193,6 +194,7 @@ static ResourceTable resources[] = {
      [](void *res) { return new ((ClientResource *)res) ClientResource(); }}, /* alias for filedaemon */
     {"Messages", msgs_items, R_MSGS, sizeof(MessagesResource)},
     {NULL, NULL, 0}};
+/* clang-format off */
 
 static struct s_kw CryptoCiphers[] = {{"blowfish", CRYPTO_CIPHER_BLOWFISH_CBC},
                                       {"3des", CRYPTO_CIPHER_3DES_CBC},

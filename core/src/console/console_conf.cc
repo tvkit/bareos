@@ -82,6 +82,7 @@ static int32_t res_all_size = sizeof(res_all);
  * information.
  */
 
+/* clang-format off */
 /*  Console "globals" */
 static ResourceItem cons_items[] = {
    { "Name", CFG_TYPE_NAME, ITEM(res_cons.hdr.name), 0, CFG_ITEM_REQUIRED, NULL, NULL, "The name of this resource." },
@@ -119,6 +120,7 @@ static ResourceTable resources[] = {
    { "Director", dir_items, R_DIRECTOR, sizeof(DirectorResource), [] (void *res){ return new((DirectorResource *) res) DirectorResource(); } },
    { NULL, NULL, 0 }
 };
+/* clang-format on */
 
 
 static void DumpResource(int type,

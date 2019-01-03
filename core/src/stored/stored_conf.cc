@@ -67,6 +67,8 @@ static int32_t res_all_size = sizeof(res_all);
  * information.
  */
 
+
+/* clang-format off */
 /**
  * Globals for the Storage daemon.
  */
@@ -297,6 +299,7 @@ static ResourceTable resources[] = {
     {"Messages", msgs_items, R_MSGS, sizeof(MessagesResource)},
     {"Autochanger", changer_items, R_AUTOCHANGER, sizeof(AutochangerResource)},
     {NULL, NULL, 0}};
+/* clang-format on */
 
 /**
  * Authentication methods

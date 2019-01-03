@@ -78,6 +78,8 @@ int32_t res_all_size = sizeof(res_all);
  * resource with the routine to process the record
  * information.  NOTE! quoted names must be in lower case.
  */
+
+/* clang-format off */
 /*
  * Monitor Resource
  *
@@ -176,6 +178,7 @@ static ResourceTable resources[] = {
      [](void *res) { return new ((StorageResource *)res) StorageResource(); }},
     {"ConsoleFont", con_font_items, R_CONSOLE_FONT, sizeof(ConsoleFontResource)},
     {NULL, NULL, 0, 0}};
+/* clang-format on */
 
 /*
  * Dump contents of resource

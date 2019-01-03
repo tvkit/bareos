@@ -111,6 +111,7 @@ static int32_t res_all_size = sizeof(res_all);
  *
  * name handler value code flags default_value
  */
+/* clang-format off */
 static ResourceItem dir_items[] = {
    { "Name", CFG_TYPE_NAME, ITEM(res_dir.hdr.name), 0, CFG_ITEM_REQUIRED, NULL, NULL,
      "The name of the resource." },
@@ -622,6 +623,8 @@ static ResourceItem runscript_items[] = {
  { "RunsOnClient", CFG_TYPE_RUNSCRIPT_TARGET, { (char **)&res_runscript }, 0, 0, NULL, NULL, NULL }, /* TODO */
  { NULL, 0, { 0 }, 0, 0, NULL, NULL, NULL }
 };
+
+/* clang-format on */
 
 /**
  * The following arrays are referenced from else where and

@@ -28,8 +28,8 @@
  */
 
 struct b_queue {
-   struct b_queue *qnext;     /* Next item in queue */
-   struct b_queue *qprev;     /* Previous item in queue */
+  struct b_queue *qnext; /* Next item in queue */
+  struct b_queue *qprev; /* Previous item in queue */
 };
 
 typedef struct b_queue BQUEUE;

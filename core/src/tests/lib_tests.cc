@@ -41,7 +41,7 @@ TEST(BStringList, ConstructorsTest)
 TEST(BStringList, AppendTest)
 {
   BStringList list1;
-  std::vector<std::string> list {"T", "est", "123"};
+  std::vector<std::string> list{"T", "est", "123"};
   list1.Append(list);
   EXPECT_EQ(0, list1.front().compare(std::string("T")));
   list1.erase(list1.begin());
@@ -73,8 +73,8 @@ TEST(BStringList, JoinTest)
   std::string s = list2.Join(AsciiControlCharacters::RecordSeparator());
   EXPECT_EQ(8, s.size());
 
-  std::string test {"Test"};
-  test += AsciiControlCharacters::RecordSeparator(); // 0x1e
+  std::string test{"Test"};
+  test += AsciiControlCharacters::RecordSeparator();  // 0x1e
   test += "123";
 
   EXPECT_STREQ(s.c_str(), test.c_str());
@@ -82,7 +82,7 @@ TEST(BStringList, JoinTest)
 
 TEST(BStringList, SplitStringTest)
 {
-  std::string test {"Test@123@String"};
+  std::string test{"Test@123@String"};
   BStringList list1(test, '@');
   EXPECT_EQ(3, list1.size());
 
@@ -130,7 +130,7 @@ TEST(BNet, EvaluateResponseMessage_Wrong_Id)
   EXPECT_EQ(id, kMessageIdUnknown);
   EXPECT_EQ(ok, false);
 
-  const char *m3 {"A1001 OK: <director-name> Version: <version>"};
+  const char *m3{"A1001 OK: <director-name> Version: <version>"};
   EXPECT_STREQ(args.JoinReadable().c_str(), m3);
 }
 
@@ -149,12 +149,17 @@ TEST(BNet, EvaluateResponseMessage_Correct_Id)
   EXPECT_EQ(id, kMessageIdPamRequired);
   EXPECT_EQ(ok, true);
 
-  const char *m3 {"1001 OK: <director-name> Version: <version>"};
+  const char *m3{"1001 OK: <director-name> Version: <version>"};
   EXPECT_STREQ(args.JoinReadable().c_str(), m3);
 }
 
-enum {
-  R_DIRECTOR = 1, R_CLIENT, R_JOB, R_STORAGE, R_CONSOLE
+enum
+{
+  R_DIRECTOR = 1,
+  R_CLIENT,
+  R_JOB,
+  R_STORAGE,
+  R_CONSOLE
 };
 
 #include "lib/qualified_resource_name_type_converter.h"
@@ -182,13 +187,18 @@ static void do_get_name_from_hello_test(const char *client_string_fmt,
 
 TEST(Util, get_name_from_hello_test)
 {
-  do_get_name_from_hello_test("Hello Client %s calling", "Test Client", "R_CLIENT");
-  do_get_name_from_hello_test("Hello Storage calling Start Job %s", "Test Client", "R_JOB");
-  do_get_name_from_hello_test("Hello %s", "Console Name",  "R_CONSOLE");
-  do_get_name_from_hello_test("Hello %s", "*UserAgent*",  "R_CONSOLE");
-  do_get_name_from_hello_test("Hello %s", "*UserAgent*",  "R_CONSOLE");
-  do_get_name_from_hello_test("Hello %s calling", "Console",  "R_CONSOLE");
-  do_get_name_from_hello_test("Hello Director %s calling\n", "bareos dir",  "R_DIRECTOR");
-  do_get_name_from_hello_test("Hello Start Storage Job %s", "Test Job", "R_JOB");
-  do_get_name_from_hello_test("Hello Client %s FdProtocolVersion=123 calling\n", "Test Client again", "R_CLIENT");
+  do_get_name_from_hello_test("Hello Client %s calling", "Test Client",
+                              "R_CLIENT");
+  do_get_name_from_hello_test("Hello Storage calling Start Job %s",
+                              "Test Client", "R_JOB");
+  do_get_name_from_hello_test("Hello %s", "Console Name", "R_CONSOLE");
+  do_get_name_from_hello_test("Hello %s", "*UserAgent*", "R_CONSOLE");
+  do_get_name_from_hello_test("Hello %s", "*UserAgent*", "R_CONSOLE");
+  do_get_name_from_hello_test("Hello %s calling", "Console", "R_CONSOLE");
+  do_get_name_from_hello_test("Hello Director %s calling\n", "bareos dir",
+                              "R_DIRECTOR");
+  do_get_name_from_hello_test("Hello Start Storage Job %s", "Test Job",
+                              "R_JOB");
+  do_get_name_from_hello_test("Hello Client %s FdProtocolVersion=123 calling\n",
+                              "Test Client again", "R_CLIENT");
 }

@@ -30,4 +30,4 @@ void TermScheduler();
 void InvalidateSchedules();
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_SCHEDULER_H_
+#endif  // BAREOS_DIRD_SCHEDULER_H_

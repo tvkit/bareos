@@ -23,4 +23,4 @@
 
 char *generate_crypto_passphrase(uint16_t length);
 
-#endif // BAREOS_LIB_PASSPHRASE_H_
+#endif  // BAREOS_LIB_PASSPHRASE_H_

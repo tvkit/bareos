@@ -23,4 +23,4 @@
 
 int BgetMsg(BareosSocket *sock);
 
-#endif // BAREOS_LIB_BGET_MSG_H_
+#endif  // BAREOS_LIB_BGET_MSG_H_

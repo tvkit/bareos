@@ -46,27 +46,21 @@
  *	   and system configuration queries.
  */
 
-
-
-
 /*
  * #include "ndmagents.h" already done in ndmos.c
  * Additional #include's, not needed in ndmos_xxx.h, yet needed here.
  */
 #include <sys/utsname.h>
 
-
-
 /*
  * Select common code fragments from ndmos_common.c
  */
-#define NDMOS_COMMON_SYNC_CONFIG_INFO	/* from config file (ndmjob.conf) */
+#define NDMOS_COMMON_SYNC_CONFIG_INFO /* from config file (ndmjob.conf) */
 #define NDMOS_COMMON_OK_NAME_PASSWORD
 #define NDMOS_COMMON_MD5
 #define NDMOS_COMMON_NONBLOCKING_IO_SUPPORT
-#define NDMOS_COMMON_TAPE_INTERFACE	/* uses tape simulator */
-#define NDMOS_COMMON_SCSI_INTERFACE	/* stub-out */
-#define NDMOS_COMMON_DISPATCH_REQUEST	/* no-op */
-
+#define NDMOS_COMMON_TAPE_INTERFACE   /* uses tape simulator */
+#define NDMOS_COMMON_SCSI_INTERFACE   /* stub-out */
+#define NDMOS_COMMON_DISPATCH_REQUEST /* no-op */
 
 #include "ndmos_common.c"

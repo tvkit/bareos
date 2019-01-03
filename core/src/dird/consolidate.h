@@ -30,4 +30,4 @@ void ConsolidateCleanup(JobControlRecord *jcr, int TermCode);
 
 } /* namespace directordaemon */
 
-#endif // BAREOS_DIRD_CONSOLIDATE_H_
+#endif  // BAREOS_DIRD_CONSOLIDATE_H_

@@ -25,18 +25,31 @@
 namespace directordaemon {
 
 void DoNdmpStorageStatus(UaContext *ua, StorageResource *store, char *cmd);
-dlist *ndmp_get_vol_list(UaContext *ua, StorageResource *store, bool listall, bool scan);
+dlist *ndmp_get_vol_list(UaContext *ua,
+                         StorageResource *store,
+                         bool listall,
+                         bool scan);
 slot_number_t NdmpGetNumSlots(UaContext *ua, StorageResource *store);
 drive_number_t NdmpGetNumDrives(UaContext *ua, StorageResource *store);
-bool NdmpTransferVolume(UaContext *ua, StorageResource *store,
-                          slot_number_t src_slot, slot_number_t dst_slot);
-bool NdmpAutochangerVolumeOperation(UaContext *ua, StorageResource *store, const char *operation,
-                                       drive_number_t drive, slot_number_t slot);
-bool NdmpSendLabelRequest(UaContext *ua, StorageResource *store, MediaDbRecord *mr,
-                             MediaDbRecord *omr, PoolDbRecord *pr, bool relabel,
-                             drive_number_t drive, slot_number_t slot);
+bool NdmpTransferVolume(UaContext *ua,
+                        StorageResource *store,
+                        slot_number_t src_slot,
+                        slot_number_t dst_slot);
+bool NdmpAutochangerVolumeOperation(UaContext *ua,
+                                    StorageResource *store,
+                                    const char *operation,
+                                    drive_number_t drive,
+                                    slot_number_t slot);
+bool NdmpSendLabelRequest(UaContext *ua,
+                          StorageResource *store,
+                          MediaDbRecord *mr,
+                          MediaDbRecord *omr,
+                          PoolDbRecord *pr,
+                          bool relabel,
+                          drive_number_t drive,
+                          slot_number_t slot);
 char *lookup_ndmp_drive(StorageResource *store, drive_number_t drive);
-bool NdmpUpdateStorageMappings(JobControlRecord* jcr, StorageResource *store);
+bool NdmpUpdateStorageMappings(JobControlRecord *jcr, StorageResource *store);
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_NDMP_DMA_STORAGE_H_
+#endif  // BAREOS_DIRD_NDMP_DMA_STORAGE_H_

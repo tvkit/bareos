@@ -26,4 +26,4 @@ bool PathListLookup(htable *path_list, const char *fname);
 bool PathListAdd(htable *path_list, uint32_t len, const char *fname);
 void FreePathList(htable *path_list);
 
-#endif // BAREOS_LIB_PATH_LIST_H_
+#endif  // BAREOS_LIB_PATH_LIST_H_

@@ -36,15 +36,12 @@
 
 #ifndef NDMOS_OPTION_NO_CONTROL_AGENT
 
-#define NDMJR_NONE_RECOGNIZE(RULES) \
-	(strcmp (RULES, "none") == 0)
+#define NDMJR_NONE_RECOGNIZE(RULES) (strcmp(RULES, "none") == 0)
 
-#define NDMJR_NONE_HELP_LINE_NAME \
-	"none"
+#define NDMJR_NONE_HELP_LINE_NAME "none"
 
-#define NDMJR_NONE_HELP_LINE_1 \
-	"no additional rules (default)"
+#define NDMJR_NONE_HELP_LINE_1 "no additional rules (default)"
 
-extern int	ndmjr_none_apply (struct ndm_job_param *job, char *reason);
+extern int ndmjr_none_apply(struct ndm_job_param *job, char *reason);
 
 #endif /* !NDMOS_OPTION_NO_CONTROL_AGENT */

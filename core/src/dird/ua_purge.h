@@ -36,4 +36,4 @@ void PurgeJobListFromCatalog(UaContext *ua, del_ctx &del);
 void PurgeFilesFromJobList(UaContext *ua, del_ctx &del);
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_UA_PURGE_H_
+#endif  // BAREOS_DIRD_UA_PURGE_H_

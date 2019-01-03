@@ -23,12 +23,11 @@
 
 #include "dird/dird_globals.h"
 
-
 namespace directordaemon {
 
 ConfigurationParser *my_config = nullptr;
-DirectorResource *me = nullptr;
-char *configfile = nullptr;
-void *start_heap = nullptr;
+DirectorResource *me           = nullptr;
+char *configfile               = nullptr;
+void *start_heap               = nullptr;
 
 } /* namespace directordaemon */

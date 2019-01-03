@@ -25,4 +25,4 @@
 void AesWrap(uint8_t *kek, int n, uint8_t *plain, uint8_t *cipher);
 int AesUnwrap(uint8_t *kek, int n, uint8_t *cipher, uint8_t *plain);
 
-#endif // BAREOS_LIB_CRYPTO_WRAP_H_
+#endif  // BAREOS_LIB_CRYPTO_WRAP_H_

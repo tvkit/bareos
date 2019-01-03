@@ -36,9 +36,11 @@ class TlsOpenSsl : public Tls {
 
   bool init() override;
 
-  bool TlsPostconnectVerifyHost(JobControlRecord *jcr, const char *host) override;
-  bool TlsPostconnectVerifyCn(JobControlRecord *jcr,
-                                          const std::vector<std::string> &verify_list) override;
+  bool TlsPostconnectVerifyHost(JobControlRecord *jcr,
+                                const char *host) override;
+  bool TlsPostconnectVerifyCn(
+      JobControlRecord *jcr,
+      const std::vector<std::string> &verify_list) override;
 
   bool TlsBsockAccept(BareosSocket *bsock) override;
   int TlsBsockWriten(BareosSocket *bsock, char *ptr, int32_t nbytes) override;
@@ -49,12 +51,13 @@ class TlsOpenSsl : public Tls {
   std::string TlsCipherGetName() const override;
   void SetCipherList(const std::string &cipherlist) override;
   void TlsLogConninfo(JobControlRecord *jcr,
-                                  const char *host,
-                                  int port,
-                                  const char *who) const override;
+                      const char *host,
+                      int port,
+                      const char *who) const override;
   void SetTlsPskClientContext(const PskCredentials &credentials) override;
-  void SetTlsPskServerContext(ConfigurationParser *config,
-                                          GetTlsPskByFullyQualifiedResourceNameCb_t cb) override;
+  void SetTlsPskServerContext(
+      ConfigurationParser *config,
+      GetTlsPskByFullyQualifiedResourceNameCb_t cb) override;
 
   void Setca_certfile_(const std::string &ca_certfile) override;
   void SetCaCertdir(const std::string &ca_certdir) override;

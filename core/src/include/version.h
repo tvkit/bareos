@@ -1,12 +1,13 @@
-#undef  VERSION
+#undef VERSION
 #define VERSION "18.2.4rc2"
-#define BDATE   "18 Dec 2018"
+#define BDATE "18 Dec 2018"
 #define LSMDATE "18Dec18"
 
-#define PROG_COPYRIGHT "Copyright (C) 2013-2018 Bareos GmbH & Co. KG\n" \
-                       "Copyright (C) %d-2012 Free Software Foundation Europe e.V.\n" \
-                       "Copyright (C) 2010-2017 Planets Communications B.V.\n"
-#define BYEAR "2018"       /* year for copyright messages in programs */
+#define PROG_COPYRIGHT                                           \
+  "Copyright (C) 2013-2018 Bareos GmbH & Co. KG\n"               \
+  "Copyright (C) %d-2012 Free Software Foundation Europe e.V.\n" \
+  "Copyright (C) 2010-2017 Planets Communications B.V.\n"
+#define BYEAR "2018" /* year for copyright messages in programs */
 
 /*
    BAREOS® - Backup Archiving REcovery Open Sourced
@@ -32,7 +33,7 @@
 */
 
 /* Debug flags */
-#undef  DEBUG
+#undef DEBUG
 #define DEBUG 1
 #define TRACEBACK 1
 #define TRACE_FILE 1
@@ -122,19 +123,17 @@
  *  it is the maximum memory malloced before Bareos will
  *  abort.  Except for debug situations, this should be zero
  */
-#define SMALLOC_SANITY_CHECK 0  /* 500000000  0.5 GB max */
-
+#define SMALLOC_SANITY_CHECK 0 /* 500000000  0.5 GB max */
 
 /* Check if header of tape block is zero before writing */
 /* #define DEBUG_BLOCK_ZEROING 1 */
 
-/* #define FULL_DEBUG 1 */   /* normally on for testing only */
+/* #define FULL_DEBUG 1 */ /* normally on for testing only */
 
 /* Turn this on ONLY if you want all Dmsg() to append to the
  *   trace file. Implemented mainly for Win32 ...
  */
 /*  #define SEND_DMSG_TO_FILE 1 */
-
 
 /* The following are turned on for performance testing */
 /*
@@ -149,14 +148,14 @@
 /* #define NO_ATTRIBUTES_TEST 1 */
 
 /*
-* If you turn on NO_TAPE_WRITE_TEST and rebuild, the SD
-*  will do all normal actions, but will not write to the
-*  Volume.  Note, this means a lot of functions such as
-*  labeling will not work, so you must use it only when
-*  Bareos is going to append to a Volume. This will eliminate
-*  the time it takes to write to the Volume (not the time
-*  it takes to do any positioning).
-*/
+ * If you turn on NO_TAPE_WRITE_TEST and rebuild, the SD
+ *  will do all normal actions, but will not write to the
+ *  Volume.  Note, this means a lot of functions such as
+ *  labeling will not work, so you must use it only when
+ *  Bareos is going to append to a Volume. This will eliminate
+ *  the time it takes to write to the Volume (not the time
+ *  it takes to do any positioning).
+ */
 /* #define NO_TAPE_WRITE_TEST 1 */
 
 /*

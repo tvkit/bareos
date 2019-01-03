@@ -33,7 +33,8 @@
 namespace storagedaemon {
 
 extern "C" {
-typedef Device *(*t_backend_instantiate)(JobControlRecord *jcr, int device_type);
+typedef Device *(*t_backend_instantiate)(JobControlRecord *jcr,
+                                         int device_type);
 typedef void (*t_flush_backend)(void);
 }
 
@@ -41,13 +42,13 @@ typedef void (*t_flush_backend)(void);
  * Loaded shared library with a certain backend interface type.
  */
 struct backend_shared_library_t {
-   int interface_type_id;
-   void *handle;
-   /*
-    * Entry points into loaded shared library.
-    */
-   t_backend_instantiate backend_instantiate;
-   t_flush_backend flush_backend;
+  int interface_type_id;
+  void *handle;
+  /*
+   * Entry points into loaded shared library.
+   */
+  t_backend_instantiate backend_instantiate;
+  t_flush_backend flush_backend;
 };
 
 #if defined(HAVE_WIN32)
@@ -59,7 +60,6 @@ struct backend_shared_library_t {
 #else
 #define DYN_LIB_EXTENSION ".so"
 #endif
-
 
 #if defined(HAVE_DYNAMIC_SD_BACKENDS)
 void SdSetBackendDirs(alist *new_backend_dirs);

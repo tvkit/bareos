@@ -32,4 +32,4 @@ void AdminCleanup(JobControlRecord *jcr, int TermCode);
 
 } /* namespace directordaemon */
 
-#endif // BAREOS_DIRD_ADMIN_H_
+#endif  // BAREOS_DIRD_ADMIN_H_

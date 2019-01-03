@@ -98,40 +98,49 @@ bool AuthenticateDirector(JobControlRecord *jcr)
   if (dir->message_length < 25 || dir->message_length > 500) {
     char addr[64];
     char *who = BnetGetPeer(dir, addr, sizeof(addr)) ? dir->who() : addr;
-    errormsg.bsprintf(_("Bad Hello command from Director at %s. Len=%d.\n"), who, dir->message_length);
+    errormsg.bsprintf(_("Bad Hello command from Director at %s. Len=%d.\n"),
+                      who, dir->message_length);
     AuthenticateFailed(jcr, errormsg);
     return false;
   }
 
-  if (sscanf(dir->msg, "Hello Director %s calling", dirname.check_size(dir->message_length)) != 1) {
+  if (sscanf(dir->msg, "Hello Director %s calling",
+             dirname.check_size(dir->message_length)) != 1) {
     char addr[64];
     char *who     = BnetGetPeer(dir, addr, sizeof(addr)) ? dir->who() : addr;
     dir->msg[100] = 0;
-    errormsg.bsprintf(_("Bad Hello command from Director at %s: %s\n"), who, dir->msg);
+    errormsg.bsprintf(_("Bad Hello command from Director at %s: %s\n"), who,
+                      dir->msg);
     AuthenticateFailed(jcr, errormsg);
     return false;
   }
 
   UnbashSpaces(dirname.c_str());
-  director = (DirectorResource *)my_config->GetResWithName(R_DIRECTOR, dirname.c_str());
+  director = (DirectorResource *)my_config->GetResWithName(R_DIRECTOR,
+                                                           dirname.c_str());
 
   if (!director) {
     char addr[64];
     char *who = BnetGetPeer(dir, addr, sizeof(addr)) ? dir->who() : addr;
-    errormsg.bsprintf(_("Connection from unknown Director %s at %s rejected.\n"), dirname.c_str(), who);
+    errormsg.bsprintf(
+        _("Connection from unknown Director %s at %s rejected.\n"),
+        dirname.c_str(), who);
     AuthenticateFailed(jcr, errormsg);
     return false;
   }
 
   if (!director->conn_from_dir_to_fd) {
-    errormsg.bsprintf(_("Connection from Director %s rejected.\n"), dirname.c_str());
+    errormsg.bsprintf(_("Connection from Director %s rejected.\n"),
+                      dirname.c_str());
     AuthenticateFailed(jcr, errormsg);
     return false;
   }
 
-  if (!dir->AuthenticateInboundConnection(jcr, "Director", dirname.c_str(), director->password_, director)) {
+  if (!dir->AuthenticateInboundConnection(jcr, "Director", dirname.c_str(),
+                                          director->password_, director)) {
     dir->fsend("%s", Dir_sorry);
-    errormsg.bsprintf(_("Unable to authenticate Director %s.\n"), dirname.c_str());
+    errormsg.bsprintf(_("Unable to authenticate Director %s.\n"),
+                      dirname.c_str());
     AuthenticateFailed(jcr, errormsg);
     return false;
   }
@@ -146,8 +155,8 @@ bool AuthenticateDirector(JobControlRecord *jcr)
  */
 bool AuthenticateWithDirector(JobControlRecord *jcr, DirectorResource *director)
 {
-  return jcr->dir_bsock->AuthenticateOutboundConnection(jcr, "Director", me->name(), director->password_,
-                                                        director);
+  return jcr->dir_bsock->AuthenticateOutboundConnection(
+      jcr, "Director", me->name(), director->password_, director);
 }
 
 /**
@@ -161,7 +170,8 @@ bool AuthenticateStoragedaemon(JobControlRecord *jcr)
 
   password.encoding = p_encoding_md5;
   password.value    = jcr->sd_auth_key;
-  result            = sd->AuthenticateInboundConnection(jcr, "Storage daemon", jcr->client_name, password, me);
+  result            = sd->AuthenticateInboundConnection(jcr, "Storage daemon",
+                                             jcr->client_name, password, me);
 
   /*
    * Destroy session key
@@ -183,7 +193,8 @@ bool AuthenticateWithStoragedaemon(JobControlRecord *jcr)
 
   password.encoding = p_encoding_md5;
   password.value    = jcr->sd_auth_key;
-  result = sd->AuthenticateOutboundConnection(jcr, "Storage daemon", (char *)jcr->client_name, password, me);
+  result            = sd->AuthenticateOutboundConnection(
+      jcr, "Storage daemon", (char *)jcr->client_name, password, me);
 
   /*
    * Destroy session key

@@ -34,95 +34,88 @@
  *
  */
 
-
 #define GLOBAL
 #include "ndmjob.h"
 
-int
-exit_program (void)
+int exit_program(void)
 {
-	ndma_destroy_env_list (&E_environment);
-	ndma_destroy_env_list (&ji_environment);
+  ndma_destroy_env_list(&E_environment);
+  ndma_destroy_env_list(&ji_environment);
 
-	ndmjob_unregister_callbacks (&the_session, &the_param.log);
+  ndmjob_unregister_callbacks(&the_session, &the_param.log);
 
-	exit (0);
+  exit(0);
 }
 
-int
-main (int ac, char *av[])
+int main(int ac, char *av[])
 {
-	int rc;
+  int rc;
 
-	NDMOS_MACRO_ZEROFILL (&E_environment);
-	NDMOS_MACRO_ZEROFILL (&ji_environment);
-	NDMOS_MACRO_ZEROFILL (&m_media);
-	NDMOS_MACRO_ZEROFILL (&ji_media);
+  NDMOS_MACRO_ZEROFILL(&E_environment);
+  NDMOS_MACRO_ZEROFILL(&ji_environment);
+  NDMOS_MACRO_ZEROFILL(&m_media);
+  NDMOS_MACRO_ZEROFILL(&ji_media);
 
-	NDMOS_MACRO_ZEROFILL (&the_session);
-	d_debug = -1;
+  NDMOS_MACRO_ZEROFILL(&the_session);
+  d_debug = -1;
 
-	/* ready the_param early so logging works during process_args() */
-	NDMOS_MACRO_ZEROFILL (&the_param);
-	the_param.log.deliver = ndmjob_log_deliver;
-	the_param.log_level = 0;
-	the_param.log_tag = "SESS";
-
-#ifndef NDMOS_OPTION_NO_CONTROL_AGENT
-	b_bsize = 20;
-	index_fp = stderr;
-	o_tape_addr = -1;
-	o_from_addr = -1;
-	o_to_addr = -1;
-	p_ndmp_port = NDMPPORT;
-#endif /* !NDMOS_OPTION_NO_CONTROL_AGENT */
-	log_fp = stderr;
-
-	process_args (ac, av);
-
-	if (the_param.log_level < d_debug)
-		the_param.log_level = d_debug;
-	if (the_param.log_level < v_verbose)
-		the_param.log_level = v_verbose;
-	the_param.config_file_name = o_config_file;
-
-	ndmjob_register_callbacks (&the_session, &the_param.log);
-
-	if (the_mode == NDM_JOB_OP_DAEMON) {
-		the_session.param = &the_param;
-
-		if (n_noop) {
-			dump_settings ();
-			exit_program ();
-		}
-
-		ndma_daemon_session (&the_session, p_ndmp_port);
-		exit_program ();
-	}
-
+  /* ready the_param early so logging works during process_args() */
+  NDMOS_MACRO_ZEROFILL(&the_param);
+  the_param.log.deliver = ndmjob_log_deliver;
+  the_param.log_level   = 0;
+  the_param.log_tag     = "SESS";
 
 #ifndef NDMOS_OPTION_NO_CONTROL_AGENT
-	build_job();		/* might not return */
+  b_bsize     = 20;
+  index_fp    = stderr;
+  o_tape_addr = -1;
+  o_from_addr = -1;
+  o_to_addr   = -1;
+  p_ndmp_port = NDMPPORT;
+#endif /* !NDMOS_OPTION_NO_CONTROL_AGENT */
+  log_fp = stderr;
 
-	the_session.param = &the_param;
+  process_args(ac, av);
 
-	if (n_noop) {
-		dump_settings ();
-		exit_program ();
-	}
+  if (the_param.log_level < d_debug) the_param.log_level = d_debug;
+  if (the_param.log_level < v_verbose) the_param.log_level = v_verbose;
+  the_param.config_file_name = o_config_file;
 
-	start_index_file ();
+  ndmjob_register_callbacks(&the_session, &the_param.log);
 
-	rc = ndma_client_session (&the_session, &the_job, (o_swap_connect != 0));
+  if (the_mode == NDM_JOB_OP_DAEMON) {
+    the_session.param = &the_param;
 
-	sort_index_file ();
+    if (n_noop) {
+      dump_settings();
+      exit_program();
+    }
 
-	if (rc == 0)
-	    ndmjob_log (1, "Operation complete");
-	else
-	    ndmjob_log (1, "Operation complete but had problems.");
+    ndma_daemon_session(&the_session, p_ndmp_port);
+    exit_program();
+  }
+
+#ifndef NDMOS_OPTION_NO_CONTROL_AGENT
+  build_job(); /* might not return */
+
+  the_session.param = &the_param;
+
+  if (n_noop) {
+    dump_settings();
+    exit_program();
+  }
+
+  start_index_file();
+
+  rc = ndma_client_session(&the_session, &the_job, (o_swap_connect != 0));
+
+  sort_index_file();
+
+  if (rc == 0)
+    ndmjob_log(1, "Operation complete");
+  else
+    ndmjob_log(1, "Operation complete but had problems.");
 #endif /* !NDMOS_OPTION_NO_CONTROL_AGENT */
 
-
-	exit_program ();
+  exit_program();
 }

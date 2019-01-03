@@ -35,16 +35,26 @@ class TlsOpenSslPrivate {
 
   bool init();
 
-  enum SslCtxExDataIndex: int { kGetTlsPskByFullyQualifiedResourceNameCb = 0, kConfigurationParserPtr = 1 };
+  enum SslCtxExDataIndex : int
+  {
+    kGetTlsPskByFullyQualifiedResourceNameCb = 0,
+    kConfigurationParserPtr                  = 1
+  };
 
-  int OpensslBsockReadwrite(BareosSocket *bsock, char *ptr, int nbytes, bool write);
+  int OpensslBsockReadwrite(BareosSocket *bsock,
+                            char *ptr,
+                            int nbytes,
+                            bool write);
   bool OpensslBsockSessionStart(BareosSocket *bsock, bool server);
 
   void ClientContextInsertCredentials(const PskCredentials &cred);
   void ServerContextInsertCredentials(const PskCredentials &cred);
 
   /* callbacks */
-  static int tls_pem_callback_dispatch(char *buf, int size, int rwflag, void *userdata);
+  static int tls_pem_callback_dispatch(char *buf,
+                                       int size,
+                                       int rwflag,
+                                       void *userdata);
   static int OpensslVerifyPeer(int ok, X509_STORE_CTX *store);
   static unsigned int psk_server_cb(SSL *ssl,
                                     const char *identity,

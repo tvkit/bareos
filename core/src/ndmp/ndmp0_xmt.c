@@ -34,34 +34,28 @@
  *
  */
 
-
 #include "ndmos.h"
 #include "ndmprotocol.h"
 
+#define xdr_ndmp0_connect_close_request xdr_void
+#define xdr_ndmp0_connect_close_reply xdr_void
 
+#define xdr_ndmp0_notify_connected_reply 0
 
-
-
-#define xdr_ndmp0_connect_close_request		xdr_void
-#define xdr_ndmp0_connect_close_reply		xdr_void
-
-#define xdr_ndmp0_notify_connected_reply	0
-
-
-
-
-struct ndmp_xdr_message_table	ndmp0_xdr_message_table[] = {
-   { NDMP0_CONNECT_OPEN,
-     xdr_ndmp0_connect_open_request,
-     xdr_ndmp0_connect_open_reply,
-   },
-   { NDMP0_CONNECT_CLOSE,
-     xdr_ndmp0_connect_close_request,
-     xdr_ndmp0_connect_close_reply,
-   },
-   { NDMP0_NOTIFY_CONNECTED,
-     xdr_ndmp0_notify_connected_request,
-     xdr_ndmp0_notify_connected_reply,
-   },
-   {0}
-};
+struct ndmp_xdr_message_table ndmp0_xdr_message_table[] = {
+    {
+        NDMP0_CONNECT_OPEN,
+        xdr_ndmp0_connect_open_request,
+        xdr_ndmp0_connect_open_reply,
+    },
+    {
+        NDMP0_CONNECT_CLOSE,
+        xdr_ndmp0_connect_close_request,
+        xdr_ndmp0_connect_close_reply,
+    },
+    {
+        NDMP0_NOTIFY_CONNECTED,
+        xdr_ndmp0_notify_connected_request,
+        xdr_ndmp0_notify_connected_reply,
+    },
+    {0}};

@@ -24,4 +24,4 @@
 bool fstype(const char *fname, char *fs, int fslen);
 bool FstypeEquals(const char *fname, const char *fstypename);
 
-#endif // BAREOS_FINDLIB_FSTYPE_H_
+#endif  // BAREOS_FINDLIB_FSTYPE_H_

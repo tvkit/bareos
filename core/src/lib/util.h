@@ -35,7 +35,9 @@ void UnbashSpaces(PoolMem &pm);
 bool GetNameAndResourceTypeFromHello(const std::string &input,
                                      std::string &name,
                                      std::string &r_type_str);
-const char* IndentMultilineString(PoolMem &resultbuffer, const char *multilinestring, const char *separator);
+const char *IndentMultilineString(PoolMem &resultbuffer,
+                                  const char *multilinestring,
+                                  const char *separator);
 char *encode_time(utime_t time, char *buf);
 bool ConvertTimeoutToTimespec(timespec &timeout, int timeout_in_seconds);
 char *encode_mode(mode_t mode, char *buf);
@@ -52,8 +54,12 @@ const char *volume_status_to_str(const char *status);
 void MakeSessionKey(char *key, char *seed, int mode);
 void EncodeSessionKey(char *encode, char *session, char *key, int maxlen);
 void DecodeSessionKey(char *decode, char *session, char *key, int maxlen);
-POOLMEM *edit_job_codes(JobControlRecord *jcr, char *omsg, char *imsg, const char *to, job_code_callback_t job_code_callback = NULL);
+POOLMEM *edit_job_codes(JobControlRecord *jcr,
+                        char *omsg,
+                        char *imsg,
+                        const char *to,
+                        job_code_callback_t job_code_callback = NULL);
 void SetWorkingDirectory(char *wd);
 const char *last_path_separator(const char *str);
 
-#endif // BAREOS_LIB_UTIL_H_
+#endif  // BAREOS_LIB_UTIL_H_

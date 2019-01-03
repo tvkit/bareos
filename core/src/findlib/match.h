@@ -23,13 +23,15 @@
 
 void InitIncludeExcludeFiles(FindFilesPacket *ff);
 void TermIncludeExcludeFiles(FindFilesPacket *ff);
-void AddFnameToIncludeList(FindFilesPacket *ff, int prefixed, const char *fname);
+void AddFnameToIncludeList(FindFilesPacket *ff,
+                           int prefixed,
+                           const char *fname);
 void AddFnameToExcludeList(FindFilesPacket *ff, const char *fname);
 bool FileIsExcluded(FindFilesPacket *ff, const char *file);
 bool FileIsIncluded(FindFilesPacket *ff, const char *file);
 struct s_included_file *get_next_included_file(FindFilesPacket *ff,
                                                struct s_included_file *inc);
 bool ParseSizeMatch(const char *size_match_pattern,
-                      struct s_sz_matching *size_matching);
+                    struct s_sz_matching *size_matching);
 
-#endif // BAREOS_FINDLIB_MATCH_H_
+#endif  // BAREOS_FINDLIB_MATCH_H_

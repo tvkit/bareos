@@ -31,4 +31,4 @@ char *bareos_status(char *buf, int buf_len);
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_STATUS_H_
+#endif  // BAREOS_STORED_STATUS_H_

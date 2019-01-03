@@ -27,16 +27,14 @@
  *
  */
 
-
 #ifndef BAREOS_INCLUDE_BACONFIG_H_
 #define BAREOS_INCLUDE_BACONFIG_H_ 1
 
-
 /* Bareos common configuration defines */
 
-#undef  TRUE
-#undef  FALSE
-#define TRUE  1
+#undef TRUE
+#undef FALSE
+#define TRUE 1
 #define FALSE 0
 
 #ifdef HAVE_TLS
@@ -55,11 +53,10 @@
 #define ioctl_req_t int
 #endif
 
-
 #ifdef PROTOTYPES
-# define __PROTO(p)     p
+#define __PROTO(p) p
 #else
-# define __PROTO(p)     ()
+#define __PROTO(p) ()
 #endif
 
 #ifdef DEBUG
@@ -67,17 +64,21 @@
  * In DEBUG mode an assert that is triggered generates a segmentation
  * fault so we can capture the debug info using btraceback.
  */
-#define ASSERT(x) if (!(x)) { \
-   char *fatal = NULL; \
-   Emsg1(M_ERROR, 0, _("Failed ASSERT: %s\n"), #x); \
-   Pmsg1(000, _("Failed ASSERT: %s\n"), #x); \
-   fatal[0] = 0; }
-#define ASSERT2(x,y) if (!(x)) { \
-   assert_msg =  y; \
-   Emsg1(M_ERROR, 0, _("Failed ASSERT: %s\n"), #x); \
-   Pmsg1(000, _("Failed ASSERT: %s\n"), #x); \
-   char *fatal = NULL; \
-   fatal[0] = 0; }
+#define ASSERT(x)                                    \
+  if (!(x)) {                                        \
+    char *fatal = NULL;                              \
+    Emsg1(M_ERROR, 0, _("Failed ASSERT: %s\n"), #x); \
+    Pmsg1(000, _("Failed ASSERT: %s\n"), #x);        \
+    fatal[0] = 0;                                    \
+  }
+#define ASSERT2(x, y)                                \
+  if (!(x)) {                                        \
+    assert_msg = y;                                  \
+    Emsg1(M_ERROR, 0, _("Failed ASSERT: %s\n"), #x); \
+    Pmsg1(000, _("Failed ASSERT: %s\n"), #x);        \
+    char *fatal = NULL;                              \
+    fatal[0]    = 0;                                 \
+  }
 #else
 #define ASSERT(x)
 #define ASSERT2(x, y)
@@ -86,8 +87,8 @@
 /**
  * Allow printing of NULL pointers
  */
-#define NPRT(x) (x)?(x):_("*None*")
-#define NPRTB(x) (x)?(x):""
+#define NPRT(x) (x) ? (x) : _("*None*")
+#define NPRTB(x) (x) ? (x) : ""
 
 #if defined(HAVE_WIN32)
 /**
@@ -97,52 +98,51 @@
 
 void InitWinAPIWrapper();
 
-#define  OSDependentInit()    InitWinAPIWrapper()
+#define OSDependentInit() InitWinAPIWrapper()
 
-#define sbrk(x)  0
+#define sbrk(x) 0
 
 #define ClearThreadId(x) memset(&(x), 0, sizeof(x))
 
-#else  /* HAVE_WIN32 */
+#else /* HAVE_WIN32 */
 
 #define ClearThreadId(x) x = 0
-#define  OSDependentInit()
+#define OSDependentInit()
 
 #endif /* HAVE_WIN32 */
 
 #ifdef ENABLE_NLS
-   #include <libintl.h>
-   #include <locale.h>
-   #ifndef _
-      #define _(s) gettext((s))
-   #endif /* _ */
-   #ifndef N_
-      #define N_(s) (s)
-   #endif /* N_ */
-#else /* !ENABLE_NLS */
-   #undef _
-   #undef N_
-   #undef textdomain
-   #undef bindtextdomain
-   #undef setlocale
+#include <libintl.h>
+#include <locale.h>
+#ifndef _
+#define _(s) gettext((s))
+#endif /* _ */
+#ifndef N_
+#define N_(s) (s)
+#endif /* N_ */
+#else  /* !ENABLE_NLS */
+#undef _
+#undef N_
+#undef textdomain
+#undef bindtextdomain
+#undef setlocale
 
-   #ifndef _
-      #define _(s) (s)
-   #endif
-   #ifndef N_
-      #define N_(s) (s)
-   #endif
-   #ifndef textdomain
-      #define textdomain(d)
-   #endif
-   #ifndef bindtextdomain
-      #define bindtextdomain(p, d)
-   #endif
-   #ifndef setlocale
-      #define setlocale(p, d)
-   #endif
+#ifndef _
+#define _(s) (s)
+#endif
+#ifndef N_
+#define N_(s) (s)
+#endif
+#ifndef textdomain
+#define textdomain(d)
+#endif
+#ifndef bindtextdomain
+#define bindtextdomain(p, d)
+#endif
+#ifndef setlocale
+#define setlocale(p, d)
+#endif
 #endif /* ENABLE_NLS */
-
 
 /* Use the following for strings not to be translated */
 #define NT_(s) (s)
@@ -200,8 +200,8 @@ void InitWinAPIWrapper();
  * Tape label types -- stored in catalog
  */
 #define B_BAREOS_LABEL 0
-#define B_ANSI_LABEL   1
-#define B_IBM_LABEL    2
+#define B_ANSI_LABEL 1
+#define B_IBM_LABEL 2
 
 /**
  * Actions on purge (bit mask)
@@ -215,7 +215,6 @@ void InitWinAPIWrapper();
 /* Size of crypto length stored at head of crypto buffer. Do NOT change! */
 #define CRYPTO_LEN_SIZE ((int)sizeof(uint32_t))
 
-
 /**
  * This is for dumb compilers/libraries like Solaris. Linux GCC
  * does it correctly, so it might be worthwhile
@@ -228,20 +227,19 @@ void InitWinAPIWrapper();
 #define B_ISDIGIT(c) (isascii((int)(c)) && isdigit((int)(c)))
 
 /** For multiplying by 10 with shift and addition */
-#define B_TIMES10(d) ((d<<3)+(d<<1))
+#define B_TIMES10(d) ((d << 3) + (d << 1))
 
-
-typedef void (HANDLER)();
-typedef int (INTHANDLER)();
+typedef void(HANDLER)();
+typedef int(INTHANDLER)();
 
 #ifdef SETPGRP_VOID
-# define SETPGRP_ARGS(x, y) /* No arguments */
+#define SETPGRP_ARGS(x, y) /* No arguments */
 #else
-# define SETPGRP_ARGS(x, y) (x, y)
+#define SETPGRP_ARGS(x, y) (x, y)
 #endif
 
 #ifndef S_ISLNK
-#define S_ISLNK(m) (((m) & S_IFM) == S_IFLNK)
+#define S_ISLNK(m) (((m)&S_IFM) == S_IFLNK)
 #endif
 
 /** Added by KES to deal with Win32 systems */
@@ -250,7 +248,7 @@ typedef int (INTHANDLER)();
 #endif
 
 #ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned long) -1)
+#define INADDR_NONE ((unsigned long)-1)
 #endif
 
 #ifdef TIME_WITH_SYS_TIME
@@ -276,41 +274,45 @@ typedef int (INTHANDLER)();
 #define MODE_RW 0666
 #endif
 
-
-enum {
-API_MODE_OFF = 0,
-API_MODE_ON = 1,
-API_MODE_JSON = 2
+enum
+{
+  API_MODE_OFF  = 0,
+  API_MODE_ON   = 1,
+  API_MODE_JSON = 2
 };
 
 #if defined(HAVE_WIN32)
-typedef int64_t   boffset_t;
-#define caddr_t  char *
+typedef int64_t boffset_t;
+#define caddr_t char *
 #else
-typedef off_t     boffset_t;
+typedef off_t boffset_t;
 #endif
 
 /**
-* Create some simple types for now int16_t e.g. 65 K should be enough.
-*/
+ * Create some simple types for now int16_t e.g. 65 K should be enough.
+ */
 typedef int16_t slot_number_t;
 typedef int16_t drive_number_t;
 typedef int16_t slot_flags_t;
 
 /* These probably should be subroutines */
-#define Pw(x) \
-do { int errstat; if ((errstat=RwlWritelock(&(x)))) \
-   e_msg(__FILE__, __LINE__, M_ABORT, 0, "Write lock lock failure. ERR=%s\n",\
-        strerror(errstat)); \
-} while(0)
+#define Pw(x)                                                        \
+  do {                                                               \
+    int errstat;                                                     \
+    if ((errstat = RwlWritelock(&(x))))                              \
+      e_msg(__FILE__, __LINE__, M_ABORT, 0,                          \
+            "Write lock lock failure. ERR=%s\n", strerror(errstat)); \
+  } while (0)
 
-#define Vw(x) \
-do { int errstat; if ((errstat=RwlWriteunlock(&(x)))) \
-      e_msg(__FILE__, __LINE__, M_ABORT, 0, "Write lock unlock failure. ERR=%s\n",\
-        strerror(errstat)); \
-} while(0)
+#define Vw(x)                                                          \
+  do {                                                                 \
+    int errstat;                                                       \
+    if ((errstat = RwlWriteunlock(&(x))))                              \
+      e_msg(__FILE__, __LINE__, M_ABORT, 0,                            \
+            "Write lock unlock failure. ERR=%s\n", strerror(errstat)); \
+  } while (0)
 
-#define LockRes(x)   (x)->b_LockRes(__FILE__, __LINE__)
+#define LockRes(x) (x)->b_LockRes(__FILE__, __LINE__)
 #define UnlockRes(x) (x)->b_UnlockRes(__FILE__, __LINE__)
 
 #ifdef DEBUG_MEMSET
@@ -319,40 +321,53 @@ void b_memset(const char *file, int line, void *mem, int val, size_t num);
 #endif
 
 /**
-* The digit following Dmsg and Emsg indicates the number of substitutions in
-* the message string. We need to do this kludge because non-GNU compilers
-* do not handle varargs #defines.
-*/
+ * The digit following Dmsg and Emsg indicates the number of substitutions in
+ * the message string. We need to do this kludge because non-GNU compilers
+ * do not handle varargs #defines.
+ */
 /** Debug Messages that are printed */
 #ifdef DEBUG
 #define Dmsg0(lvl, msg) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg)
+  if ((lvl) <= debug_level) d_msg(__FILE__, __LINE__, lvl, msg)
 #define Dmsg1(lvl, msg, a1) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1)
+  if ((lvl) <= debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1)
 #define Dmsg2(lvl, msg, a1, a2) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2)
+  if ((lvl) <= debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2)
 #define Dmsg3(lvl, msg, a1, a2, a3) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
+  if ((lvl) <= debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
 #define Dmsg4(lvl, msg, a1, a2, a3, a4) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
+  if ((lvl) <= debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
 #define Dmsg5(lvl, msg, a1, a2, a3, a4, a5) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
+  if ((lvl) <= debug_level)                 \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
 #define Dmsg6(lvl, msg, a1, a2, a3, a4, a5, a6) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
+  if ((lvl) <= debug_level)                     \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
 #define Dmsg7(lvl, msg, a1, a2, a3, a4, a5, a6, a7) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
+  if ((lvl) <= debug_level)                         \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
 #define Dmsg8(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8) \
-if ((lvl)<=debug_level) d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
+  if ((lvl) <= debug_level)                             \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
 #define Dmsg9(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9) \
-if ((lvl)<=debug_level) d_msg(__FILE__,__LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+  if ((lvl) <= debug_level)                                 \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9)
 #define Dmsg10(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) \
-if ((lvl)<=debug_level) d_msg(__FILE__,__LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-#define Dmsg11(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) \
-if ((lvl)<=debug_level) d_msg(__FILE__,__LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
-#define Dmsg12(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) \
-if ((lvl)<=debug_level) d_msg(__FILE__,__LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
-#define Dmsg13(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) \
-if ((lvl)<=debug_level) d_msg(__FILE__,__LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
+  if ((lvl) <= debug_level)                                       \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+#define Dmsg11(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)         \
+  if ((lvl) <= debug_level)                                                    \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11)
+#define Dmsg12(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)    \
+  if ((lvl) <= debug_level)                                                    \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11, a12)
+#define Dmsg13(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,    \
+               a13)                                                            \
+  if ((lvl) <= debug_level)                                                    \
+  d_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11, a12, a13)
 #else
 #define Dmsg0(lvl, msg)
 #define Dmsg1(lvl, msg, a1)
@@ -369,34 +384,35 @@ if ((lvl)<=debug_level) d_msg(__FILE__,__LINE__, lvl, msg, a1, a2, a3, a4, a5, a
 #endif /* DEBUG */
 
 #ifdef TRACE_FILE
-#define Tmsg0(lvl, msg) \
-t_msg(__FILE__, __LINE__, lvl, msg)
-#define Tmsg1(lvl, msg, a1) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1)
-#define Tmsg2(lvl, msg, a1, a2) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2)
+#define Tmsg0(lvl, msg) t_msg(__FILE__, __LINE__, lvl, msg)
+#define Tmsg1(lvl, msg, a1) t_msg(__FILE__, __LINE__, lvl, msg, a1)
+#define Tmsg2(lvl, msg, a1, a2) t_msg(__FILE__, __LINE__, lvl, msg, a1, a2)
 #define Tmsg3(lvl, msg, a1, a2, a3) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
 #define Tmsg4(lvl, msg, a1, a2, a3, a4) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
 #define Tmsg5(lvl, msg, a1, a2, a3, a4, a5) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
 #define Tmsg6(lvl, msg, a1, a2, a3, a4, a5, a6) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
 #define Tmsg7(lvl, msg, a1, a2, a3, a4, a5, a6, a7) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
 #define Tmsg8(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
 #define Tmsg9(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9)
 #define Tmsg10(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-#define Tmsg11(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
-#define Tmsg12(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
-#define Tmsg13(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) \
-t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+#define Tmsg11(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)         \
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11)
+#define Tmsg12(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)    \
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11, a12)
+#define Tmsg13(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,    \
+               a13)                                                            \
+  t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11, a12, a13)
 #else
 #define Tmsg0(lvl, msg)
 #define Tmsg1(lvl, msg, a1)
@@ -415,128 +431,126 @@ t_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11
 #endif /* TRACE_FILE */
 
 /** Messages that are printed (uses p_msg) */
-#define Pmsg0(lvl, msg) \
-p_msg(__FILE__, __LINE__, lvl, msg)
-#define Pmsg1(lvl, msg, a1) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1)
-#define Pmsg2(lvl, msg, a1, a2) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2)
+#define Pmsg0(lvl, msg) p_msg(__FILE__, __LINE__, lvl, msg)
+#define Pmsg1(lvl, msg, a1) p_msg(__FILE__, __LINE__, lvl, msg, a1)
+#define Pmsg2(lvl, msg, a1, a2) p_msg(__FILE__, __LINE__, lvl, msg, a1, a2)
 #define Pmsg3(lvl, msg, a1, a2, a3) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
 #define Pmsg4(lvl, msg, a1, a2, a3, a4) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
 #define Pmsg5(lvl, msg, a1, a2, a3, a4, a5) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
 #define Pmsg6(lvl, msg, a1, a2, a3, a4, a5, a6) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
 #define Pmsg7(lvl, msg, a1, a2, a3, a4, a5, a6, a7) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
 #define Pmsg8(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
 #define Pmsg9(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9)
 #define Pmsg10(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-#define Pmsg11(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
-#define Pmsg12(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
-#define Pmsg13(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
-#define Pmsg14(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14) \
-p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+#define Pmsg11(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)         \
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11)
+#define Pmsg12(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)    \
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11, a12)
+#define Pmsg13(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,    \
+               a13)                                                            \
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11, a12, a13)
+#define Pmsg14(lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,    \
+               a13, a14)                                                       \
+  p_msg(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+        a11, a12, a13, a14)
 
 /** Messages that are printed using fixed size buffers (uses p_msg_fb) */
-#define FPmsg0(lvl, msg) \
-p_msg_fb(__FILE__, __LINE__, lvl, msg)
-#define FPmsg1(lvl, msg, a1) \
-p_msg_fb(__FILE__, __LINE__, lvl, msg, a1)
-#define FPmsg2(lvl, msg, a1, a2) \
-p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2)
+#define FPmsg0(lvl, msg) p_msg_fb(__FILE__, __LINE__, lvl, msg)
+#define FPmsg1(lvl, msg, a1) p_msg_fb(__FILE__, __LINE__, lvl, msg, a1)
+#define FPmsg2(lvl, msg, a1, a2) p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2)
 #define FPmsg3(lvl, msg, a1, a2, a3) \
-p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
+  p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3)
 #define FPmsg4(lvl, msg, a1, a2, a3, a4) \
-p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
+  p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4)
 #define FPmsg5(lvl, msg, a1, a2, a3, a4, a5) \
-p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
+  p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5)
 #define FPmsg6(lvl, msg, a1, a2, a3, a4, a5, a6) \
-p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
+  p_msg_fb(__FILE__, __LINE__, lvl, msg, a1, a2, a3, a4, a5, a6)
 
-/** Daemon Error Messages that are delivered according to the message resource */
-#define Emsg0(typ, lvl, msg) \
-e_msg(__FILE__, __LINE__, typ, lvl, msg)
-#define Emsg1(typ, lvl, msg, a1) \
-e_msg(__FILE__, __LINE__, typ, lvl, msg, a1)
+/** Daemon Error Messages that are delivered according to the message resource
+ */
+#define Emsg0(typ, lvl, msg) e_msg(__FILE__, __LINE__, typ, lvl, msg)
+#define Emsg1(typ, lvl, msg, a1) e_msg(__FILE__, __LINE__, typ, lvl, msg, a1)
 #define Emsg2(typ, lvl, msg, a1, a2) \
-e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2)
+  e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2)
 #define Emsg3(typ, lvl, msg, a1, a2, a3) \
-e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3)
+  e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3)
 #define Emsg4(typ, lvl, msg, a1, a2, a3, a4) \
-e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3, a4)
+  e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3, a4)
 #define Emsg5(typ, lvl, msg, a1, a2, a3, a4, a5) \
-e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3, a4, a5)
+  e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3, a4, a5)
 #define Emsg6(typ, lvl, msg, a1, a2, a3, a4, a5, a6) \
-e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3, a4, a5, a6)
+  e_msg(__FILE__, __LINE__, typ, lvl, msg, a1, a2, a3, a4, a5, a6)
 
 /** Job Error Messages that are delivered according to the message resource */
-#define Jmsg0(jcr, typ, lvl, msg) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg)
+#define Jmsg0(jcr, typ, lvl, msg) j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg)
 #define Jmsg1(jcr, typ, lvl, msg, a1) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1)
 #define Jmsg2(jcr, typ, lvl, msg, a1, a2) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2)
 #define Jmsg3(jcr, typ, lvl, msg, a1, a2, a3) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3)
 #define Jmsg4(jcr, typ, lvl, msg, a1, a2, a3, a4) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4)
 #define Jmsg5(jcr, typ, lvl, msg, a1, a2, a3, a4, a5) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5)
 #define Jmsg6(jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6)
 #define Jmsg7(jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6, a7) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6, a7)
 #define Jmsg8(jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8) \
-j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
+  j_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6, a7, a8)
 
-/** Queued Job Error Messages that are delivered according to the message resource */
-#define Qmsg0(jcr, typ, lvl, msg) \
-q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg)
+/** Queued Job Error Messages that are delivered according to the message
+ * resource */
+#define Qmsg0(jcr, typ, lvl, msg) q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg)
 #define Qmsg1(jcr, typ, lvl, msg, a1) \
-q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1)
+  q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1)
 #define Qmsg2(jcr, typ, lvl, msg, a1, a2) \
-q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2)
+  q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2)
 #define Qmsg3(jcr, typ, lvl, msg, a1, a2, a3) \
-q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3)
+  q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3)
 #define Qmsg4(jcr, typ, lvl, msg, a1, a2, a3, a4) \
-q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4)
+  q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4)
 #define Qmsg5(jcr, typ, lvl, msg, a1, a2, a3, a4, a5) \
-q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5)
+  q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5)
 #define Qmsg6(jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6) \
-q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6)
+  q_msg(__FILE__, __LINE__, jcr, typ, lvl, msg, a1, a2, a3, a4, a5, a6)
 
 /** Memory Messages that are edited into a Pool Memory buffer */
-#define Mmsg0(buf, msg) \
-msg_(__FILE__, __LINE__, buf, msg)
-#define Mmsg1(buf, msg, a1) \
-msg_(__FILE__, __LINE__, buf, msg, a1)
-#define Mmsg2(buf, msg, a1, a2) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2)
+#define Mmsg0(buf, msg) msg_(__FILE__, __LINE__, buf, msg)
+#define Mmsg1(buf, msg, a1) msg_(__FILE__, __LINE__, buf, msg, a1)
+#define Mmsg2(buf, msg, a1, a2) msg_(__FILE__, __LINE__, buf, msg, a1, a2)
 #define Mmsg3(buf, msg, a1, a2, a3) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3)
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3)
 #define Mmsg4(buf, msg, a1, a2, a3, a4) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4)
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4)
 #define Mmsg5(buf, msg, a1, a2, a3, a4, a5) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5)
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5)
 #define Mmsg6(buf, msg, a1, a2, a3, a4, a5, a6) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6)
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6)
 #define Mmsg7(buf, msg, a1, a2, a3, a4, a5, a6, a7) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6)
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6)
 #define Mmsg8(buf, msg, a1, a2, a3, a4, a5, a6, a7, a8) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6)
-#define Mmsg11(buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
-#define Mmsg15(buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15) \
-msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15)
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6)
+#define Mmsg11(buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)        \
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+       a11)
+#define Mmsg15(buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,   \
+               a13, a14, a15)                                                 \
+  msg_(__FILE__, __LINE__, buf, msg, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, \
+       a11, a12, a13, a14, a15)
 
 class PoolMem;
 
@@ -548,10 +562,27 @@ int Mmsg(PoolMem *&msgbuf, const char *fmt, ...);
 class JobControlRecord;
 void d_msg(const char *file, int line, int level, const char *fmt, ...);
 void p_msg(const char *file, int line, int level, const char *fmt, ...);
-void p_msg_fb(const char *file, int line, int level, const char *fmt,...);
-void e_msg(const char *file, int line, int type, int level, const char *fmt, ...);
-void j_msg(const char *file, int line, JobControlRecord *jcr, int type, utime_t mtime, const char *fmt, ...);
-void q_msg(const char *file, int line, JobControlRecord *jcr, int type, utime_t mtime, const char *fmt, ...);
+void p_msg_fb(const char *file, int line, int level, const char *fmt, ...);
+void e_msg(const char *file,
+           int line,
+           int type,
+           int level,
+           const char *fmt,
+           ...);
+void j_msg(const char *file,
+           int line,
+           JobControlRecord *jcr,
+           int type,
+           utime_t mtime,
+           const char *fmt,
+           ...);
+void q_msg(const char *file,
+           int line,
+           JobControlRecord *jcr,
+           int type,
+           utime_t mtime,
+           const char *fmt,
+           ...);
 int msg_(const char *file, int line, POOLMEM *&pool_buf, const char *fmt, ...);
 
 #include "lib/bsys.h"
@@ -569,42 +600,50 @@ int msg_(const char *file, int line, POOLMEM *&pool_buf, const char *fmt, ...);
 #define sscanf bsscanf
 
 #ifdef DEBUG
-#define bstrdup(str) strcpy((char *)b_malloc(__FILE__,__LINE__, strlen((str))+1), (str))
+#define bstrdup(str) \
+  strcpy((char *)b_malloc(__FILE__, __LINE__, strlen((str)) + 1), (str))
 #else
-#define bstrdup(str) strcpy((char *)bmalloc(strlen((str))+1),(str))
+#define bstrdup(str) strcpy((char *)bmalloc(strlen((str)) + 1), (str))
 #endif
 
-#define actuallystrdup(str) strcpy((char *)actuallymalloc(strlen((str))+1), (str))
+#define actuallystrdup(str) \
+  strcpy((char *)actuallymalloc(strlen((str)) + 1), (str))
 
 #ifdef DEBUG
 #define bmalloc(size) b_malloc(__FILE__, __LINE__, (size))
 #endif
 
 /** Macro to simplify free/reset pointers */
-#define BfreeAndNull(a) do{if(a){free(a); (a)=NULL;}} while(0)
+#define BfreeAndNull(a) \
+  do {                  \
+    if (a) {            \
+      free(a);          \
+      (a) = NULL;       \
+    }                   \
+  } while (0)
 
 /**
-* Replace codes needed in both file routines and non-file routines
-* Job replace codes -- in "replace"
-*/
-#define REPLACE_ALWAYS   'a'
-#define REPLACE_IFNEWER  'w'
-#define REPLACE_NEVER    'n'
-#define REPLACE_IFOLDER  'o'
+ * Replace codes needed in both file routines and non-file routines
+ * Job replace codes -- in "replace"
+ */
+#define REPLACE_ALWAYS 'a'
+#define REPLACE_IFNEWER 'w'
+#define REPLACE_NEVER 'n'
+#define REPLACE_IFOLDER 'o'
 
 /** This probably should be done on a machine by machine basis, but it works */
 /** This is critical for the smartalloc routines to properly align memory */
 #define ALIGN_SIZE (sizeof(double))
-#define BALIGN(x) (((x) + ALIGN_SIZE - 1) & ~(ALIGN_SIZE -1))
-
+#define BALIGN(x) (((x) + ALIGN_SIZE - 1) & ~(ALIGN_SIZE - 1))
 
 /* =============================================================
-*               OS Dependent defines
-* =============================================================
-*/
+ *               OS Dependent defines
+ * =============================================================
+ */
 #ifndef HAVE_WIN32
-#if defined (__digital__) && defined (__unix__)
-/* Tru64 - it does have fseeko and ftello , but since ftell/fseek are also 64 bit */
+#if defined(__digital__) && defined(__unix__)
+/* Tru64 - it does have fseeko and ftello , but since ftell/fseek are also 64
+ * bit */
 /* take this 'shortcut' */
 #define fseeko fseek
 #define ftello ftell
@@ -619,12 +658,12 @@ int msg_(const char *file, int line, POOLMEM *&pool_buf, const char *fmt, ...);
 
 #ifdef HAVE_SUN_OS
 /**
-* On Solaris 2.5/2.6/7 and 8, threads are not timesliced by default,
-* so we need to explictly increase the concurrency level.
-*/
+ * On Solaris 2.5/2.6/7 and 8, threads are not timesliced by default,
+ * so we need to explictly increase the concurrency level.
+ */
 #ifdef USE_THR_SETCONCURRENCY
 #include <thread.h>
-#define SetThreadConcurrency(x)  ThrSetconcurrency(x)
+#define SetThreadConcurrency(x) ThrSetconcurrency(x)
 extern int ThrSetconcurrency(int);
 #define SunOS 1
 #else
@@ -641,11 +680,11 @@ extern int ThrSetconcurrency(int);
 
 #ifdef HAVE_DARWIN_OS
 /* Apparently someone forgot to wrap Getdomainname as a C function */
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 int Getdomainname(char *name, int len);
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif /* __cplusplus */
 #endif /* HAVE_DARWIN_OS */
@@ -656,15 +695,23 @@ int Getdomainname(char *name, int len);
 /**
  *   Windows
  */
-#define DEFAULT_CONFIGDIR "C:\\Documents and Settings\\All Users\\Application Data\\Bareos"
+#define DEFAULT_CONFIGDIR \
+  "C:\\Documents and Settings\\All Users\\Application Data\\Bareos"
 #define PathSeparator '\\'
 
 inline bool IsPathSeparator(int ch) { return ch == '/' || ch == '\\'; }
 inline char *first_path_separator(char *path) { return strpbrk(path, "/\\"); }
-inline const char *first_path_separator(const char *path) { return strpbrk(path, "/\\"); }
+inline const char *first_path_separator(const char *path)
+{
+  return strpbrk(path, "/\\");
+}
 
-extern void PauseMsg(const char *file, const char *func, int line, const char *msg);
-#define pause(msg) if (debug_level) PauseMsg(__FILE__, __func__, __LINE__, (msg))
+extern void PauseMsg(const char *file,
+                     const char *func,
+                     int line,
+                     const char *msg);
+#define pause(msg) \
+  if (debug_level) PauseMsg(__FILE__, __func__, __LINE__, (msg))
 
 #else
 /**
@@ -673,49 +720,49 @@ extern void PauseMsg(const char *file, const char *func, int line, const char *m
 #define PathSeparator '/'
 
 /* Define Winsock functions if we aren't on Windows */
-inline int WSA_Init() { return (0); } /* 0 = success */
+inline int WSA_Init() { return (0); }   /* 0 = success */
 inline int WSACleanup() { return (0); } /* 0 = success */
 
 inline bool IsPathSeparator(int ch) { return ch == '/'; }
 inline char *first_path_separator(char *path) { return strchr(path, '/'); }
-inline const char *first_path_separator(const char *path) { return strchr(path, '/'); }
+inline const char *first_path_separator(const char *path)
+{
+  return strchr(path, '/');
+}
 #define pause(msg)
 #endif
-
 
 /** HP-UX 11 specific workarounds */
 
 #ifdef HAVE_HPUX_OS
-# undef h_errno
+#undef h_errno
 extern int h_errno;
 /** the {get,set}domainname() functions exist in HPUX's libc.
  * the configure script detects that correctly.
  * the problem is no system headers declares the prototypes for these functions
  * this is done below
  */
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 int Getdomainname(char *name, int namelen);
 int Setdomainname(char *name, int namelen);
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif /* __cplusplus */
 #endif /* HAVE_HPUX_OS */
 
-
 #ifdef HAVE_OSF1_OS
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 int fchdir(int filedes);
 long gethostid(void);
 int Getdomainname(char *name, int len);
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif /* __cplusplus */
 #endif /* HAVE_OSF1_OS */
-
 
 /** Disabled because it breaks internationalisation...
 #undef HAVE_SETLOCALE

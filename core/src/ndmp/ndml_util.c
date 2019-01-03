@@ -34,13 +34,10 @@
  *
  */
 
-
 #include "ndmlib.h"
 
-
-char *
-ndml_strend (char *s)
+char *ndml_strend(char *s)
 {
-	while (*s) s++;
-	return s;
+  while (*s) s++;
+  return s;
 }

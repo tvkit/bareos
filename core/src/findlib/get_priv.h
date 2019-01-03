@@ -23,4 +23,4 @@
 
 int EnableBackupPrivileges(JobControlRecord *jcr, int ignore_errors);
 
-#endif // BAREOS_FINDLIB_GET_PRIV_H_
+#endif  // BAREOS_FINDLIB_GET_PRIV_H_

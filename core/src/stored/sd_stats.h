@@ -31,4 +31,4 @@ bool StatsCmd(JobControlRecord *jcr);
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_SD_STATS_H_
+#endif  // BAREOS_STORED_SD_STATS_H_

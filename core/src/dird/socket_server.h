@@ -28,4 +28,4 @@ bool StartSocketServer(dlist *addrs);
 void StopSocketServer();
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_SOCKET_SERVER_H_
+#endif  // BAREOS_DIRD_SOCKET_SERVER_H_

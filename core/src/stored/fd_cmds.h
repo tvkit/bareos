@@ -29,4 +29,4 @@ void DoFdCommands(JobControlRecord *jcr);
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_FD_CMDS_H_
+#endif  // BAREOS_STORED_FD_CMDS_H_

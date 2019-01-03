@@ -36,116 +36,99 @@
  */
 int64_t sellist::next()
 {
-   errmsg = NULL;
-   if (beg <= end) {
-      return beg++;
-   }
-   if (e == NULL) {
+  errmsg = NULL;
+  if (beg <= end) { return beg++; }
+  if (e == NULL) { goto bail_out; }
+  /*
+   * As we walk the list, we set EOF in
+   *   the end of the next item to ease scanning,
+   *   but save and then restore the character.
+   */
+  for (p = e; p && *p; p = e) {
+    /* Check for list */
+    e = strchr(p, ',');
+    if (e) {
+      esave = *e;
+      *e++  = 0;
+    } else {
+      esave = 0;
+    }
+    /* Check for range */
+    h = strchr(p, '-'); /* range? */
+    if (h == p) {
+      errmsg = _("Negative numbers not permitted.\n");
       goto bail_out;
-   }
-   /*
-    * As we walk the list, we set EOF in
-    *   the end of the next item to ease scanning,
-    *   but save and then restore the character.
-    */
-   for (p=e; p && *p; p=e) {
-      /* Check for list */
-      e = strchr(p, ',');
-      if (e) {
-         esave = *e;
-         *e++ = 0;
-      } else {
-         esave = 0;
+    }
+    if (h) {
+      hsave = *h;
+      *h++  = 0;
+      if (!IsAnInteger(h)) {
+        errmsg = _("Range end is not integer.\n");
+        goto bail_out;
       }
-      /* Check for range */
-      h = strchr(p, '-');             /* range? */
-      if (h == p) {
-         errmsg = _("Negative numbers not permitted.\n");
-         goto bail_out;
+      SkipSpaces(&p);
+      if (!IsAnInteger(p)) {
+        errmsg = _("Range start is not an integer.\n");
+        goto bail_out;
       }
-      if (h) {
-         hsave = *h;
-         *h++ = 0;
-         if (!IsAnInteger(h)) {
-            errmsg = _("Range end is not integer.\n");
-            goto bail_out;
-         }
-         SkipSpaces(&p);
-         if (!IsAnInteger(p)) {
-            errmsg = _("Range start is not an integer.\n");
-            goto bail_out;
-         }
-         beg = str_to_int64(p);
-         end = str_to_int64(h);
-         if (end < beg) {
-            errmsg = _("Range end not bigger than start.\n");
-            goto bail_out;
-         }
-      } else {
-         hsave = 0;
-         SkipSpaces(&p);
-         if (!IsAnInteger(p)) {
-            errmsg = _("Input value is not an integer.\n");
-            goto bail_out;
-         }
-         beg = end = str_to_int64(p);
+      beg = str_to_int64(p);
+      end = str_to_int64(h);
+      if (end < beg) {
+        errmsg = _("Range end not bigger than start.\n");
+        goto bail_out;
       }
-      if (esave) {
-         *(e-1) = esave;
+    } else {
+      hsave = 0;
+      SkipSpaces(&p);
+      if (!IsAnInteger(p)) {
+        errmsg = _("Input value is not an integer.\n");
+        goto bail_out;
       }
-      if (hsave) {
-         *(h-1) = hsave;
-      }
-      if (beg <= 0 || end <= 0) {
-         errmsg = _("Selection items must be be greater than zero.\n");
-         goto bail_out;
-      }
-      if (end > max) {
-         errmsg = _("Selection item too large.\n");
-         goto bail_out;
-      }
-      if (beg <= end) {
-         return beg++;
-      }
-   }
-   /* End of items */
-   errmsg = NULL;      /* No error */
-   return -1;
+      beg = end = str_to_int64(p);
+    }
+    if (esave) { *(e - 1) = esave; }
+    if (hsave) { *(h - 1) = hsave; }
+    if (beg <= 0 || end <= 0) {
+      errmsg = _("Selection items must be be greater than zero.\n");
+      goto bail_out;
+    }
+    if (end > max) {
+      errmsg = _("Selection item too large.\n");
+      goto bail_out;
+    }
+    if (beg <= end) { return beg++; }
+  }
+  /* End of items */
+  errmsg = NULL; /* No error */
+  return -1;
 
 bail_out:
-   return -1;          /* Error, errmsg set */
+  return -1; /* Error, errmsg set */
 }
-
 
 /*
  * Set selection string and optionally scan it
  *   returns false on error in string
  *   returns true if OK
  */
-bool sellist::SetString(char *string, bool scan=true)
+bool sellist::SetString(char *string, bool scan = true)
 {
-   /*
-    * Copy string, because we write into it,
-    *  then scan through it once to find any
-    *  errors.
-    */
-   if (str) {
-      free(str);
-   }
-   e = str = bstrdup(string);
-   end = 0;
-   beg = 1;
-   num_items = 0;
-   if (scan) {
-      while (next() >= 0) {
-         num_items++;
-      }
-      if (get_errmsg()) {
-         return false;
-      }
-      e = str;
-      end = 0;
-      beg = 1;
-   }
-   return true;
+  /*
+   * Copy string, because we write into it,
+   *  then scan through it once to find any
+   *  errors.
+   */
+  if (str) { free(str); }
+  e = str   = bstrdup(string);
+  end       = 0;
+  beg       = 1;
+  num_items = 0;
+  if (scan) {
+    while (next() >= 0) { num_items++; }
+    if (get_errmsg()) { return false; }
+    e   = str;
+    end = 0;
+    beg = 1;
+  }
+  return true;
 }

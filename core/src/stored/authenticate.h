@@ -32,4 +32,4 @@ bool AuthenticateWithFiledaemon(JobControlRecord *jcr);
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_AUTHENTICATE_H_
+#endif  // BAREOS_STORED_AUTHENTICATE_H_

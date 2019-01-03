@@ -38,18 +38,18 @@ bool db_sql_pool_initialize(const char *db_drivername,
 void DbSqlPoolDestroy(void);
 void DbSqlPoolFlush(void);
 BareosDb *DbSqlGetNonPooledConnection(JobControlRecord *jcr,
-                                       const char *db_drivername,
-                                       const char *db_name,
-                                       const char *db_user,
-                                       const char *db_password,
-                                       const char *db_address,
-                                       int db_port,
-                                       const char *db_socket,
-                                       bool mult_db_connections,
-                                       bool disable_batch_insert,
-                                       bool try_reconnect,
-                                       bool exit_on_fatal,
-                                       bool need_private = false);
+                                      const char *db_drivername,
+                                      const char *db_name,
+                                      const char *db_user,
+                                      const char *db_password,
+                                      const char *db_address,
+                                      int db_port,
+                                      const char *db_socket,
+                                      bool mult_db_connections,
+                                      bool disable_batch_insert,
+                                      bool try_reconnect,
+                                      bool exit_on_fatal,
+                                      bool need_private = false);
 BareosDb *DbSqlGetPooledConnection(JobControlRecord *jcr,
                                    const char *db_drivername,
                                    const char *db_name,
@@ -63,6 +63,8 @@ BareosDb *DbSqlGetPooledConnection(JobControlRecord *jcr,
                                    bool try_reconnect,
                                    bool exit_on_fatal,
                                    bool need_private = false);
-void DbSqlClosePooledConnection(JobControlRecord *jcr, BareosDb *mdb, bool abort = false);
+void DbSqlClosePooledConnection(JobControlRecord *jcr,
+                                BareosDb *mdb,
+                                bool abort = false);
 
-#endif // BAREOS_CATS_SQL_POOLING_H_
+#endif  // BAREOS_CATS_SQL_POOLING_H_

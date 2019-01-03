@@ -30,4 +30,4 @@ void ReleaseDeviceCond();
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_WAIT_H_
+#endif  // BAREOS_STORED_WAIT_H_

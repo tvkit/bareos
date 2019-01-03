@@ -43,18 +43,15 @@
  *	macros thar are or can be #define'd here.
  */
 
-#define NDMOS_ID_FREEBSD	NDMOS_IDENT('F','B','s','d')
+#define NDMOS_ID_FREEBSD NDMOS_IDENT('F', 'B', 's', 'd')
 
 #ifndef NDMOS_ID
 #ifdef __FreeBSD__
-#define NDMOS_ID	NDMOS_ID_FREEBSD
+#define NDMOS_ID NDMOS_ID_FREEBSD
 #endif /* __FreeBSD__ */
 #endif /* !NDMOS_ID */
 
-
-
-
-#if NDMOS_ID == NDMOS_ID_FREEBSD	/* probably redundant */
+#if NDMOS_ID == NDMOS_ID_FREEBSD /* probably redundant */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,7 +73,7 @@
 
 #define NDMOS_OPTION_HAVE_SIN_LEN
 
-#define NDMOS_API_STRTOLL(P,PP,BASE) strtoq(P,PP,BASE)
+#define NDMOS_API_STRTOLL(P, PP, BASE) strtoq(P, PP, BASE)
 
 /*
  * #ifndef'ed so they can be set from the Makefile command line
@@ -99,7 +96,6 @@
 
 #define NDMOS_CONST_NDMOS_REVISION "FreeBSD-04xx"
 
-#define NDMOS_MACRO_ROBOT_AGENT_ADDITIONS \
-	struct cam_device *	camdev;
+#define NDMOS_MACRO_ROBOT_AGENT_ADDITIONS struct cam_device* camdev;
 
 #endif /* NDMOS_ID == NDMOS_ID_FREEBSD */

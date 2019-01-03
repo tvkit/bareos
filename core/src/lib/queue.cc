@@ -37,8 +37,8 @@
 
 #ifdef REALLY_NEEDED
 struct b_queue {
-        struct b_queue *qnext,       /* Next item in queue */
-                     *qprev;       /* Previous item in queue */
+  struct b_queue *qnext, /* Next item in queue */
+      *qprev;            /* Previous item in queue */
 };
 #endif
 
@@ -56,9 +56,7 @@ struct b_queue {
  *            doing ugly casting every where else in the code.
  */
 
-
 /*  Queue manipulation functions.  */
-
 
 /*  QINSERT  --  Insert object at end of queue  */
 
@@ -67,17 +65,16 @@ void qinsert(BQUEUE *qhead, BQUEUE *object)
 #define qh ((BQUEUE *)qhead)
 #define obj ((BQUEUE *)object)
 
-        ASSERT(qh->qprev->qnext == qh);
-        ASSERT(qh->qnext->qprev == qh);
+  ASSERT(qh->qprev->qnext == qh);
+  ASSERT(qh->qnext->qprev == qh);
 
-        obj->qnext = qh;
-        obj->qprev = qh->qprev;
-        qh->qprev = obj;
-        obj->qprev->qnext = obj;
+  obj->qnext        = qh;
+  obj->qprev        = qh->qprev;
+  qh->qprev         = obj;
+  obj->qprev->qnext = obj;
 #undef qh
 #undef obj
 }
-
 
 /*  QREMOVE  --  Remove next object from the queue given
                  the queue head (or any item).
@@ -86,16 +83,15 @@ void qinsert(BQUEUE *qhead, BQUEUE *object)
 BQUEUE *qremove(BQUEUE *qhead)
 {
 #define qh ((BQUEUE *)qhead)
-        BQUEUE *object;
+  BQUEUE *object;
 
-        ASSERT(qh->qprev->qnext == qh);
-        ASSERT(qh->qnext->qprev == qh);
+  ASSERT(qh->qprev->qnext == qh);
+  ASSERT(qh->qnext->qprev == qh);
 
-        if ((object = qh->qnext) == qh)
-           return NULL;
-        qh->qnext = object->qnext;
-        object->qnext->qprev = qh;
-        return object;
+  if ((object = qh->qnext) == qh) return NULL;
+  qh->qnext            = object->qnext;
+  object->qnext->qprev = qh;
+  return object;
 #undef qh
 }
 
@@ -110,20 +106,17 @@ BQUEUE *qnext(BQUEUE *qhead, BQUEUE *qitem)
 #define qh ((BQUEUE *)qhead)
 #define qi ((BQUEUE *)qitem)
 
-        BQUEUE *object;
+  BQUEUE *object;
 
-        if (qi == NULL)
-           qitem = qhead;
-        ASSERT(qi->qprev->qnext == qi);
-        ASSERT(qi->qnext->qprev == qi);
+  if (qi == NULL) qitem = qhead;
+  ASSERT(qi->qprev->qnext == qi);
+  ASSERT(qi->qnext->qprev == qi);
 
-        if ((object = qi->qnext) == qh)
-           return NULL;
-        return object;
+  if ((object = qi->qnext) == qh) return NULL;
+  return object;
 #undef qh
 #undef qi
 }
-
 
 /*  QDCHAIN  --  Dequeue an item from the middle of a queue.  Passed
                  the queue item, returns the (now dechained) queue item. */
@@ -132,9 +125,9 @@ BQUEUE *qdchain(BQUEUE *qitem)
 {
 #define qi ((BQUEUE *)qitem)
 
-        ASSERT(qi->qprev->qnext == qi);
-        ASSERT(qi->qnext->qprev == qi);
+  ASSERT(qi->qprev->qnext == qi);
+  ASSERT(qi->qnext->qprev == qi);
 
-        return qremove(qi->qprev);
+  return qremove(qi->qprev);
 #undef qi
 }

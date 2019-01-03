@@ -43,18 +43,15 @@
  *	macros thar are or can be #define'd here.
  */
 
-#define NDMOS_ID_SOLARIS	NDMOS_IDENT('S','o','l','a')
+#define NDMOS_ID_SOLARIS NDMOS_IDENT('S', 'o', 'l', 'a')
 
 #ifndef NDMOS_ID
 #ifdef __sun__
-#define NDMOS_ID	NDMOS_ID_SOLARIS
+#define NDMOS_ID NDMOS_ID_SOLARIS
 #endif /* __sun__ */
 #endif /* !NDMOS_ID */
 
-
-
-
-#if NDMOS_ID == NDMOS_ID_SOLARIS		/* probably redundant */
+#if NDMOS_ID == NDMOS_ID_SOLARIS /* probably redundant */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,16 +71,13 @@
 #include <netdb.h>
 #include <ctype.h>
 
-
 #ifndef INADDR_NONE
-#define INADDR_NONE	((in_addr_t)-1)
+#define INADDR_NONE ((in_addr_t)-1)
 #endif
 
 #undef NDMOS_OPTION_HAVE_SIN_LEN
 
-
-#define NDMOS_API_STRTOLL(P,PP,BASE) strtoll(P,PP,BASE)
-
+#define NDMOS_API_STRTOLL(P, PP, BASE) strtoll(P, PP, BASE)
 
 /*
  * #ifndef'ed so they can be set from the Makefile command line
@@ -105,6 +99,5 @@
 #endif /* !NDMOS_CONST_PRODUCT_REVISION */
 
 #define NDMOS_CONST_NDMOS_REVISION "Solaris-0002xx"
-
 
 #endif /* NDMOS_ID == NDMOS_ID_SOLARIS */

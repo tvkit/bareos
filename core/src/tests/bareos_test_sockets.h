@@ -19,7 +19,6 @@
    02110-1301, USA.
 */
 
-
 #ifndef BAREOS_TESTS_BAREOS_TEST_SOCKETS_H_
 #define BAREOS_TESTS_BAREOS_TEST_SOCKETS_H_
 
@@ -29,11 +28,11 @@ class BareosSocketTCP;
 class BareosSocket;
 
 class TestSockets {
-public:
+ public:
   std::unique_ptr<BareosSocket> server;
   std::unique_ptr<BareosSocketTCP> client;
 
-  TestSockets() = default;
+  TestSockets()                    = default;
   TestSockets(const TestSockets &) = delete;
 };
 

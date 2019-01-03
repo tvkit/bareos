@@ -64,11 +64,11 @@ static CommonResourceHeader **res_head = sres_head;
 static bool SaveResource(int type, ResourceItem *items, int pass);
 static void FreeResource(CommonResourceHeader *sres, int type);
 static void DumpResource(int type,
-                  CommonResourceHeader *reshdr,
-                  void sendit(void *sock, const char *fmt, ...),
-                  void *sock,
-                  bool hide_sensitive_data,
-                  bool verbose);
+                         CommonResourceHeader *reshdr,
+                         void sendit(void *sock, const char *fmt, ...),
+                         void *sock,
+                         bool hide_sensitive_data,
+                         bool verbose);
 
 /**
  * We build the current resource here as we are

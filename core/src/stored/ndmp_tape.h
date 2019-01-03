@@ -30,4 +30,4 @@ void StopNdmpThreadServer();
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_NDMP_TAPE_H_
+#endif  // BAREOS_STORED_NDMP_TAPE_H_

@@ -39,7 +39,9 @@ bool GetLevelSinceTime(JobControlRecord *jcr);
 void ApplyPoolOverrides(JobControlRecord *jcr, bool force = false);
 JobId_t RunJob(JobControlRecord *jcr);
 bool CancelJob(UaContext *ua, JobControlRecord *jcr);
-void GetJobStorage(UnifiedStorageResource *store, JobResource *job, RunResource *run);
+void GetJobStorage(UnifiedStorageResource *store,
+                   JobResource *job,
+                   RunResource *run);
 void InitJcrJobRecord(JobControlRecord *jcr);
 void UpdateJobEnd(JobControlRecord *jcr, int TermCode);
 bool SetupJob(JobControlRecord *jcr, bool suppress_output = false);
@@ -54,4 +56,4 @@ void InitJobServer(int max_workers);
 void TermJobServer();
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_JOB_H_
+#endif  // BAREOS_DIRD_JOB_H_

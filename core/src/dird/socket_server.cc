@@ -40,7 +40,8 @@
 
 namespace directordaemon {
 
-static char hello_client_with_version[] = "Hello Client %127s FdProtocolVersion=%d calling";
+static char hello_client_with_version[] =
+    "Hello Client %127s FdProtocolVersion=%d calling";
 
 static char hello_client[] = "Hello Client %127s calling";
 
@@ -98,7 +99,8 @@ static void *HandleConnectionRequest(ConfigurationParser *config, void *arg)
    */
   if (bs->message_length < MIN_MSG_LEN || bs->message_length > MAX_MSG_LEN) {
     Dmsg1(000, "<filed: %s", bs->msg);
-    Emsg2(M_ERROR, 0, _("Invalid connection from %s. Len=%d\n"), bs->who(), bs->message_length);
+    Emsg2(M_ERROR, 0, _("Invalid connection from %s. Len=%d\n"), bs->who(),
+          bs->message_length);
     Bmicrosleep(5, 0); /* make user wait 5 seconds */
     bs->signal(BNET_TERMINATE);
     bs->close();
@@ -111,10 +113,13 @@ static void *HandleConnectionRequest(ConfigurationParser *config, void *arg)
   /*
    * See if this is a File daemon connection. If so call FD handler.
    */
-  if ((sscanf(bs->msg, hello_client_with_version, name, &fd_protocol_version) == 2) ||
+  if ((sscanf(bs->msg, hello_client_with_version, name, &fd_protocol_version) ==
+       2) ||
       (sscanf(bs->msg, hello_client, name) == 1)) {
-    Dmsg1(110, "Got a FD connection at %s\n", bstrftimes(tbuf, sizeof(tbuf), (utime_t)time(NULL)));
-    return HandleFiledConnection(client_connections, bs, name, fd_protocol_version);
+    Dmsg1(110, "Got a FD connection at %s\n",
+          bstrftimes(tbuf, sizeof(tbuf), (utime_t)time(NULL)));
+    return HandleFiledConnection(client_connections, bs, name,
+                                 fd_protocol_version);
   }
 
   return HandleUserAgentClientRequest(bs);
@@ -128,8 +133,9 @@ extern "C" void *connect_thread(void *arg)
    * Permit MaxConnections connections.
    */
   sock_fds = New(alist(10, not_owned_by_alist));
-  BnetThreadServerTcp((dlist *)arg, me->MaxConnections, sock_fds, &socket_workq, me->nokeepalive,
-                      HandleConnectionRequest, my_config, &server_state);
+  BnetThreadServerTcp((dlist *)arg, me->MaxConnections, sock_fds, &socket_workq,
+                      me->nokeepalive, HandleConnectionRequest, my_config,
+                      &server_state);
 
   return NULL;
 }
@@ -143,22 +149,23 @@ bool StartSocketServer(dlist *addrs)
 {
   int status;
 
-  if (client_connections == nullptr) { client_connections = New(ConnectionPool()); }
+  if (client_connections == nullptr) {
+    client_connections = New(ConnectionPool());
+  }
 
   server_state.store(BnetServerState::kUndefined);
 
-  if ((status = pthread_create(&tcp_server_tid, nullptr, connect_thread, (void *)addrs)) != 0) {
+  if ((status = pthread_create(&tcp_server_tid, nullptr, connect_thread,
+                               (void *)addrs)) != 0) {
     BErrNo be;
     Emsg1(M_ABORT, 0, _("Cannot create UA thread: %s\n"), be.bstrerror(status));
   }
 
-  int tries = 200; /* consider bind() tries in BnetThreadServerTcp */
+  int tries   = 200; /* consider bind() tries in BnetThreadServerTcp */
   int wait_ms = 100;
   do {
     Bmicrosleep(0, wait_ms * 1000);
-    if (server_state.load() != BnetServerState::kUndefined) {
-      break;
-    }
+    if (server_state.load() != BnetServerState::kUndefined) { break; }
   } while (--tries);
 
   if (server_state != BnetServerState::kStarted) {

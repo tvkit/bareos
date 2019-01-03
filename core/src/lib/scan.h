@@ -29,12 +29,23 @@ bool SkipSpaces(char **msg);
 bool SkipNonspaces(char **msg);
 int fstrsch(const char *a, const char *b);
 char *next_arg(char **s);
-int ParseArgs(POOLMEM *cmd, POOLMEM *&args, int *argc,
-               char **argk, char **argv, int max_args);
-int ParseArgsOnly(POOLMEM *cmd, POOLMEM *&args, int *argc,
-                    char **argk, char **argv, int max_args);
-void SplitPathAndFilename(const char *fname, POOLMEM *&path,
-                             int *pnl, POOLMEM *&file, int *fnl);
+int ParseArgs(POOLMEM *cmd,
+              POOLMEM *&args,
+              int *argc,
+              char **argk,
+              char **argv,
+              int max_args);
+int ParseArgsOnly(POOLMEM *cmd,
+                  POOLMEM *&args,
+                  int *argc,
+                  char **argk,
+                  char **argv,
+                  int max_args);
+void SplitPathAndFilename(const char *fname,
+                          POOLMEM *&path,
+                          int *pnl,
+                          POOLMEM *&file,
+                          int *fnl);
 int bsscanf(const char *buf, const char *fmt, ...);
 
-#endif // BAREOS_LIB_SCAN_H_
+#endif  // BAREOS_LIB_SCAN_H_

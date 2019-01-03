@@ -37,7 +37,8 @@ enum
 
 static const std::map<int, std::string> create_test_map()
 {
-  const std::map<int, std::string> map{{kOne, "kOne"}, {kTwo, "kTwo"}, {kThree, "kThree"}};
+  const std::map<int, std::string> map{
+      {kOne, "kOne"}, {kTwo, "kTwo"}, {kThree, "kThree"}};
   return map;
 }
 
@@ -80,7 +81,8 @@ TEST(QualifiedResourceNameTypeConverter, TypeToString)
 
   ok = c.ResourceToString("ResourceName", kTwo, result_str);
   EXPECT_EQ(ok, true);
-  std::string test1 = std::string("kTwo") + record_separator_ + std::string("ResourceName");
+  std::string test1 =
+      std::string("kTwo") + record_separator_ + std::string("ResourceName");
   EXPECT_STREQ(result_str.c_str(), test1.c_str());
 
   /* try invalid resource type */

@@ -24,4 +24,4 @@
 
 uint32_t bcrc32(uint8_t *buf, int len);
 
-#endif // STORED_CRC32_H_
+#endif  // STORED_CRC32_H_

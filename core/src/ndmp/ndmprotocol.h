@@ -92,7 +92,6 @@
  *	   Maybe someday rpcgen(1) will generate these, too.
  */
 
-
 /*
  * PROTOCOL VERSIONS
  ****************************************************************
@@ -115,19 +114,15 @@
 
 #include "ndmp9.h"
 
-
-
-
 /*
  * Protocol ammendments. These are important constants
  * omitted from the spec and .x files.
  */
 #include "ndmp_ammend.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /*
  * XDR MESSAGE TABLES
@@ -137,32 +132,29 @@ extern "C" {
  */
 
 struct ndmp_xdr_message_table {
-	int	msg;
-	int	(*xdr_request)();
-	int	(*xdr_reply)();
+  int msg;
+  int (*xdr_request)();
+  int (*xdr_reply)();
 };
 
-extern struct ndmp_xdr_message_table	ndmp0_xdr_message_table[];
+extern struct ndmp_xdr_message_table ndmp0_xdr_message_table[];
 
 #ifndef NDMOS_OPTION_NO_NDMP2
-extern struct ndmp_xdr_message_table	ndmp2_xdr_message_table[];
+extern struct ndmp_xdr_message_table ndmp2_xdr_message_table[];
 #endif /* !NDMOS_OPTION_NO_NDMP2 */
 
 #ifndef NDMOS_OPTION_NO_NDMP3
-extern struct ndmp_xdr_message_table	ndmp3_xdr_message_table[];
+extern struct ndmp_xdr_message_table ndmp3_xdr_message_table[];
 #endif /* !NDMOS_OPTION_NO_NDMP3 */
 
 #ifndef NDMOS_OPTION_NO_NDMP4
-extern struct ndmp_xdr_message_table	ndmp4_xdr_message_table[];
+extern struct ndmp_xdr_message_table ndmp4_xdr_message_table[];
 #endif /* !NDMOS_OPTION_NO_NDMP4 */
 
 /* Note: no ndmp9 XDRs */
 
-extern struct ndmp_xdr_message_table *
-		ndmp_xmt_lookup (int protocol_version, int msg);
-
-
-
+extern struct ndmp_xdr_message_table *ndmp_xmt_lookup(int protocol_version,
+                                                      int msg);
 
 /*
  * ENUM STRING TABLES
@@ -170,14 +162,14 @@ extern struct ndmp_xdr_message_table *
  */
 
 struct ndmp_enum_str_table {
-	char *		name;
-	int		value;
+  char *name;
+  int value;
 };
 
-extern char *	ndmp_enum_to_str (int val, struct ndmp_enum_str_table *table);
-extern int	ndmp_enum_from_str (int *valp, char *str,
-				 struct ndmp_enum_str_table *table);
-
+extern char *ndmp_enum_to_str(int val, struct ndmp_enum_str_table *table);
+extern int ndmp_enum_from_str(int *valp,
+                              char *str,
+                              struct ndmp_enum_str_table *table);
 
 #include "ndmp0_enum_strs.h"
 
@@ -195,19 +187,13 @@ extern int	ndmp_enum_from_str (int *valp, char *str,
 
 #include "ndmp9_enum_strs.h"
 
-
-
-
 /*
  * MULTI-VERSION ENUM TO STRING CONVERTERS
  ****************************************************************
  */
 
-extern char *	ndmp_message_to_str (int protocol_version, int msg);
-extern char *	ndmp_error_to_str (int protocol_version, int msg);
-
-
-
+extern char *ndmp_message_to_str(int protocol_version, int msg);
+extern char *ndmp_error_to_str(int protocol_version, int msg);
 
 /*
  * PRETTY PRINTERS
@@ -228,49 +214,55 @@ extern char *	ndmp_error_to_str (int protocol_version, int msg);
  *	3) ndmp_pp_header() and ndmp_pp_{request|reply} all lines
  */
 
+extern int ndmp_pp_header(int vers, void *data, char *buf);
+extern int ndmp_pp_request(int vers,
+                           int msg,
+                           void *data,
+                           int lineno,
+                           char *buf);
+extern int ndmp_pp_reply(int vers, int msg, void *data, int lineno, char *buf);
 
-extern int	ndmp_pp_header (int vers, void *data, char *buf);
-extern int	ndmp_pp_request (int vers, int msg,
-				void *data, int lineno, char *buf);
-extern int	ndmp_pp_reply (int vers, int msg,
-				void *data, int lineno, char *buf);
-
-extern int	ndmp0_pp_header (void *data, char *buf);
-extern int	ndmp0_pp_request (ndmp0_message msg,
-				void *data, int lineno, char *buf);
-extern int	ndmp0_pp_reply (ndmp0_message msg,
-				void *data, int lineno, char *buf);
+extern int ndmp0_pp_header(void *data, char *buf);
+extern int ndmp0_pp_request(ndmp0_message msg,
+                            void *data,
+                            int lineno,
+                            char *buf);
+extern int ndmp0_pp_reply(ndmp0_message msg, void *data, int lineno, char *buf);
 
 #ifndef NDMOS_OPTION_NO_NDMP2
-extern int	ndmp2_pp_header (void *data, char *buf);
-extern int	ndmp2_pp_request (ndmp2_message msg,
-				void *data, int lineno, char *buf);
-extern int	ndmp2_pp_reply (ndmp2_message msg,
-				void *data, int lineno, char *buf);
+extern int ndmp2_pp_header(void *data, char *buf);
+extern int ndmp2_pp_request(ndmp2_message msg,
+                            void *data,
+                            int lineno,
+                            char *buf);
+extern int ndmp2_pp_reply(ndmp2_message msg, void *data, int lineno, char *buf);
 #endif /* !NDMOS_OPTION_NO_NDMP2 */
 
 #ifndef NDMOS_OPTION_NO_NDMP3
-extern int	ndmp3_pp_header (void *data, char *buf);
-extern int	ndmp3_pp_request (ndmp3_message msg,
-				void *data, int lineno, char *buf);
-extern int	ndmp3_pp_reply (ndmp3_message msg,
-				void *data, int lineno, char *buf);
+extern int ndmp3_pp_header(void *data, char *buf);
+extern int ndmp3_pp_request(ndmp3_message msg,
+                            void *data,
+                            int lineno,
+                            char *buf);
+extern int ndmp3_pp_reply(ndmp3_message msg, void *data, int lineno, char *buf);
 #endif /* !NDMOS_OPTION_NO_NDMP3 */
 
 #ifndef NDMOS_OPTION_NO_NDMP4
-extern int	ndmp4_pp_header (void *data, char *buf);
-extern int	ndmp4_pp_request (ndmp4_message msg,
-				void *data, int lineno, char *buf);
-extern int	ndmp4_pp_reply (ndmp4_message msg,
-				void *data, int lineno, char *buf);
+extern int ndmp4_pp_header(void *data, char *buf);
+extern int ndmp4_pp_request(ndmp4_message msg,
+                            void *data,
+                            int lineno,
+                            char *buf);
+extern int ndmp4_pp_reply(ndmp4_message msg, void *data, int lineno, char *buf);
 #endif /* !NDMOS_OPTION_NO_NDMP4 */
-
 
 #define NDMP_PP_AS(T) ((T *)data)
 
-#define NDMP_PP_WITH(T) { T * p = ((T *)data);
+#define NDMP_PP_WITH(T) \
+  {                     \
+    T *p = ((T *)data);
 #define NDMP_PP_ENDWITH }
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif

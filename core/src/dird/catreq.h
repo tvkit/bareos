@@ -30,4 +30,4 @@ bool DespoolAttributesFromFile(JobControlRecord *jcr, const char *file);
 
 } /* namespace directordaemon */
 
-#endif // BAREOS_DIRD_CATREQ_H_
+#endif  // BAREOS_DIRD_CATREQ_H_

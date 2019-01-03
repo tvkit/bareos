@@ -24,17 +24,16 @@
 
 #include "include/bareos.h"
 
-class BStringList : public std::vector<std::string>
-{
-public:
+class BStringList : public std::vector<std::string> {
+ public:
   BStringList();
   BStringList(const std::string &string_to_convert, char separator);
-  BStringList &operator = (const BStringList &rhs);
+  BStringList &operator=(const BStringList &rhs);
   BStringList(const BStringList &other);
-  BStringList &operator << (const std::string &rhs);
-  BStringList &operator << (const int &rhs);
-  BStringList &operator << (const char *rhs);
-  BStringList &operator << (const std::vector<std::string> &vec);
+  BStringList &operator<<(const std::string &rhs);
+  BStringList &operator<<(const int &rhs);
+  BStringList &operator<<(const char *rhs);
+  BStringList &operator<<(const std::vector<std::string> &vec);
   std::string Join(char separator) const;
   std::string JoinReadable() const;
   std::string Join() const;
@@ -43,7 +42,7 @@ public:
   void Append(const char *str);
   void PopFront();
 
-private:
+ private:
   std::string Join(const char *separator) const;
 };
 

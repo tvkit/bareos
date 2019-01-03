@@ -43,18 +43,15 @@
  *	macros thar are or can be #define'd here.
  */
 
-#define NDMOS_ID_LINUX		NDMOS_IDENT('L','n','u','x')
+#define NDMOS_ID_LINUX NDMOS_IDENT('L', 'n', 'u', 'x')
 
 #ifndef NDMOS_ID
 #ifdef __linux__
-#define NDMOS_ID	NDMOS_ID_LINUX
+#define NDMOS_ID NDMOS_ID_LINUX
 #endif /* __linux__ */
 #endif /* !NDMOS_ID */
 
-
-
-
-#if NDMOS_ID == NDMOS_ID_LINUX		/* probably redundant */
+#if NDMOS_ID == NDMOS_ID_LINUX /* probably redundant */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,7 +75,7 @@
 
 #undef NDMOS_OPTION_HAVE_SIN_LEN
 
-#define NDMOS_API_STRTOLL(P,PP,BASE) strtoq(P,PP,BASE)
+#define NDMOS_API_STRTOLL(P, PP, BASE) strtoq(P, PP, BASE)
 
 /*
  * #ifndef'ed so they can be set from the Makefile command line
@@ -100,6 +97,5 @@
 #endif /* !NDMOS_CONST_PRODUCT_REVISION */
 
 #define NDMOS_CONST_NDMOS_REVISION "Linux-xxxx"
-
 
 #endif /* NDMOS_ID == NDMOS_ID_FREEBSD */

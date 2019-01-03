@@ -25,8 +25,10 @@
 namespace directordaemon {
 
 void DoAutoprune(JobControlRecord *jcr);
-void PruneVolumes(JobControlRecord *jcr, bool InChanger, MediaDbRecord *mr,
-                   StorageResource *store);
+void PruneVolumes(JobControlRecord *jcr,
+                  bool InChanger,
+                  MediaDbRecord *mr,
+                  StorageResource *store);
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_AUTOPRUNE_H_
+#endif  // BAREOS_DIRD_AUTOPRUNE_H_

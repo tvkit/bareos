@@ -51,7 +51,6 @@
 /* Define if you have fastlz lib */
 #define HAVE_FASTLZ 1
 
-
 /* File daemon specif libraries */
 #define FDLIBS 1
 
@@ -154,14 +153,14 @@
 
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
-#if (defined _MSC_VER) && (_MSC_VER >= 1400) // VC8+
+#if (defined _MSC_VER) && (_MSC_VER >= 1400)  // VC8+
 /* Enable NLS only if we are using the new VC++.
  * NLS should also work with VC++ 7.1, but the Makefiles are
  * not adapted to support it (include, lib...). */
 #define ENABLE_NLS 1
 #endif
 
-#undef  LOCALEDIR
+#undef LOCALEDIR
 #define LOCALEDIR "."
 
 #undef HAVE_NL_LANGINFO
@@ -245,7 +244,7 @@
 /* #undef HAVE_SYS_BYTEORDER_H */
 
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
-   */
+ */
 /* #undef HAVE_SYS_DIR_H */
 
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
@@ -255,7 +254,7 @@
 #define HAVE_SYS_MTIO_H 1
 
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
-   */
+ */
 /* #undef HAVE_SYS_NDIR_H */
 
 /* Define to 1 if you have the <sys/select.h> header file. */
@@ -312,7 +311,7 @@
 #define HAVE_ZLIB_H 1
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
-   */
+ */
 /* #undef MAJOR_IN_MKDEV */
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in
@@ -368,7 +367,6 @@
         STACK_DIRECTION < 0 => grows toward lower addresses
         STACK_DIRECTION = 0 => direction of growth unknown */
 /* #undef STACK_DIRECTION */
-
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1

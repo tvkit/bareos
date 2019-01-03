@@ -34,32 +34,26 @@
  *
  */
 
-
-#include "ndmos.h"	/* obtains prototypes */
+#include "ndmos.h" /* obtains prototypes */
 #include "smc_raw.h"
 #include "smc.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-extern int
-smc_parse_volume_tag (
-  struct smc_raw_volume_tag *raw,
-  struct smc_volume_tag *vtag);
+extern int smc_parse_volume_tag(struct smc_raw_volume_tag *raw,
+                                struct smc_volume_tag *vtag);
 
-extern int
-smc_parse_element_status_data (
-  char *	raw,
-  unsigned	raw_len,
-  struct smc_ctrl_block *smc,
-  unsigned	max_elem_desc);
+extern int smc_parse_element_status_data(char *raw,
+                                         unsigned raw_len,
+                                         struct smc_ctrl_block *smc,
+                                         unsigned max_elem_desc);
 
-extern int
-smc_parse_element_address_assignment (
-  struct smc_raw_element_address_assignment_page *raw,
-  struct smc_element_address_assignment *eaa);
+extern int smc_parse_element_address_assignment(
+    struct smc_raw_element_address_assignment_page *raw,
+    struct smc_element_address_assignment *eaa);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif

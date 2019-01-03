@@ -27,4 +27,4 @@ namespace directordaemon {
 bool DoNdmpRestoreNdmpNative(JobControlRecord *jcr);
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_NDMP_DMA_RESTORE_NDMP_NATIVE_H_
+#endif  // BAREOS_DIRD_NDMP_DMA_RESTORE_NDMP_NATIVE_H_

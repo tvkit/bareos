@@ -24,7 +24,8 @@
 
 #include "lib/bsock_tcp.h"
 
-enum class ConnectionHandshakeMode {
+enum class ConnectionHandshakeMode
+{
   PerformTlsHandshake,
   PerformCleartextHandshake,
   CloseConnection
@@ -37,8 +38,7 @@ static ConnectionHandshakeMode GetHandshakeMode(BareosSocket *bs,
   std::string client_name;
   std::string r_code_str;
 
-  if (!bs->EvaluateCleartextBareosHello(cleartext_hello,
-                                        client_name,
+  if (!bs->EvaluateCleartextBareosHello(cleartext_hello, client_name,
                                         r_code_str)) {
     Dmsg0(100, "Error occured when trying to peek cleartext hello\n");
     return ConnectionHandshakeMode::CloseConnection;
@@ -46,7 +46,8 @@ static ConnectionHandshakeMode GetHandshakeMode(BareosSocket *bs,
 
   if (cleartext_hello) {
     TlsPolicy tls_policy;
-    if (!config->GetConfiguredTlsPolicyFromCleartextHello(r_code_str, client_name, tls_policy)) {
+    if (!config->GetConfiguredTlsPolicyFromCleartextHello(
+            r_code_str, client_name, tls_policy)) {
       Dmsg0(100, "Could not read out cleartext configuration\n");
       return ConnectionHandshakeMode::CloseConnection;
     }
@@ -70,25 +71,23 @@ static ConnectionHandshakeMode GetHandshakeMode(BareosSocket *bs,
 
 bool TryTlsHandshakeAsAServer(BareosSocket *bs, ConfigurationParser *config)
 {
-   ConnectionHandshakeMode mode = GetHandshakeMode(bs, config);
+  ConnectionHandshakeMode mode = GetHandshakeMode(bs, config);
 
-   bool success = false;
+  bool success = false;
 
-   switch(mode) {
-   case ConnectionHandshakeMode::PerformTlsHandshake:
-      if (bs->DoTlsHandshakeAsAServer(config)) {
-        success = true;
-      }
+  switch (mode) {
+    case ConnectionHandshakeMode::PerformTlsHandshake:
+      if (bs->DoTlsHandshakeAsAServer(config)) { success = true; }
       break;
-   case ConnectionHandshakeMode::PerformCleartextHandshake:
+    case ConnectionHandshakeMode::PerformCleartextHandshake:
       /* do tls handshake later */
       success = true;
       break;
-   default:
-   case ConnectionHandshakeMode::CloseConnection:
+    default:
+    case ConnectionHandshakeMode::CloseConnection:
       success = false;
       break;
-   }
+  }
 
-   return success;
+  return success;
 }

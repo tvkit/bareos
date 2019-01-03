@@ -41,11 +41,19 @@ POOLMEM *sm_get_memory(const char *fname, int line, int32_t size);
 #define SizeofPoolMemory(buf) sm_sizeof_pool_memory(__FILE__, __LINE__, buf)
 int32_t sm_sizeof_pool_memory(const char *fname, int line, POOLMEM *buf);
 
-#define ReallocPoolMemory(buf,size) sm_realloc_pool_memory(__FILE__, __LINE__, buf, size)
-POOLMEM *sm_realloc_pool_memory(const char *fname, int line, POOLMEM *buf, int32_t size);
+#define ReallocPoolMemory(buf, size) \
+  sm_realloc_pool_memory(__FILE__, __LINE__, buf, size)
+POOLMEM *sm_realloc_pool_memory(const char *fname,
+                                int line,
+                                POOLMEM *buf,
+                                int32_t size);
 
-#define CheckPoolMemorySize(buf,size) sm_check_pool_memory_size(__FILE__, __LINE__, buf, size)
-POOLMEM *sm_check_pool_memory_size(const char *fname, int line, POOLMEM *buf, int32_t size);
+#define CheckPoolMemorySize(buf, size) \
+  sm_check_pool_memory_size(__FILE__, __LINE__, buf, size)
+POOLMEM *sm_check_pool_memory_size(const char *fname,
+                                   int line,
+                                   POOLMEM *buf,
+                                   int32_t size);
 
 #define FreePoolMemory(x) SmFreePoolMemory(__FILE__, __LINE__, x)
 #define FreeMemory(x) SmFreePoolMemory(__FILE__, __LINE__, x)
@@ -66,7 +74,13 @@ void FreePoolMemory(POOLMEM *buf);
 /**
  * Macro to simplify free/reset pointers
  */
-#define FreeAndNullPoolMemory(a) do { if (a) { FreePoolMemory(a); (a) = NULL;} } while (0)
+#define FreeAndNullPoolMemory(a) \
+  do {                           \
+    if (a) {                     \
+      FreePoolMemory(a);         \
+      (a) = NULL;                \
+    }                            \
+  } while (0)
 
 void GarbageCollectMemoryPool();
 void CloseMemoryPool();
@@ -74,42 +88,62 @@ void PrintMemoryPoolStats();
 
 void GarbageCollectMemory();
 
-enum {
-   PM_NOPOOL = 0,                     /* Nonpooled memory */
-   PM_NAME = 1,                       /* BAREOS name */
-   PM_FNAME = 2,                      /* File name buffer */
-   PM_MESSAGE = 3,                    /* Daemon message */
-   PM_EMSG = 4,                       /* Error message */
-   PM_BSOCK = 5,                      /* BareosSocket buffer */
-   PM_RECORD = 6                      /* DeviceRecord buffer */
+enum
+{
+  PM_NOPOOL  = 0, /* Nonpooled memory */
+  PM_NAME    = 1, /* BAREOS name */
+  PM_FNAME   = 2, /* File name buffer */
+  PM_MESSAGE = 3, /* Daemon message */
+  PM_EMSG    = 4, /* Error message */
+  PM_BSOCK   = 5, /* BareosSocket buffer */
+  PM_RECORD  = 6  /* DeviceRecord buffer */
 };
 
-#define PM_MAX PM_RECORD              /* Number of types */
+#define PM_MAX PM_RECORD /* Number of types */
 
 class PoolMem {
-   char *mem;
-public:
-   PoolMem() { mem = GetPoolMemory(PM_NAME); *mem = 0; }
-   PoolMem(int pool) { mem = GetPoolMemory(pool); *mem = 0; }
-   PoolMem(const char *str) { mem = GetPoolMemory(PM_NAME); *mem = 0; strcpy(str); }
-   ~PoolMem() { FreePoolMemory(mem); mem = NULL; }
-   char *c_str() const { return mem; }
-   POOLMEM *&addr() { return mem; }
-   int size() const { return SizeofPoolMemory(mem); }
-   char *check_size(int32_t size) {
-      mem = CheckPoolMemorySize(mem, size);
-      return mem;
-   }
-   int32_t MaxSize();
-   void ReallocPm(int32_t size);
-   int strcpy(PoolMem &str);
-   int strcpy(const char *str);
-   int strcat(PoolMem &str);
-   int strcat(const char *str);
-   void toLower();
-   size_t strlen() { return ::strlen(mem); }
-   int bsprintf(const char *fmt, ...);
-   int Bvsprintf(const char *fmt, va_list arg_ptr);
+  char *mem;
+
+ public:
+  PoolMem()
+  {
+    mem  = GetPoolMemory(PM_NAME);
+    *mem = 0;
+  }
+  PoolMem(int pool)
+  {
+    mem  = GetPoolMemory(pool);
+    *mem = 0;
+  }
+  PoolMem(const char *str)
+  {
+    mem  = GetPoolMemory(PM_NAME);
+    *mem = 0;
+    strcpy(str);
+  }
+  ~PoolMem()
+  {
+    FreePoolMemory(mem);
+    mem = NULL;
+  }
+  char *c_str() const { return mem; }
+  POOLMEM *&addr() { return mem; }
+  int size() const { return SizeofPoolMemory(mem); }
+  char *check_size(int32_t size)
+  {
+    mem = CheckPoolMemorySize(mem, size);
+    return mem;
+  }
+  int32_t MaxSize();
+  void ReallocPm(int32_t size);
+  int strcpy(PoolMem &str);
+  int strcpy(const char *str);
+  int strcat(PoolMem &str);
+  int strcat(const char *str);
+  void toLower();
+  size_t strlen() { return ::strlen(mem); }
+  int bsprintf(const char *fmt, ...);
+  int Bvsprintf(const char *fmt, va_list arg_ptr);
 };
 
 int PmStrcat(POOLMEM *&pm, const char *str);

@@ -34,9 +34,7 @@
  *	#include the right O/S specific C file.
  */
 
-
 #include "ndmagents.h"
-
 
 #if NDMOS_ID == NDMOS_ID_FREEBSD
 #include "ndmos_freebsd.c"

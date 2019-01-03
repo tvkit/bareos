@@ -91,7 +91,6 @@
  *	     left undefined
  */
 
-
 #ifndef _NDMOS_H
 #define _NDMOS_H
 
@@ -112,22 +111,23 @@
 #endif
 #endif
 #elif __SUNPRO_C
-#pragma error_messages (off, E_ENUM_TYPE_MISMATCH_OP, E_ENUM_TYPE_MISMATCH_ARG, E_STATEMENT_NOT_REACHED)
+#pragma error_messages(off, E_ENUM_TYPE_MISMATCH_OP, E_ENUM_TYPE_MISMATCH_ARG, \
+                       E_STATEMENT_NOT_REACHED)
 #endif
 
 /*
  * Operating system idents
  */
-#define NDMOS_IDENT(A,B,C,D)	(((A)<<24)+((B)<<16)+((C)<<8)+(D))
+#define NDMOS_IDENT(A, B, C, D) (((A) << 24) + ((B) << 16) + ((C) << 8) + (D))
 
-#define NDMOS_ID_FREEBSD	NDMOS_IDENT('F','B','s','d')
-#define NDMOS_ID_SOLARIS	NDMOS_IDENT('S','o','l','a')
-#define NDMOS_ID_LINUX		NDMOS_IDENT('L','n','u','x')
-#define NDMOS_ID_IRIX		NDMOS_IDENT('I','R','I','X')
-#define NDMOS_ID_HPUX		NDMOS_IDENT('H','P','U','X')
-#define NDMOS_ID_ULTRIX		NDMOS_IDENT('U','l','t','r')
-#define NDMOS_ID_TRU64		NDMOS_IDENT('T','R','U',64)
-#define NDMOS_ID_AIX		NDMOS_IDENT('A','I','X',0)
+#define NDMOS_ID_FREEBSD NDMOS_IDENT('F', 'B', 's', 'd')
+#define NDMOS_ID_SOLARIS NDMOS_IDENT('S', 'o', 'l', 'a')
+#define NDMOS_ID_LINUX NDMOS_IDENT('L', 'n', 'u', 'x')
+#define NDMOS_ID_IRIX NDMOS_IDENT('I', 'R', 'I', 'X')
+#define NDMOS_ID_HPUX NDMOS_IDENT('H', 'P', 'U', 'X')
+#define NDMOS_ID_ULTRIX NDMOS_IDENT('U', 'l', 't', 'r')
+#define NDMOS_ID_TRU64 NDMOS_IDENT('T', 'R', 'U', 64)
+#define NDMOS_ID_AIX NDMOS_IDENT('A', 'I', 'X', 0)
 
 /*
  * Only explicitly include config.h when we are doing standalone
@@ -146,15 +146,15 @@
  */
 #ifndef NDMOS_ID
 #ifdef HAVE_FREEBSD_OS
-#define NDMOS_ID	NDMOS_ID_FREEBSD
+#define NDMOS_ID NDMOS_ID_FREEBSD
 #endif
 
 #ifdef HAVE_SUN_OS
-#define NDMOS_ID	NDMOS_ID_SOLARIS
+#define NDMOS_ID NDMOS_ID_SOLARIS
 #endif
 
 #ifdef HAVE_LINUX_OS
-#define NDMOS_ID	NDMOS_ID_LINUX
+#define NDMOS_ID NDMOS_ID_LINUX
 #endif
 #endif /* !NDMOS_ID */
 
@@ -162,9 +162,8 @@
  * Do we got it?
  */
 #ifndef NDMOS_ID
-@@@@ You need to use -DNDMOS_ID=NDMOS_ID_xxxx
+@ @ @ @You need to use - DNDMOS_ID = NDMOS_ID_xxxx
 #endif
-
 
 /*
  * Based on NDMOS_ID, #include the right O/S specific header file
@@ -180,7 +179,6 @@
 #if NDMOS_ID == NDMOS_ID_LINUX
 #include "ndmos_linux.h"
 #endif
-
 
 /*
  * From here down, pre-processor symbols are #define'd to defaults
@@ -313,20 +311,20 @@
  */
 
 #if HAVE_POLL
-#define NDMOS_OPTION_USE_POLL_FOR_CHAN_POLL	1
+#define NDMOS_OPTION_USE_POLL_FOR_CHAN_POLL 1
 #else
-#define NDMOS_OPTION_USE_SELECT_FOR_CHAN_POLL	1
+#define NDMOS_OPTION_USE_SELECT_FOR_CHAN_POLL 1
 #endif
 
 #if HAVE_GETADDRINFO
-#define NDMOS_OPTION_USE_GETADDRINFO	1
+#define NDMOS_OPTION_USE_GETADDRINFO 1
 #else
-#define NDMOS_OPTION_USE_GETHOSTBYNAME	1
+#define NDMOS_OPTION_USE_GETHOSTBYNAME 1
 #endif
 
-#define NDMOS_OPTION_TAPE_SIMULATOR	1
-#define NDMOS_OPTION_ROBOT_SIMULATOR	1
-#define NDMOS_OPTION_GAP_SIMULATOR	1
+#define NDMOS_OPTION_TAPE_SIMULATOR 1
+#define NDMOS_OPTION_ROBOT_SIMULATOR 1
+#define NDMOS_OPTION_GAP_SIMULATOR 1
 
 /* Convert IP to human readable string instead of HEX String */
 /* #define NDMOS_OPTION_PRETTYPRINT_HUMAN_READABLE_IP 1 */
@@ -335,26 +333,26 @@
  * Constants
  */
 #ifndef NDMOS_CONST_ALIGN
-#define NDMOS_CONST_ALIGN		sizeof(uint64_t)
+#define NDMOS_CONST_ALIGN sizeof(uint64_t)
 #endif /* !NDMOS_CONST_ALIGN */
 
 #ifndef NDMOS_CONST_TAPE_REC_MIN
-#define NDMOS_CONST_TAPE_REC_MIN	1
+#define NDMOS_CONST_TAPE_REC_MIN 1
 #endif /* !NDMOS_CONST_TAPE_REC_MIN */
 
 #ifndef NDMOS_CONST_TAPE_REC_MAX
-#define NDMOS_CONST_TAPE_REC_MAX	(1024*1024)
+#define NDMOS_CONST_TAPE_REC_MAX (1024 * 1024)
 #endif /* !NDMOS_CONST_TAPE_REC_MAX */
 
 #ifndef NDMOS_CONST_PATH_MAX
-#define NDMOS_CONST_PATH_MAX		(1024)
+#define NDMOS_CONST_PATH_MAX (1024)
 #endif /* !NDMOS_CONST_PATH_MAX */
 
 #ifndef NDMOS_CONST_EWOULDBLOCK
 #ifdef EWOULDBLOCK
-#define NDMOS_CONST_EWOULDBLOCK		EWOULDBLOCK
+#define NDMOS_CONST_EWOULDBLOCK EWOULDBLOCK
 #else /* EWOULDBLOCK */
-#define NDMOS_CONST_EWOULDBLOCK		EAGAIN
+#define NDMOS_CONST_EWOULDBLOCK EAGAIN
 #endif /* EWOULDBLOCK */
 #endif /* !NDMOS_CONST_EWOULDBLOCK */
 
@@ -378,63 +376,58 @@
 #define NDMOS_CONST_NDMOS_REVISION "0"
 #endif /* !NDMOS_CONST_NDMOS_REVISION */
 
-
-
-
 /*
  * Application Program Interfaces (APIs)
  */
 #ifndef NDMOS_API_BZERO
-#define NDMOS_API_BZERO(P,N)	(void)bzero((void*)(P),(N))
+#define NDMOS_API_BZERO(P, N) (void)bzero((void *)(P), (N))
 #endif /* !NDMOS_API_BZERO */
 
 #ifndef NDMOS_API_BCOPY
-#define NDMOS_API_BCOPY(S,D,N)	(void)bcopy((void*)(S),(void*)(D),(N))
+#define NDMOS_API_BCOPY(S, D, N) (void)bcopy((void *)(S), (void *)(D), (N))
 #endif /* !NDMOS_API_BCOPY */
 
 #ifndef NDMOS_API_MALLOC
-#define NDMOS_API_MALLOC(N)	malloc(N)
+#define NDMOS_API_MALLOC(N) malloc(N)
 #endif /* !NDMOS_API_MALLOC */
 
 #ifndef NDMOS_API_FREE
-#define NDMOS_API_FREE(P)	free((void*)(P))
+#define NDMOS_API_FREE(P) free((void *)(P))
 #endif /* !NDMOS_API_FREE */
 
 #ifndef NDMOS_API_STRTOLL
-#define NDMOS_API_STRTOLL(P,PP,BASE) strtoll(P,PP,BASE)
+#define NDMOS_API_STRTOLL(P, PP, BASE) strtoll(P, PP, BASE)
 #endif /* !NDMOS_API_STRTOLL */
 
 #ifndef NDMOS_API_STRDUP
-#define NDMOS_API_STRDUP(S)	strdup(S)
+#define NDMOS_API_STRDUP(S) strdup(S)
 #endif /* !NDMOS_API_STRDUP */
 
 #ifndef NDMOS_API_STREND
 
-#ifdef  __cplusplus
-extern "C" {
+#ifdef __cplusplus
+    extern "C"
+{
 #endif
 
-extern char *ndml_strend(char *s);	/* ndml_util.c */
+  extern char *ndml_strend(char *s); /* ndml_util.c */
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 
-#define NDMOS_API_STREND(S)	ndml_strend(S)
+#define NDMOS_API_STREND(S) ndml_strend(S)
 #endif /* !NDMOS_API_STREND */
-
-
-
 
 /*
  * Macros
  */
 #ifndef NDMOS_MACRO_NEW
-#define NDMOS_MACRO_NEW(T)	((T *) NDMOS_API_MALLOC(sizeof (T)))
+#define NDMOS_MACRO_NEW(T) ((T *)NDMOS_API_MALLOC(sizeof(T)))
 #endif /* !NDMOS_MACRO_NEW */
 
 #ifndef NDMOS_MACRO_NEWN
-#define NDMOS_MACRO_NEWN(T,N)	((T *) NDMOS_API_MALLOC(sizeof (T) * (N)))
+#define NDMOS_MACRO_NEWN(T, N) ((T *)NDMOS_API_MALLOC(sizeof(T) * (N)))
 #endif /* !NDMOS_MACRO_NEWN */
 
 #ifndef NDMOS_MACRO_FREE
@@ -442,11 +435,11 @@ extern char *ndml_strend(char *s);	/* ndml_util.c */
 #endif
 
 #ifndef NDMOS_MACRO_ZEROFILL
-#define NDMOS_MACRO_ZEROFILL(P)	NDMOS_API_BZERO(P,sizeof *(P))
+#define NDMOS_MACRO_ZEROFILL(P) NDMOS_API_BZERO(P, sizeof *(P))
 #endif /* !NDMOS_MACRO_ZEROFILL */
 
 #ifndef NDMOS_MACRO_ZEROFILL_SIZE
-#define NDMOS_MACRO_ZEROFILL_SIZE(P, N)	NDMOS_API_BZERO(P, N)
+#define NDMOS_MACRO_ZEROFILL_SIZE(P, N) NDMOS_API_BZERO(P, N)
 #endif /* !NDMOS_MACRO_ZEROFILL_SIZE */
 
 #ifndef NDMOS_MACRO_SRAND
@@ -459,29 +452,25 @@ extern char *ndml_strend(char *s);	/* ndml_util.c */
 
 #ifndef NDMOS_MACRO_OK_TAPE_REC_LEN
 #define NDMOS_MACRO_OK_TAPE_REC_LEN(LEN) \
-	(NDMOS_CONST_TAPE_REC_MIN <= (LEN) \
-	 && (LEN) <= NDMOS_CONST_TAPE_REC_MAX)
+  (NDMOS_CONST_TAPE_REC_MIN <= (LEN) && (LEN) <= NDMOS_CONST_TAPE_REC_MAX)
 #endif /* !NDMOS_MACRO_OK_TAPE_REC_LEN */
 
 #ifndef NDMOS_MACRO_SET_SOCKADDR
 #ifdef NDMOS_OPTION_HAVE_SIN_LEN
-#define NDMOS_MACRO_SET_SOCKADDR(SA,INADDR,PORT) \
-	( NDMOS_MACRO_ZEROFILL (SA), \
-	  ((struct sockaddr_in *)(SA))->sin_len = sizeof *(SA), \
-	  ((struct sockaddr_in *)(SA))->sin_family = AF_INET, \
-	  ((struct sockaddr_in *)(SA))->sin_addr.s_addr = htonl(INADDR), \
-	  ((struct sockaddr_in *)(SA))->sin_port = htons(PORT))
+#define NDMOS_MACRO_SET_SOCKADDR(SA, INADDR, PORT)                \
+  (NDMOS_MACRO_ZEROFILL(SA),                                      \
+   ((struct sockaddr_in *)(SA))->sin_len         = sizeof *(SA),  \
+   ((struct sockaddr_in *)(SA))->sin_family      = AF_INET,       \
+   ((struct sockaddr_in *)(SA))->sin_addr.s_addr = htonl(INADDR), \
+   ((struct sockaddr_in *)(SA))->sin_port        = htons(PORT))
 #else /* NDMOS_OPTION_HAVE_SIN_LEN */
-#define NDMOS_MACRO_SET_SOCKADDR(SA,INADDR,PORT) \
-	( NDMOS_MACRO_ZEROFILL (SA), \
-	  ((struct sockaddr_in *)(SA))->sin_family = AF_INET, \
-	  ((struct sockaddr_in *)(SA))->sin_addr.s_addr = htonl(INADDR), \
-	  ((struct sockaddr_in *)(SA))->sin_port = htons(PORT))
+#define NDMOS_MACRO_SET_SOCKADDR(SA, INADDR, PORT)                \
+  (NDMOS_MACRO_ZEROFILL(SA),                                      \
+   ((struct sockaddr_in *)(SA))->sin_family      = AF_INET,       \
+   ((struct sockaddr_in *)(SA))->sin_addr.s_addr = htonl(INADDR), \
+   ((struct sockaddr_in *)(SA))->sin_port        = htons(PORT))
 #endif /* NDMOS_OPTION_HAVE_SIN_LEN */
 #endif /* !NDMOS_MACRO_SET_SOCKADDR */
-
-
-
 
 /*
  * Composite effects
@@ -517,16 +506,15 @@ extern char *ndml_strend(char *s);	/* ndml_util.c */
 
 #ifdef NDMOS_OPTION_TAPE_SIMULATOR
 #define NDMOS_MACRO_TAPE_AGENT_ADDITIONS \
-	int32_t			tape_fd; \
-	char *			drive_name; \
-	int32_t			weof_on_close; \
-	int32_t			sent_leom;
+  int32_t tape_fd;                       \
+  char *drive_name;                      \
+  int32_t weof_on_close;                 \
+  int32_t sent_leom;
 #endif /* NDMOS_OPTION_TAPE_SIMULATOR */
 
 #ifdef NDMOS_OPTION_ROBOT_SIMULATOR
 #undef NDMOS_MACRO_ROBOT_AGENT_ADDITIONS
-#define NDMOS_MACRO_ROBOT_AGENT_ADDITIONS \
-	char *			sim_dir;
+#define NDMOS_MACRO_ROBOT_AGENT_ADDITIONS char *sim_dir;
 #endif /* NDMOS_OPTION_ROBOT_SIMULATOR */
 
 #endif /* _NDMOS_H */

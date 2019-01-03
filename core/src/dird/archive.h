@@ -30,4 +30,4 @@ void ArchiveCleanup(JobControlRecord *jcr, int TermCode);
 
 } /* namespace directordaemon */
 
-#endif // BAREOS_DIRD_ARCHIVE_H_
+#endif  // BAREOS_DIRD_ARCHIVE_H_

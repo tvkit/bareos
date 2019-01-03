@@ -37,16 +37,18 @@ static int create_listening_server_socket(int port)
     return -1;
   }
 
-  if (setsockopt(listen_file_descriptor, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
+  if (setsockopt(listen_file_descriptor, SOL_SOCKET, SO_REUSEADDR, &opt,
+                 sizeof(opt))) {
     perror("setsockopt");
     return -1;
   }
 
   struct sockaddr_in address;
-  address.sin_family = AF_INET;
+  address.sin_family      = AF_INET;
   address.sin_addr.s_addr = INADDR_ANY;
-  address.sin_port = htons(port);
-  if (bind(listen_file_descriptor, (struct sockaddr *)&address, sizeof(address)) < 0) {
+  address.sin_port        = htons(port);
+  if (bind(listen_file_descriptor, (struct sockaddr *)&address,
+           sizeof(address)) < 0) {
     perror("bind failed");
     return -1;
   }
@@ -55,7 +57,8 @@ static int create_listening_server_socket(int port)
   timeout.tv_sec  = 1;  // after 1 seconds connect() will timeout
   timeout.tv_usec = 0;
 
-  if (setsockopt(listen_file_descriptor, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
+  if (setsockopt(listen_file_descriptor, SOL_SOCKET, SO_RCVTIMEO, &timeout,
+                 sizeof(timeout)) < 0) {
     perror("setsockopt");
     return -1;
   }
@@ -86,9 +89,7 @@ static int accept_server_socket(int listen_file_descriptor)
 int create_accepted_server_socket(int port)
 {
   int sock_fd = create_listening_server_socket(port);
-  if (sock_fd > 0) {
-    sock_fd = accept_server_socket(sock_fd);
-  }
+  if (sock_fd > 0) { sock_fd = accept_server_socket(sock_fd); }
   return sock_fd;
 }
 
@@ -97,18 +98,18 @@ std::unique_ptr<TestSockets> create_connected_server_and_client_bareos_socket()
   std::unique_ptr<TestSockets> test_sockets(new TestSockets);
 
   listening_server_port_number++;
-  int server_file_descriptor = create_listening_server_socket(listening_server_port_number);
+  int server_file_descriptor =
+      create_listening_server_socket(listening_server_port_number);
 
   EXPECT_GE(server_file_descriptor, 0) << "Could not create listening socket";
-  if (server_file_descriptor < 0) {
-    return nullptr;
-  }
+  if (server_file_descriptor < 0) { return nullptr; }
 
   test_sockets->client.reset(New(BareosSocketTCP));
   test_sockets->client->sleep_time_after_authentication_error = 0;
 
-  bool ok = test_sockets->client->connect(NULL, 1, 1, 0, "Director daemon", HOST,
-                        NULL, listening_server_port_number, false);
+  bool ok =
+      test_sockets->client->connect(NULL, 1, 1, 0, "Director daemon", HOST,
+                                    NULL, listening_server_port_number, false);
   EXPECT_EQ(ok, true) << "Could not connect client socket with server socket.";
   if (!ok) { return nullptr; }
 
@@ -124,9 +125,9 @@ std::unique_ptr<TestSockets> create_connected_server_and_client_bareos_socket()
 BareosSocket *create_new_bareos_socket(int fd)
 {
   BareosSocket *bs;
-  bs = New(BareosSocketTCP);
+  bs                                        = New(BareosSocketTCP);
   bs->sleep_time_after_authentication_error = 0;
-  bs->fd_ = fd;
+  bs->fd_                                   = fd;
   bs->SetWho(bstrdup("client"));
   memset(&bs->peer_addr, 0, sizeof(bs->peer_addr));
   return bs;

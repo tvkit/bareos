@@ -27,4 +27,4 @@ bool DoReadData(JobControlRecord *jcr);
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_READ_H_
+#endif  // BAREOS_STORED_READ_H_

@@ -28,7 +28,7 @@ void ConsoleOutputFormat(const char *fmt, ...);
 void ConsoleOutput(const char *buf);
 void EnableTeeOut();
 void DisableTeeOut();
-void SetTeeFile(FILE* f);
+void SetTeeFile(FILE *f);
 void CloseTeeFile();
 
 #endif /* BAREOS_CONSOLE_CONSOLE_OUTPUT_H_ */

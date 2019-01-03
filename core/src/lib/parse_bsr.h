@@ -33,4 +33,4 @@ void DumpBsr(storagedaemon::BootStrapRecord *bsr, bool recurse);
 
 } /* namespace libbareos */
 
-#endif // BAREOS_STORED_PARSE_BSR_H_
+#endif  // BAREOS_STORED_PARSE_BSR_H_

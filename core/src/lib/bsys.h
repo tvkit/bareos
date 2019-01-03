@@ -75,4 +75,4 @@ bool PathAppend(PoolMem &path, PoolMem &extra);
 bool PathCreate(const char *path, mode_t mode = 0750);
 bool PathCreate(PoolMem &path, mode_t mode = 0750);
 
-#endif // BAREOS_LIB_BSYS_H_
+#endif  // BAREOS_LIB_BSYS_H_

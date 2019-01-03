@@ -29,4 +29,4 @@ bool CheckHardquotas(JobControlRecord *jcr);
 bool CheckSoftquotas(JobControlRecord *jcr);
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_QUOTA_H_
+#endif  // BAREOS_DIRD_QUOTA_H_

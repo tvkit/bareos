@@ -58,19 +58,19 @@ class BareosSocket : public SmartAlloc {
    *  bat breaks on some systems such as RedHat.
    */
  public:
-  int fd_;                            /* Socket file descriptor */
-  uint64_t read_seqno;                /* Read sequence number */
-  POOLMEM *msg;                       /* Message pool buffer */
-  POOLMEM *errmsg;                    /* Edited error message */
-  int spool_fd_;                      /* Spooling file */
-  IPADDR *src_addr;                   /* IP address to source connections from */
-  uint32_t in_msg_no;                 /* Input message number */
-  uint32_t out_msg_no;                /* Output message number */
-  int32_t message_length;             /* Message length */
-  volatile time_t timer_start;        /* Time started read/write */
-  int b_errno;                        /* BareosSocket errno */
-  int blocking_;                      /* Blocking state (0 = nonblocking, 1 = blocking) */
-  volatile int errors;                /* Incremented for each error on socket */
+  int fd_;                     /* Socket file descriptor */
+  uint64_t read_seqno;         /* Read sequence number */
+  POOLMEM *msg;                /* Message pool buffer */
+  POOLMEM *errmsg;             /* Edited error message */
+  int spool_fd_;               /* Spooling file */
+  IPADDR *src_addr;            /* IP address to source connections from */
+  uint32_t in_msg_no;          /* Input message number */
+  uint32_t out_msg_no;         /* Output message number */
+  int32_t message_length;      /* Message length */
+  volatile time_t timer_start; /* Time started read/write */
+  int b_errno;                 /* BareosSocket errno */
+  int blocking_;       /* Blocking state (0 = nonblocking, 1 = blocking) */
+  volatile int errors; /* Incremented for each error on socket */
   volatile bool suppress_error_msgs_; /* Set to suppress error messages */
   int sleep_time_after_authentication_error;
 
@@ -78,7 +78,7 @@ class BareosSocket : public SmartAlloc {
   struct sockaddr_in peer_addr; /* Peer's IP address */
   void SetTlsEstablished() { tls_established_ = true; }
   bool TlsEstablished() const { return tls_established_; }
-  std::shared_ptr<Tls> tls_conn; /* Associated tls connection */
+  std::shared_ptr<Tls> tls_conn;      /* Associated tls connection */
   std::unique_ptr<Tls> tls_conn_init; /* during initialization */
 
  protected:
@@ -101,10 +101,19 @@ class BareosSocket : public SmartAlloc {
   btime_t last_tick_;    /* Last tick used by bwlimit */
   bool tls_established_; /* is true when tls connection is established */
 
-  virtual void FinInit(JobControlRecord * jcr, int sockfd, const char *who, const char *host, int port,
+  virtual void FinInit(JobControlRecord *jcr,
+                       int sockfd,
+                       const char *who,
+                       const char *host,
+                       int port,
                        struct sockaddr *lclient_addr) = 0;
-  virtual bool open(JobControlRecord *jcr, const char *name, const char *host, char *service,
-                     int port, utime_t heart_beat, int *fatal) = 0;
+  virtual bool open(JobControlRecord *jcr,
+                    const char *name,
+                    const char *host,
+                    char *service,
+                    int port,
+                    utime_t heart_beat,
+                    int *fatal)                       = 0;
 
  private:
   bool TwoWayAuthenticate(JobControlRecord *jcr,
@@ -119,7 +128,7 @@ class BareosSocket : public SmartAlloc {
                                 const char *identity,
                                 const char *password,
                                 JobControlRecord *jcr);
-  void ParameterizeTlsCert(Tls* tls_conn, TlsResource *tls_resource);
+  void ParameterizeTlsCert(Tls *tls_conn, TlsResource *tls_resource);
 
  public:
   BareosSocket();
@@ -143,14 +152,14 @@ class BareosSocket : public SmartAlloc {
   virtual bool send()                                     = 0;
   virtual int32_t read_nbytes(char *ptr, int32_t nbytes)  = 0;
   virtual int32_t write_nbytes(char *ptr, int32_t nbytes) = 0;
-  virtual void close()                                    = 0; /* close connection and destroy packet */
-  virtual void destroy()                                  = 0; /* destroy socket packet */
-  virtual int GetPeer(char *buf, socklen_t buflen)        = 0;
-  virtual bool SetBufferSize(uint32_t size, int rw)       = 0;
-  virtual int SetNonblocking()                            = 0;
-  virtual int SetBlocking()                               = 0;
-  virtual void RestoreBlocking(int flags)                 = 0;
-  virtual bool ConnectionReceivedTerminateSignal()        = 0;
+  virtual void close()   = 0; /* close connection and destroy packet */
+  virtual void destroy() = 0; /* destroy socket packet */
+  virtual int GetPeer(char *buf, socklen_t buflen)  = 0;
+  virtual bool SetBufferSize(uint32_t size, int rw) = 0;
+  virtual int SetNonblocking()                      = 0;
+  virtual int SetBlocking()                         = 0;
+  virtual void RestoreBlocking(int flags)           = 0;
+  virtual bool ConnectionReceivedTerminateSignal()  = 0;
   /*
    * Returns: 1 if data available, 0 if timeout, -1 if error
    */
@@ -179,9 +188,8 @@ class BareosSocket : public SmartAlloc {
                       const char *identity,
                       const char *password,
                       JobControlRecord *jcr);
-  bool DoTlsHandshakeAsAServer(
-                      ConfigurationParser *config,
-                      JobControlRecord *jcr = nullptr);
+  bool DoTlsHandshakeAsAServer(ConfigurationParser *config,
+                               JobControlRecord *jcr = nullptr);
   bool SetLocking();   /* in bsock.c */
   void ClearLocking(); /* in bsock.c */
   void SetSourceAddress(dlist *src_addr_list);
@@ -191,8 +199,10 @@ class BareosSocket : public SmartAlloc {
                                     std::string &r_code_str) const;
   void OutputCipherMessageString(std::function<void(const char *)>);
   void GetCipherMessageString(std::string &str) const;
-  bool ReceiveAndEvaluateResponseMessage(uint32_t &id_out, BStringList &args_out);
-  bool FormatAndSendResponseMessage(uint32_t id, const BStringList &list_of_agruments);
+  bool ReceiveAndEvaluateResponseMessage(uint32_t &id_out,
+                                         BStringList &args_out);
+  bool FormatAndSendResponseMessage(uint32_t id,
+                                    const BStringList &list_of_agruments);
   bool FormatAndSendResponseMessage(uint32_t id, const std::string &str);
 
   bool AuthenticateOutboundConnection(JobControlRecord *jcr,

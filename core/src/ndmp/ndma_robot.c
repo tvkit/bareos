@@ -34,12 +34,9 @@
  *
  */
 
-
 #include "ndmagents.h"
 
-
 #ifndef NDMOS_OPTION_NO_ROBOT_AGENT
-
 
 /*
  * Initialization and Cleanup
@@ -47,50 +44,35 @@
  */
 
 /* Initialize -- Set data structure to know value, ignore current value */
-int
-ndmra_initialize (struct ndm_session *sess)
+int ndmra_initialize(struct ndm_session *sess)
 {
-	sess->robot_acb = NDMOS_API_MALLOC (sizeof(struct ndm_robot_agent));
-	if (!sess->robot_acb)
-		return -1;
-	NDMOS_MACRO_ZEROFILL (sess->robot_acb);
-	sess->robot_acb->scsi_state.error = NDMP9_DEV_NOT_OPEN_ERR;
+  sess->robot_acb = NDMOS_API_MALLOC(sizeof(struct ndm_robot_agent));
+  if (!sess->robot_acb) return -1;
+  NDMOS_MACRO_ZEROFILL(sess->robot_acb);
+  sess->robot_acb->scsi_state.error = NDMP9_DEV_NOT_OPEN_ERR;
 
-	return 0;
+  return 0;
 }
 
 /* Commission -- Get agent ready. Entire session has been initialize()d */
-int
-ndmra_commission (struct ndm_session *sess)
-{
-	return 0;
-}
+int ndmra_commission(struct ndm_session *sess) { return 0; }
 
 /* Decommission -- Discard agent */
-int
-ndmra_decommission (struct ndm_session *sess)
-{
-	return 0;
-}
+int ndmra_decommission(struct ndm_session *sess) { return 0; }
 
 /* Destroy -- Destroy agent */
-int
-ndmra_destroy (struct ndm_session *sess)
+int ndmra_destroy(struct ndm_session *sess)
 {
-	if (!sess->robot_acb) {
-		return 0;
-	}
+  if (!sess->robot_acb) { return 0; }
 
 #ifdef NDMOS_OPTION_ROBOT_SIMULATOR
-	if (sess->robot_acb->sim_dir) {
-		NDMOS_API_FREE (sess->robot_acb->sim_dir);
-	}
+  if (sess->robot_acb->sim_dir) { NDMOS_API_FREE(sess->robot_acb->sim_dir); }
 #endif
 
-	NDMOS_API_FREE (sess->robot_acb);
-	sess->robot_acb = NULL;
+  NDMOS_API_FREE(sess->robot_acb);
+  sess->robot_acb = NULL;
 
-	return 0;
+  return 0;
 }
 
 /*

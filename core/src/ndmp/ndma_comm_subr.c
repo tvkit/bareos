@@ -34,45 +34,37 @@
  *
  */
 
-
 #include "ndmagents.h"
 
-void
-ndmalogf (struct ndm_session *sess, char *tag, int level, char *fmt, ...)
+void ndmalogf(struct ndm_session *sess, char *tag, int level, char *fmt, ...)
 {
-	va_list		ap;
+  va_list ap;
 
-	if (sess->param->log_level < level)
-		return;
+  if (sess->param->log_level < level) return;
 
-	if (!tag)
-		tag = sess->param->log_tag;
+  if (!tag) tag = sess->param->log_tag;
 
-	if (!tag)
-		tag = "???";
+  if (!tag) tag = "???";
 
-	va_start (ap, fmt);
-	ndmlogfv (&sess->param->log, tag, level, fmt, ap);
-	va_end (ap);
+  va_start(ap, fmt);
+  ndmlogfv(&sess->param->log, tag, level, fmt, ap);
+  va_end(ap);
 }
 
-
-void
-ndmalogfv (struct ndm_session *sess, char *tag,
-  int level, char *fmt, va_list ap)
+void ndmalogfv(struct ndm_session *sess,
+               char *tag,
+               int level,
+               char *fmt,
+               va_list ap)
 {
-	if (sess->param->log_level < level)
-		return;
+  if (sess->param->log_level < level) return;
 
-	if (!tag)
-		tag = sess->param->log_tag;
+  if (!tag) tag = sess->param->log_tag;
 
-	if (!tag)
-		tag = "???";
+  if (!tag) tag = "???";
 
-	ndmlogfv (&sess->param->log, tag, level, fmt, ap);
+  ndmlogfv(&sess->param->log, tag, level, fmt, ap);
 }
-
 
 #if 0
 #ifndef NDMOS_OPTION_NO_NDMP2

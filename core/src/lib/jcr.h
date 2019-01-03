@@ -29,7 +29,9 @@ void UnlockLastJobsList();
 bool ReadLastJobsList(int fd, uint64_t addr);
 uint64_t WriteLastJobsList(int fd, uint64_t addr);
 void WriteStateFile(char *dir, const char *progname, int port);
-void RegisterJobEndCallback(JobControlRecord *jcr, void JobEndCb(JobControlRecord *jcr,void *), void *ctx);
+void RegisterJobEndCallback(JobControlRecord *jcr,
+                            void JobEndCb(JobControlRecord *jcr, void *),
+                            void *ctx);
 void LockJobs();
 void UnlockJobs();
 JobControlRecord *jcr_walk_start();
@@ -42,4 +44,4 @@ void RemoveJcrFromTsd(JobControlRecord *jcr);
 uint32_t GetJobidFromTsd();
 uint32_t GetJobidFromTid(pthread_t tid);
 
-#endif // BAREOS_LIB_JCR_H_
+#endif  // BAREOS_LIB_JCR_H_

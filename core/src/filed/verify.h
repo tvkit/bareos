@@ -27,8 +27,10 @@ namespace filedaemon {
 int DigestFile(JobControlRecord *jcr, FindFilesPacket *ff_pkt, DIGEST *digest);
 void DoVerify(JobControlRecord *jcr);
 void DoVerifyVolume(JobControlRecord *jcr);
-bool CalculateAndCompareFileChksum(JobControlRecord *jcr, FindFilesPacket *ff_pkt,
-                                       const char *fname, const char *chksum);
+bool CalculateAndCompareFileChksum(JobControlRecord *jcr,
+                                   FindFilesPacket *ff_pkt,
+                                   const char *fname,
+                                   const char *chksum);
 
 } /* namespace filedaemon */
 

@@ -55,24 +55,24 @@
  * Structure for BareosRegex ressource
  */
 class BareosRegex {
-public:
-   POOLMEM *result;             /**< match result */
-   bool success;                /**< match is ok */
+ public:
+  POOLMEM *result; /**< match result */
+  bool success;    /**< match is ok */
 
-   char *replace(const char *fname); /**< return this.result */
-   void debug();
+  char *replace(const char *fname); /**< return this.result */
+  void debug();
 
-   /* private */
-   POOLMEM *expr;               /**< search epression */
-   POOLMEM *subst;              /**< substitution */
-   regex_t preg;                /**< regex_t result of regcomp() */
-   regmatch_t regs[BREG_NREGS]; /**< contains match */
-   char *eor;                   /**< end of regexp in expr */
+  /* private */
+  POOLMEM *expr;               /**< search epression */
+  POOLMEM *subst;              /**< substitution */
+  regex_t preg;                /**< regex_t result of regcomp() */
+  regmatch_t regs[BREG_NREGS]; /**< contains match */
+  char *eor;                   /**< end of regexp in expr */
 
-   char *ReturnFname(const char *fname, int len); /**< return fname as result */
-   char *EditSubst(const char *fname, regmatch_t pmatch[]);
-   int ComputeDestLen(const char *fname, regmatch_t pmatch[]);
-   bool ExtractRegexp(const char *motif);
+  char *ReturnFname(const char *fname, int len); /**< return fname as result */
+  char *EditSubst(const char *fname, regmatch_t pmatch[]);
+  int ComputeDestLen(const char *fname, regmatch_t pmatch[]);
+  bool ExtractRegexp(const char *motif);
 };
 
 /* create new BareosRegex and compile regex_t */
@@ -95,13 +95,14 @@ void FreeBregexps(alist *bregexps); /* you have to free alist */
 
 /* get regexp size */
 int BregexpGetBuildWhereSize(char *strip_prefix,
-                                 char *add_prefix,
-                                 char *add_suffix);
+                             char *add_prefix,
+                             char *add_suffix);
 
 /* get a bregexp string from user arguments
  * you must allocate it with BregexpGetBuildWhereSize();
  */
-char *bregexp_build_where(char *dest, int str_size,
+char *bregexp_build_where(char *dest,
+                          int str_size,
                           char *strip_prefix,
                           char *add_prefix,
                           char *add_suffix);

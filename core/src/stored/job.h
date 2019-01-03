@@ -32,4 +32,4 @@ bool nextRunCmd(JobControlRecord *jcr);
 
 } /* namespace storagedaemon  */
 
-#endif // BAREOS_STORED_JOB_H_
+#endif  // BAREOS_STORED_JOB_H_

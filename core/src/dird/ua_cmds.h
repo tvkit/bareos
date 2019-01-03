@@ -28,4 +28,4 @@ bool Do_a_command(UaContext *ua);
 bool DotMessagesCmd(UaContext *ua, const char *cmd);
 
 } /* namespace directordaemon */
-#endif // BAREOS_DIRD_UA_CMDS_H_
+#endif  // BAREOS_DIRD_UA_CMDS_H_

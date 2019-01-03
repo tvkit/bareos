@@ -28,4 +28,4 @@ bool DoListenRun(JobControlRecord *jcr);
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_SD_CMDS_H_
+#endif  // BAREOS_STORED_SD_CMDS_H_

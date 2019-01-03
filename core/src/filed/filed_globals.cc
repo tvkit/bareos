@@ -26,8 +26,8 @@ ConfigurationParser *my_config = nullptr;
 
 namespace filedaemon {
 
-bool no_signals = false;
-bool backup_only_mode = false;
+bool no_signals        = false;
+bool backup_only_mode  = false;
 bool restore_only_mode = false;
 
 struct ClientResource;

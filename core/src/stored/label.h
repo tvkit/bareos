@@ -31,16 +31,20 @@ void CreateVolumeLabel(Device *dev, const char *VolName, const char *PoolName);
 #define ANSI_EOF_LABEL 1
 #define ANSI_EOV_LABEL 2
 
-bool WriteAnsiIbmLabels(DeviceControlRecord *dcr, int type, const char *VolName);
+bool WriteAnsiIbmLabels(DeviceControlRecord *dcr,
+                        int type,
+                        const char *VolName);
 int ReadAnsiIbmLabel(DeviceControlRecord *dcr);
 bool WriteSessionLabel(DeviceControlRecord *dcr, int label);
 void DumpVolumeLabel(Device *dev);
 void DumpLabelRecord(Device *dev, DeviceRecord *rec, bool verbose);
 bool UnserVolumeLabel(Device *dev, DeviceRecord *rec);
 bool UnserSessionLabel(SESSION_LABEL *label, DeviceRecord *rec);
-bool WriteNewVolumeLabelToDev(DeviceControlRecord *dcr, const char *VolName,
-                                   const char *PoolName, bool relabel);
+bool WriteNewVolumeLabelToDev(DeviceControlRecord *dcr,
+                              const char *VolName,
+                              const char *PoolName,
+                              bool relabel);
 
 } /* namespace storagedaemon */
 
-#endif // BAREOS_STORED_LABEL_H_
+#endif  // BAREOS_STORED_LABEL_H_

@@ -395,6 +395,7 @@ bool BSOCK_TCP::send_packet(int32_t *hdr, int32_t pktsiz)
    if (rc != pktsiz) {
       errors++;
       if (errno == 0) {
+         Qmsg2(m_jcr, M_INFO, 0, _("Got %d from write_nbytes() while sending %d bytes. Triggering EIO."), rc, pktsiz);
          b_errno = EIO;
       } else {
          b_errno = errno;
@@ -992,6 +993,7 @@ int32_t BSOCK_TCP::read_nbytes(char *ptr, int32_t nbytes)
         } else if (err == WSAEWOULDBLOCK) {
            errno = EAGAIN;
         } else {
+           Qmsg1(jcr(), M_INFO, 0, _("Mapping winsock error %lu to EIO"), err);
            errno = EIO;            /* some other error */
         }
      }
@@ -1071,6 +1073,7 @@ int32_t BSOCK_TCP::write_nbytes(char *ptr, int32_t nbytes)
             } else if (err == WSAEWOULDBLOCK) {
                errno = EAGAIN;
             } else {
+               Qmsg1(jcr(), M_INFO, 0, _("Mapping winsock error %lu to EIO"), err);
                errno = EIO;        /* some other error */
             }
          }

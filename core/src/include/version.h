@@ -1,5 +1,5 @@
 #ifndef VERSION
-#define VERSION "18.2.5"
+#define VERSION "18.2.4smcheck"
 #endif
 
 #define BDATE   "30 January 2019"
@@ -73,9 +73,7 @@
  *  it can always be turned on, but has some minor performance
  *  penalties.
  */
-#ifdef DEVELOPER
 #define SMCHECK
-#endif
 
 /*
  * BAREOS_INCLUDE_VERSION_H_ does lock/unlock mutex tracking (dead lock)

@@ -34,7 +34,7 @@ set(INCLUDE_FILES ../include/baconfig.h ../include/bareos.h
 INSTALL(FILES ${INCLUDE_FILES} DESTINATION ${includedir})
 
 include_directories(
-   ${OPENSSL_INCLUDE_DIRS}
+   ${OPENSSL_INCLUDE_DIR}
    ${PTHREAD_INCLUDE_DIRS}
    ${FASTLZ_INCLUDE_DIRS}
    ${ZLIB_INCLUDE_DIRS}

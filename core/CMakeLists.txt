@@ -20,6 +20,9 @@
 cmake_minimum_required(VERSION 3.0)
 project(bareos)
 
+SET(CPACK_SET_DESTDIR true)
+SET(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION true)
+
 # switch on CXX 11 Support
 #
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "SunOS")

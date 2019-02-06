@@ -218,7 +218,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "AIX")
 endif()
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  SET(CPACK_GENERATOR "OSXX11")
+  SET(CPACK_GENERATOR "productbuild")
   INCLUDE(CPACK)
 ENDIF()
 
@@ -274,7 +274,7 @@ set(dbdriver sqlite3)
 #manual definitions
 set (BAREOS "Bareos")
 #set(CONFDIR \"${CMAKE_INSTALL_FULL_SYSCONFDIR}\")
-set(LOCALEDIR \"${CMAKE_INSTALL_FULL_LOCALEDIR}\")
+set(LOCALEDIR \"${CMAKE_INSTALL_LOCALEDIR}\")
 
 
 

@@ -95,7 +95,7 @@ ENDIF()
 
 # scriptdir
 IF(NOT DEFINED scriptdir)
-   set(scriptdir "${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_PROJECT_NAME}/scripts")
+   set(scriptdir "lib/${CMAKE_PROJECT_NAME}/scripts")
 ENDIF()
 
 # workingdir

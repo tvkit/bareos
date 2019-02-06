@@ -25,7 +25,15 @@ MESSAGE(STATUS  "BareosInstallConfigFiles called with CONFDIR:${CONFDIR} CONFIGB
 MESSAGE(STATUS "CPACK_PACKAGING_INSTALL_PREFIX: ${CPACK_PACKAGING_INSTALL_PREFIX}")
 MESSAGE(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 MESSAGE(STATUS "DESTDIR: ${DESTDIR}")
-set (DESTCONFDIR "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${CONFDIR}/${CONFIGBASEDIRECTORY}/")
+
+IF (IS_ABSOLUTE ${CONFDIR})
+    set (DESTCONFDIR "${CONFDIR}/${CONFIGBASEDIRECTORY}/")
+ELSE()
+    set (DESTCONFDIR "${CMAKE_INSTALL_PREFIX}/${CONFDIR}/${CONFIGBASEDIRECTORY}/")
+ENDIF()
+
+
+
 MESSAGE(STATUS  "installing configuration ${CONFIGBASEDIRECTORY}  resource files to ${DESTCONFDIR}")
 
 MESSAGE(STATUS  "globbing ${SRC_DIR}/src/defaultconfigs/${CONFIGBASEDIRECTORY}/*")
@@ -44,7 +52,7 @@ foreach(resdir ${resourcedirs})
          FILE (INSTALL "${configfile}.new" DESTINATION "${DESTCONFDIR}/${resname}")
          FILE (RENAME "${configfile}.new" "${configfile}")
       else()
-         MESSAGE(STATUS "${resname}/${fname} as ${resname}/${fname} (keep existing)")
+         MESSAGE(STATUS "${resname}/${fname} as ${resname}/${fname} (new installation)")
          FILE (COPY "${configfile}" DESTINATION "${DESTCONFDIR}/${resname}")
       endif()
    endforeach()

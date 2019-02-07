@@ -18,14 +18,15 @@
 #   02110-1301, USA.
 
 
-SET (INSTALLDIRS
-	files
-	resources
-)
-
-FOREACH (DIR ${INSTALLDIRS})
-        MESSAGE(STATUS  "installing darwin ${DIR} to ${sysconfdir}")
-	INSTALL (DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${DIR}"
-                 DESTINATION "../Contents/Packages/scripts")
-
-ENDFOREACH()
+#SET (INSTALLDIRS
+#	files
+#	resources
+#)
+#
+#FOREACH (DIR ${INSTALLDIRS})
+#        MESSAGE(STATUS  "installing darwin ${DIR} to ${sysconfdir}")
+#	INSTALL (DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${DIR}"
+#                 DESTINATION "../Contents/Packages/scripts")
+#                 #DESTINATION "../Contents/Packages/scripts")
+#
+#ENDFOREACH()

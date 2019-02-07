@@ -18,26 +18,14 @@
 #   02110-1301, USA.
 
 
-MESSAGE(STATUS  "installing darwin files to ${sysconfdir}")
-
-SET (INSTALLFILES
-	files/installer.pmdoc/01destdir.xml
-	files/installer.pmdoc/index.xml
-	files/org.bareos.bareos-fd.plist
-	files/uninstall.command
-	installer-gencontents.py
-	Makefile
-	Makefile-standalone
-	README
+SET (INSTALLDIRS
+	files
 	resources
-	resources/postinstall
-	resources/preinstall
-	resources/ReadMe.html
 )
 
-FOREACH (FILE ${INSTALLFILES})
-	INSTALL (FILES "${CMAKE_CURRENT_LIST_DIR}/${FILE}" DESTINATION "${DESTSTARTDIR}/"
-			PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
-			GROUP_READ GROUP_EXECUTE
-			WORLD_READ WORLD_EXECUTE)
+FOREACH (DIR ${INSTALLDIRS})
+        MESSAGE(STATUS  "installing darwin ${DIR} to ${sysconfdir}")
+	INSTALL (DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${DIR}"
+                 DESTINATION "../Contents/Packages/scripts")
+
 ENDFOREACH()

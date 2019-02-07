@@ -219,6 +219,7 @@ endif()
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET(CPACK_GENERATOR "productbuild")
+  SET(CPACK_PRODUCTBUILD_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/platforms/darwin/resources")
   INCLUDE(CPACK)
 ENDIF()
 

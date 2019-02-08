@@ -17,6 +17,8 @@
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #   02110-1301, USA.
 
+INSTALL(FILES  resources/org.bareos.bareos-fd.plist
+        DESTINATION "${scriptdir}")
 
 # cpack settings
 SET(CPACK_PACKAGE_VENDOR "bareos.com")

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+cd /usr/local
+LOG=/tmp/bareos-client-postinstall.log
+
+date > $LOG
+echo "Postinstall. Parameter: $@" >> $LOG
+
+lib/bareos/scripts/bareos-config deploy_config "etc/bareos" "etc/bareos" bareos-fd >> $LOG 2>&1
+lib/bareos/scripts/bareos-config deploy_config "etc/bareos" "etc/bareos" bconsole  >> $LOG 2>&1
+
+# Load startup item
+/bin/launchctl load -w "$3/Library/LaunchDaemons/org.bareos.bareos-fd.plist" >> $LOG 2>&1
+
+echo "finished" >> $LOG

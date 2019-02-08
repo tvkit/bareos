@@ -100,7 +100,7 @@ ENDIF()
 
 # workingdir
 IF(NOT DEFINED workingdir)
-   set(workingdir "/${CMAKE_INSTALL_LOCALSTATEDIR}/lib/${CMAKE_PROJECT_NAME}")
+   set(workingdir "${CMAKE_INSTALL_LOCALSTATEDIR}/lib/${CMAKE_PROJECT_NAME}")
 ENDIF()
 set(working_dir "${workingdir}")
 

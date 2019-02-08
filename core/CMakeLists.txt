@@ -20,6 +20,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(bareos)
 
+INCLUDE(GNUInstallDirs)
+
 # switch on CXX 11 Support
 #
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
@@ -209,7 +211,6 @@ endif()
 
 INCLUDE(BareosFindPrograms)
 
-INCLUDE(GNUInstallDirs)
 
 INCLUDE(BareosSetVariableDefaults)
 
@@ -632,6 +633,7 @@ IF(HAVE_WIN32)
 ENDIF()
 
 INSTALL(DIRECTORY DESTINATION ${logdir})
+INSTALL(DIRECTORY DESTINATION ${workingdir})
 
 
 INCLUDE(BareosConfigureFile)

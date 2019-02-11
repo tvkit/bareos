@@ -2,6 +2,7 @@
 
 # stop on first error
 set -e
+set -x
 
 echo "start testing ... "
 echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"

@@ -1,3 +1,9 @@
+bareos (18.2.5-1) unstable; urgency=low
+
+  * Switch version number
+
+ -- Philipp Storz <philipp.storz@bareos.com>  Mon, 11 Feb 2018 16:46:40 +0100
+
 bareos (18.2.4rc2-1) unstable; urgency=low
 
   * Switch version number

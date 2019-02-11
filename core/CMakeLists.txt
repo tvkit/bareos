@@ -148,6 +148,7 @@ IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
    set(CMAKE_INCLUDE_PATH  "/usr/local/opt/:${CMAKE_INCLUDE_PATH}")
    link_directories(/usr/local/lib)
    link_libraries(intl)
+   set(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}-${BAREOS_FULL_VERSION}")
 ENDIF()
 
 # hpux
@@ -222,7 +223,6 @@ endif()
 INCLUDE(BareosGetDistInfo)
 
 INCLUDE(BareosGenerateDebianInfo)
-
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
    add_definitions(-DWIN32_VSS -DMINGW64 -DHAVE_WIN32 -DHAVE_MINGW -D_WIN32_WINNT=${WINDOWS_VERSION})
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m${WINDOWS_BITS} -mwin32 -mthreads")

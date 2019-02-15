@@ -57,7 +57,7 @@ IF(NOT HAVE_WIN32)
    target_link_libraries(bpluginfo bareos ${DL_LIBRARIES} ${JANSSON_LIBRARIES})
 
    add_executable(timelimit timelimit.cc)
-   set_target_properties(timelimit PROPERTIES INSTALL_RPATH "")
+   set_target_properties(timelimit PROPERTIES SKIP_BUILD_RPATH TRUE)
 ENDIF()
 
 set (TOOLS_BIN bsmtp bwild bregex)

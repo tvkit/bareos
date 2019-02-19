@@ -22,21 +22,21 @@ project(bareos-regress)
 
 
 # set variable values to be replaced by configure_file
-set(BAREOS_CONFIG_DIR ${PROJECT_BINARY_DIR}/BAREOS_CONFIG_DIR)
 set(DEFAULT_DB_TYPE "postgresql")
 set(TAPEDRIVE "TAPEDRIVE")
 set(archivedir "${PROJECT_BINARY_DIR}/archivedir")
-set(backenddir "${PROJECT_BINARY_DIR}/backenddir")
+set(backenddir "${PROJECT_BINARY_DIR}/../core/src/cats")
 set(basename "basename")
 set(bin ${PROJECT_BINARY_DIR}/bin)
 set(bindir "bindir")
 set(conf ${PROJECT_BINARY_DIR}/defaultconfigs)
 set(confdir ${conf})
 set(configs ${conf})
-set(db_name "db_name")
+set(BAREOS_CONFIG_DIR ${conf})
+set(db_name "regress")
 set(db_password "db_password")
-set(db_port "db_port")
-set(db_user "db_user")
+set(db_port "5432")
+set(db_user "regress")
 set(dir_password "dir_password")
 set(dir_port 8101)
 set(dumps ${PROJECT_BINARY_DIR}/dumps)
@@ -91,12 +91,16 @@ ConfigureFilesToRegress("regress"  "scripts" "functions" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "cleanup" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "copy-confs" @ONLY)
 
+ConfigureFilesToRegress("core/src" "defaultconfigs" "*.conf" @ONLY)
 ConfigureFilesToRegress("core/src" "defaultconfigs" "*.in" @ONLY)
 
 ConfigureFilesToRegress("core" "scripts" "*.in" @ONLY)
 ConfigureFilesToRegress("core" "scripts" "bareos-ctl-funcs" @ONLY)
 ConfigureFilesToRegress("core" "scripts" "btraceback.gdb" @ONLY)
 
+ConfigureFilesToRegress("core/src/cats" "ddl" "${DEFAULT_DB_TYPE}*" @ONLY)
+ConfigureFilesToRegress("core/src" "cats" "*.in" @ONLY)
+ConfigureFilesToRegress("core/src" "cats" "*_bareos_*" @ONLY)
 
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${scriptdir}/btraceback ${sbindir}/btraceback)
@@ -104,12 +108,17 @@ execute_process(COMMAND
 file(MAKE_DIRECTORY ${piddir})
 file(MAKE_DIRECTORY ${subsysdir})
 file(MAKE_DIRECTORY ${sbindir})
-
+file(MAKE_DIRECTORY ${scripts})
+file(MAKE_DIRECTORY ${working})
+file(RENAME ${PROJECT_BINARY_DIR}/ddl ${scripts}/ddl)
 
 # create symlinks for the binaries
 
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/dird/bareos-dir ${sbindir}/bareos-dir)
+
+execute_process(COMMAND
+  ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/dird/bareos-dbcheck ${sbindir}/bareos-dbcheck)
 
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/stored/bareos-sd ${sbindir}/bareos-sd)

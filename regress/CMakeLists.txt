@@ -22,24 +22,50 @@ project(bareos-regress)
 
 
 # set variable values to be replaced by configure_file
-set(BAREOS_CONFIG_DIR ${PROJECT_BINARY_DIR})
-set(bin ${PROJECT_BINARY_DIR})
-set(conf ${PROJECT_BINARY_DIR})
-set(confdir ${PROJECT_BINARY_DIR})
-set(configs ${PROJECT_BINARY_DIR})
-set(dumps ${PROJECT_BINARY_DIR})
-set(plugindir ${PROJECT_BINARY_DIR})
-set(plugindirtmp ${PROJECT_BINARY_DIR})
-set(rscripts ${PROJECT_BINARY_DIR})
-set(scripts ${PROJECT_BINARY_DIR})
-set(src ${PROJECT_BINARY_DIR})
-set(tmp ${PROJECT_BINARY_DIR})
-set(tmpsrc ${PROJECT_BINARY_DIR})
-set(working ${PROJECT_BINARY_DIR})
+set(BAREOS_CONFIG_DIR ${PROJECT_BINARY_DIR}/BAREOS_CONFIG_DIR)
+set(DEFAULT_DB_TYPE "postgresql")
+set(TAPEDRIVE "TAPEDRIVE")
+set(archivedir "${PROJECT_BINARY_DIR}/archivedir")
+set(backenddir "${PROJECT_BINARY_DIR}/backenddir")
+set(basename "basename")
+set(bin ${PROJECT_BINARY_DIR}/bin)
+set(bindir "bindir")
+set(conf ${PROJECT_BINARY_DIR}/defaultconfigs)
+set(confdir ${conf})
+set(configs ${conf})
+set(db_name "db_name")
+set(db_password "db_password")
+set(db_port "db_port")
+set(db_user "db_user")
+set(dir_password "dir_password")
+set(dir_port 8101)
+set(dumps ${PROJECT_BINARY_DIR}/dumps)
+set(fd_password "fd_password")
+set(fd_port 8102)
+set(hostname "hostname")
+set(hostname ${CMAKE_HOST_SYSTEM_NAME})
+set(job_email "job_email")
+set(logdir "logdir")
+set(mon_dir_password "mon_dir_password")
+set(mon_fd_password "mon_fd_password")
+set(mon_sd_password "mon_sd_password")
+set(piddir ${PROJECT_BINARY_DIR}/piddir)
+set(plugindir ${PROJECT_BINARY_DIR}/plugindir)
+set(plugindirtmp ${PROJECT_BINARY_DIR}/plugindirtmp)
+set(rscripts ${PROJECT_BINARY_DIR}/rscripts)
+set(sbindir ${PROJECT_BINARY_DIR}/sbin)
+set(scriptdir ${PROJECT_BINARY_DIR}/scripts)
+set(scripts ${PROJECT_BINARY_DIR}/scripts)
+set(sd_password "sd_password")
+set(sd_port 8103)
+set(smtp_host "smtp_host")
+set(src ${PROJECT_BINARY_DIR}/src)
+set(subsysdir ${PROJECT_BINARY_DIR}/subsysdir)
+set(tmp ${PROJECT_BINARY_DIR}/tmp)
+set(tmpsrc ${PROJECT_BINARY_DIR}/tmpsrc)
+set(working ${PROJECT_BINARY_DIR}/working)
+set(working_dir ${PROJECT_BINARY_DIR}/working)
 
-
-MESSAGE (STATUS "BAREOS_CONFIG_DIR: ${BAREOS_CONFIG_DIR}")
-MESSAGE (STATUS "scripts: ${scripts}")
 
 
 function(ConfigureFilesToRegress srcdir subdirectory globexpression configure_option)
@@ -56,12 +82,37 @@ function(ConfigureFilesToRegress srcdir subdirectory globexpression configure_op
   endforeach()
 endfunction()
 
-ConfigureFilesToRegress("core" "scripts" "*.in" @ONLY)
+
 ConfigureFilesToRegress("regress"  "tests" "*" @ONLY)
-ConfigureFilesToRegress("regress"  "scripts" "functions" @ONLY)
-ConfigureFilesToRegress("regress"  "." "config" @ONLY)
+ConfigureFilesToRegress("regress"  "." "config.in" @ONLY)
 ConfigureFilesToRegress("regress"  "data" "*.tgz" COPYONLY)
 
+ConfigureFilesToRegress("regress"  "scripts" "functions" @ONLY)
+ConfigureFilesToRegress("regress"  "scripts" "cleanup" @ONLY)
+ConfigureFilesToRegress("regress"  "scripts" "copy-confs" @ONLY)
+
 ConfigureFilesToRegress("core/src" "defaultconfigs" "*.in" @ONLY)
-    #get_filename_component(TARGET_FILE ${TARGET_FILE} NAME)
-    #get_filename_component(TARGETDIR ${TARGET_FILE} DIRECTORY)
+
+ConfigureFilesToRegress("core" "scripts" "*.in" @ONLY)
+ConfigureFilesToRegress("core" "scripts" "bareos-ctl-funcs" @ONLY)
+ConfigureFilesToRegress("core" "scripts" "btraceback.gdb" @ONLY)
+
+
+execute_process(COMMAND
+  ${CMAKE_COMMAND} -E create_symlink ${scriptdir}/btraceback ${sbindir}/btraceback)
+
+file(MAKE_DIRECTORY ${piddir})
+file(MAKE_DIRECTORY ${subsysdir})
+file(MAKE_DIRECTORY ${sbindir})
+
+
+# create symlinks for the binaries
+
+execute_process(COMMAND
+  ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/dird/bareos-dir ${sbindir}/bareos-dir)
+
+execute_process(COMMAND
+  ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/stored/bareos-sd ${sbindir}/bareos-sd)
+
+execute_process(COMMAND
+  ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/filed/bareos-fd ${sbindir}/bareos-fd)

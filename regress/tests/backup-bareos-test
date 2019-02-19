@@ -14,12 +14,12 @@ scripts/copy-confs
 # Zap out any schedule in default conf file so that
 #  it doesn't start during our test
 #
-outf="$tmp/sed_tmp"
-echo "s%  Schedule =%# Schedule =%g" >${outf}
-cp $rscripts/bareos-dir.conf $tmp/1
-sed -f ${outf} $tmp/1 >$conf/bareos-dir.conf
+#outf="$tmp/sed_tmp"
+#echo "s%  Schedule =%# Schedule =%g" >${outf}
+#cp $rscripts/bareos-dir.conf $tmp/1
+#sed -f ${outf} $tmp/1 >$conf/bareos-dir.conf
 
-change_jobname BackupClient1FileList $JobName
+#change_jobname BackupClient1FileList $JobName
 
 # Directory to backup.
 # This directory will be created by setup_data().

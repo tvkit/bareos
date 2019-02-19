@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo  $0 disabled
+exit 0
+
 #
 # Cleanup left over files -- both before and after test run
 #

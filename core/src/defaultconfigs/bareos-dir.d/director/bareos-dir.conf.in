@@ -21,4 +21,6 @@ Director {                            # define myself
   #
   # Plugin Directory = "@plugindir@"
   # Plugin Names = ""
+  Working Directory =  "@working_dir@"
+  DirPort = @dir_port@
 }

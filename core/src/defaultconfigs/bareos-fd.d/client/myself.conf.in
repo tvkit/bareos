@@ -12,4 +12,8 @@ Client {
   # if compatible is set to yes, we are compatible with bacula
   # if set to no, new bareos features are enabled which is the default
   # compatible = yes
+
+  Working Directory =  "@working_dir@"
+  FD Port = @fd_port@
+
 }

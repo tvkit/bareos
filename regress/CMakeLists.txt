@@ -28,7 +28,7 @@ set(archivedir "${PROJECT_BINARY_DIR}/archivedir")
 set(backenddir "${PROJECT_BINARY_DIR}/../core/src/cats")
 set(basename "basename")
 set(bin ${PROJECT_BINARY_DIR}/bin)
-set(bindir "bindir")
+set(bindir ${PROJECT_BINARY_DIR}/bin)
 set(conf ${PROJECT_BINARY_DIR}/defaultconfigs)
 set(confdir ${conf})
 set(configs ${conf})
@@ -66,6 +66,7 @@ set(tmpsrc ${PROJECT_BINARY_DIR}/tmpsrc)
 set(working ${PROJECT_BINARY_DIR}/working)
 set(working_dir ${PROJECT_BINARY_DIR}/working)
 
+set(BASEPORT ${dir_port})
 
 
 function(ConfigureFilesToRegress srcdir subdirectory globexpression configure_option)
@@ -102,14 +103,19 @@ ConfigureFilesToRegress("core/src/cats" "ddl" "${DEFAULT_DB_TYPE}*" @ONLY)
 ConfigureFilesToRegress("core/src" "cats" "*.in" @ONLY)
 ConfigureFilesToRegress("core/src" "cats" "*_bareos_*" @ONLY)
 
+ConfigureFilesToRegress("core/src" "console" "*.in" @ONLY)
+
+
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${scriptdir}/btraceback ${sbindir}/btraceback)
 
 file(MAKE_DIRECTORY ${piddir})
 file(MAKE_DIRECTORY ${subsysdir})
 file(MAKE_DIRECTORY ${sbindir})
+file(MAKE_DIRECTORY ${bindir})
 file(MAKE_DIRECTORY ${scripts})
 file(MAKE_DIRECTORY ${working})
+file(REMOVE_RECURSE ${scripts}/ddl)
 file(RENAME ${PROJECT_BINARY_DIR}/ddl ${scripts}/ddl)
 
 # create symlinks for the binaries
@@ -125,3 +131,6 @@ execute_process(COMMAND
 
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/filed/bareos-fd ${sbindir}/bareos-fd)
+
+execute_process(COMMAND
+  ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/console/bconsole ${bindir}/bconsole)

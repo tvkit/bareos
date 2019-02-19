@@ -115,8 +115,12 @@ file(MAKE_DIRECTORY ${sbindir})
 file(MAKE_DIRECTORY ${bindir})
 file(MAKE_DIRECTORY ${scripts})
 file(MAKE_DIRECTORY ${working})
+
 file(REMOVE_RECURSE ${scripts}/ddl)
 file(RENAME ${PROJECT_BINARY_DIR}/ddl ${scripts}/ddl)
+
+
+file(RENAME ${PROJECT_BINARY_DIR}/console/bconsole.conf ${conf}/bconsole.conf)
 
 # create symlinks for the binaries
 

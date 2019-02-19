@@ -7,4 +7,6 @@ Director {
   address = localhost
   Password = "@dir_password@"
   Description = "Bareos Console credentials for local Director"
+  DirPort = @dir_port@
+
 }

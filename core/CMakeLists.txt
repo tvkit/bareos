@@ -58,10 +58,6 @@ SET(host ${CMAKE_SYSTEM})
 
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# enable "make test"
-enable_testing()
-set(CMAKE_CTEST_COMMAND ctest -V)
-include(CTest)
 
 # run git-info to collect sourcecode info
 file(MAKE_DIRECTORY build)

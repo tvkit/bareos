@@ -1,7 +1,7 @@
 #!/bin/sh
-. scripts/functions
 echo "$0: disabled"
 scripts/bareos-config initialize_database_driver
+. scripts/functions
 ${scripts}/drop_bareos_tables ${DBTYPE} >/dev/null 2>&1
 print_debug "creating database (${DBTYPE})"
 ${scripts}/create_bareos_tables ${DBTYPE} >/dev/null 2>&1

@@ -75,11 +75,11 @@ killproc() {
          if ${PS} -p "$pid">/dev/null 2>&1; then
             # TERM first, then KILL if not dead
             kill -TERM $pid 2>/dev/null
-            sleep 0.1
+            #sleep 0.1
             if ${PS} -p "$pid" >/dev/null 2>&1 ; then
-               sleep 0.1
+               #sleep 0.1
                if ${PS} -p "$pid" >/dev/null 2>&1 ; then
-                  sleep 0.3
+                 #sleep 0.3
                   if ${PS} -p "$pid" >/dev/null 2>&1 ; then
                      kill -KILL $pid 2>/dev/null
                   fi

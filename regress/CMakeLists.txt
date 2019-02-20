@@ -137,8 +137,16 @@ file(MAKE_DIRECTORY ${archivedir})
 file(REMOVE_RECURSE ${scripts}/ddl)
 file(RENAME ${PROJECT_BINARY_DIR}/ddl ${scripts}/ddl)
 
-
 file(RENAME ${PROJECT_BINARY_DIR}/console/bconsole.conf ${conf}/bconsole.conf)
+
+file(GLOB ALL_FILES "${CMAKE_BINARY_DIR}/regress/cats/*_bareos_*")
+foreach(CURRENT_FILE ${ALL_FILES})
+  string(REPLACE "${CMAKE_BINARY_DIR}/regress/cats/" "" TARGET_FILE ${CURRENT_FILE})
+  file(RENAME ${CURRENT_FILE} ${scripts}/${TARGET_FILE})
+  MESSAGE(STATUS "moved  ${scripts}/${TARGET_FILE}")
+endforeach()
+
+
 
 # create symlinks for the binaries
 
@@ -159,3 +167,7 @@ execute_process(COMMAND
 
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${scriptdir}/bareos ${bindir}/bareos)
+
+set(tests_dir ${PROJECT_BINARY_DIR}/tests)
+
+add_test(backup-bareos-test ${tests_dir}/backup-bareos-test)

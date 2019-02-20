@@ -1,9 +1,14 @@
 #!/bin/sh
+. scripts/functions
 echo "$0: disabled"
 scripts/bareos-config initialize_database_driver
+${scripts}/drop_bareos_tables ${DBTYPE} >/dev/null 2>&1
+print_debug "creating database (${DBTYPE})"
+${scripts}/create_bareos_tables ${DBTYPE} >/dev/null 2>&1
+${scripts}/make_bareos_tables ${DBTYPE} >/dev/null 2>&1
+${scripts}/grant_bareos_privileges ${DBTYPE} >/dev/null 2>&1
 
 exit 0
-. scripts/functions
 /bin/cp -f ${rscripts}/bareos-dir.conf ${conf}/bareos-dir.conf
 /bin/cp -f ${rscripts}/bareos-sd.conf ${conf}/bareos-sd.conf
 /bin/cp -f ${rscripts}/bareos-fd.conf ${conf}/bareos-fd.conf

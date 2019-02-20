@@ -1,5 +1,7 @@
 #!/bin/sh
 echo "$0: disabled"
+scripts/bareos-config initialize_database_driver
+
 exit 0
 . scripts/functions
 /bin/cp -f ${rscripts}/bareos-dir.conf ${conf}/bareos-dir.conf

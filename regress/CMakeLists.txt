@@ -42,8 +42,9 @@ set(dir_port 8101)
 set(dumps ${PROJECT_BINARY_DIR}/dumps)
 set(fd_password "fd_password")
 set(fd_port 8102)
-set(hostname "hostname")
-set(hostname ${CMAKE_HOST_SYSTEM_NAME})
+
+cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
+
 set(job_email "job_email")
 set(logdir "logdir")
 set(mon_dir_password "mon_dir_password")
@@ -52,7 +53,7 @@ set(mon_sd_password "mon_sd_password")
 set(piddir ${PROJECT_BINARY_DIR}/piddir)
 set(plugindir ${PROJECT_BINARY_DIR}/plugindir)
 set(plugindirtmp ${PROJECT_BINARY_DIR}/plugindirtmp)
-set(rscripts ${PROJECT_BINARY_DIR}/rscripts)
+set(rscripts ${PROJECT_BINARY_DIR}/scripts)
 set(sbindir ${PROJECT_BINARY_DIR}/sbin)
 set(scriptdir ${PROJECT_BINARY_DIR}/scripts)
 set(scripts ${PROJECT_BINARY_DIR}/scripts)
@@ -91,6 +92,7 @@ ConfigureFilesToRegress("regress"  "data" "*.tgz" COPYONLY)
 ConfigureFilesToRegress("regress"  "scripts" "functions" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "cleanup" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "copy-confs" @ONLY)
+ConfigureFilesToRegress("regress"  "scripts" "check_for_zombie_jobs" @ONLY)
 
 ConfigureFilesToRegress("core/src" "defaultconfigs" "*.conf" @ONLY)
 ConfigureFilesToRegress("core/src" "defaultconfigs" "*.in" @ONLY)
@@ -115,6 +117,7 @@ file(MAKE_DIRECTORY ${sbindir})
 file(MAKE_DIRECTORY ${bindir})
 file(MAKE_DIRECTORY ${scripts})
 file(MAKE_DIRECTORY ${working})
+file(MAKE_DIRECTORY ${archivedir})
 
 file(REMOVE_RECURSE ${scripts}/ddl)
 file(RENAME ${PROJECT_BINARY_DIR}/ddl ${scripts}/ddl)
@@ -138,3 +141,6 @@ execute_process(COMMAND
 
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${PROJECT_BINARY_DIR}/../core/src/console/bconsole ${bindir}/bconsole)
+
+execute_process(COMMAND
+  ${CMAKE_COMMAND} -E create_symlink ${scriptdir}/bareos ${bindir}/bareos)

@@ -20,6 +20,11 @@
 cmake_minimum_required(VERSION 3.0)
 project(bareos-regress)
 
+# extract  db version from cats.h
+file(STRINGS ${CMAKE_SOURCE_DIR}/core/src/cats/cats.h DB_VERSION_STRING REGEX .*BDB_VERSION.*)
+string(REGEX MATCH [0-9]+ BDB_VERSION ${DB_VERSION_STRING})
+
+find_program(PERL perl)
 
 # set variable values to be replaced by configure_file
 set(DEFAULT_DB_TYPE "postgresql")
@@ -34,7 +39,7 @@ set(confdir ${conf})
 set(configs ${conf})
 set(BAREOS_CONFIG_DIR ${conf})
 set(db_name "regress")
-set(db_password "db_password")
+set(db_password "")
 set(db_port "5432")
 set(db_user "regress")
 set(dir_password "dir_password")
@@ -69,6 +74,14 @@ set(working_dir ${PROJECT_BINARY_DIR}/working)
 
 set(BASEPORT ${dir_port})
 
+# for config-lib.sh: do not remove @DB___@ but replace them with the original
+set(DB_NAME @DB_NAME@)
+set(DB_USER @DB_USER@)
+set(DB_PASS @DB_PASS@)
+set(DB_VERSION @DB_VERSION@)
+
+
+
 
 function(ConfigureFilesToRegress srcdir subdirectory globexpression configure_option)
   MESSAGE(STATUS "ConfigureFilesToRegress from ${srcdir} to ${subdirectory} with glob ${globexpression} ${configure_option}" )
@@ -93,6 +106,7 @@ ConfigureFilesToRegress("regress"  "scripts" "functions" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "cleanup" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "copy-confs" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "check_for_zombie_jobs" @ONLY)
+ConfigureFilesToRegress("regress"  "scripts" "diff.pl.in" @ONLY)
 
 ConfigureFilesToRegress("core/src" "defaultconfigs" "*.conf" @ONLY)
 ConfigureFilesToRegress("core/src" "defaultconfigs" "*.in" @ONLY)

@@ -4,7 +4,7 @@
 #   then restore it.
 #
 TestName="backup-bareos-test"
-JobName=backup
+JobName=backup-bareos-fd
 . scripts/functions
 
 scripts/cleanup
@@ -62,7 +62,7 @@ messages
 @# now do a restore
 @#
 @$out $tmp/log2.out
-restore where=$tmp/bareos-restores select all done
+restore fileset=SelfTest where=$tmp/bareos-restores select all done
 yes
 wait
 messages

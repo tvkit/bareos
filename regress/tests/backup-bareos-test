@@ -62,7 +62,7 @@ messages
 @# now do a restore
 @#
 @$out $tmp/log2.out
-restore fileset=SelfTest where=$tmp/bareos-restores select all done
+restore client=bareos-fd fileset=SelfTest where=$tmp/bareos-restores select all done
 yes
 wait
 messages

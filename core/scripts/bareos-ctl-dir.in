@@ -10,7 +10,7 @@ export PS="ps"
 export AWK="@AWK@"
 
 BAREOS_DIRECTOR_BINARY="${BAREOS_BIN_DIR:-@sbindir@/bareos-dir}"
-BAREOS_CONFIG_DIR=${BAREOS_CONFIG_DIR:-@confdir@}
+export BAREOS_CONFIG_DIR=${BAREOS_CONFIG_DIR:-@confdir@}
 BAREOS_DIRECTOR_PORT=${BAREOS_DIRECTOR_PORT:-@dir_port@}
 BAREOS_DIRECTOR_USER=${BAREOS_DIRECTOR_USER:-@dir_user@}
 BAREOS_DIRECTOR_GROUP=${BAREOS_DIRECTOR_GROUP:-@dir_group@}
@@ -21,6 +21,7 @@ Bareos="@BAREOS@"
 # Source the generic functions.
 #
 . "${BAREOS_SCRIPT_DIR}/bareos-ctl-funcs"
+
 
 case "$1" in
     start)

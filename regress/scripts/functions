@@ -897,7 +897,7 @@ plugindirtmp=${plugindirtmp:-"$working/plugins"}
 conf=${conf:-"$cwd/bin"}
 confdir="$conf"
 configs="$conf"
-BAREOS_CONFIG_DIR="$conf"
+#BAREOS_CONFIG_DIR="$conf"
 
 # Regress scripts
 rscripts=${rscripts:-"$cwd/scripts"}

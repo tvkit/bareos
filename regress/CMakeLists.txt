@@ -43,17 +43,23 @@ string(REGEX MATCH [0-9]+ BDB_VERSION ${DB_VERSION_STRING})
 
 find_program(PERL perl)
 
+
+
 # set variable values to be replaced by configure_file
 set(DEFAULT_DB_TYPE "postgresql")
-set(TAPEDRIVE "TAPEDRIVE")
+#set(TAPEDRIVE "TAPEDRIVE")
+
 set(archivedir "${PROJECT_BINARY_DIR}/archivedir")
 set(backenddir "${PROJECT_BINARY_DIR}/../core/src/cats")
+
 set(basename "basename")
 set(bin ${PROJECT_BINARY_DIR}/bin)
 set(bindir ${PROJECT_BINARY_DIR}/bin)
-set(conf ${PROJECT_BINARY_DIR}/defaultconfigs)
-set(confdir ${conf})
-set(configs ${conf})
+
+#set(conf ${PROJECT_BINARY_DIR}/defaultconfigs)
+#set(confdir ${conf})
+#set(configs ${conf})
+
 set(BAREOS_CONFIG_DIR ${conf})
 set(db_name "regress")
 set(db_password "")
@@ -76,7 +82,9 @@ set(piddir ${PROJECT_BINARY_DIR}/piddir)
 set(plugindir ${PROJECT_BINARY_DIR}/plugindir)
 set(plugindirtmp ${PROJECT_BINARY_DIR}/plugindirtmp)
 set(rscripts ${PROJECT_BINARY_DIR}/scripts)
+
 set(sbindir ${PROJECT_BINARY_DIR}/sbin)
+
 set(scriptdir ${PROJECT_BINARY_DIR}/scripts)
 set(scripts ${PROJECT_BINARY_DIR}/scripts)
 set(sd_password "sd_password")
@@ -90,7 +98,7 @@ set(tmpsrc ${PROJECT_BINARY_DIR}/tmpsrc)
 set(working ${PROJECT_BINARY_DIR}/working)
 set(working_dir ${PROJECT_BINARY_DIR}/working)
 
-set(BASEPORT ${dir_port})
+#set(BASEPORT ${dir_port})
 
 # for config-lib.sh: do not remove @DB___@ but replace them with the original
 set(DB_NAME @DB_NAME@)
@@ -102,7 +110,6 @@ set(DB_VERSION @DB_VERSION@)
 
 
 
-ConfigureFilesToRegress("regress"  "." "config.in" @ONLY)
 ConfigureFilesToRegress("regress"  "data" "*.tgz" COPYONLY)
 
 ConfigureFilesToRegress("regress"  "scripts" "functions" @ONLY)
@@ -139,7 +146,7 @@ file(MAKE_DIRECTORY ${archivedir})
 file(REMOVE_RECURSE ${scripts}/ddl)
 file(RENAME ${PROJECT_BINARY_DIR}/ddl ${scripts}/ddl)
 
-file(RENAME ${PROJECT_BINARY_DIR}/console/bconsole.conf ${conf}/bconsole.conf)
+#file(RENAME ${PROJECT_BINARY_DIR}/console/bconsole.conf ${conf}/bconsole.conf)
 
 file(GLOB ALL_FILES "${CMAKE_BINARY_DIR}/regress/cats/*_bareos_*")
 foreach(CURRENT_FILE ${ALL_FILES})
@@ -150,10 +157,69 @@ endforeach()
 
 
 set(tests_dir ${PROJECT_BINARY_DIR}/tests)
-set(SYSTEM_TESTS backup-bareos-test)
+set(SYSTEM_TESTS backup-bareos-test backup-bareos-test2)
+set(BASEPORT 60001)
+
 foreach(TEST_NAME ${SYSTEM_TESTS})
+  # base directory for this test
+  set(current_test_directory ${PROJECT_BINARY_DIR}/tests/${TEST_NAME})
+
+  #set(basename ${current_test_directory}/)
+
+  #db parameters
+
+  set(db_password "")
+  set(db_name "regress")
+  set(db_user "regress")
+
+  set(job_email root@localhost)
+
+  set(dir_password dir_password)
+  set(fd_password fd_password)
+  set(mon_dir_password mon_dir_password)
+  set(mon_fd_password mon_fd_password)
+  set(mon_sd_password mon_sd_password)
+  set(sd_password sd_password)
+
+  math(EXPR dir_port "${BASEPORT} + 0")
+  math(EXPR  fd_port "${BASEPORT} + 1")
+  math(EXPR  sd_port "${BASEPORT} + 2")
+
+
+  # set(DEFAULT_DB_TYPE )
+  set(archivedir ${current_test_directory}/storage)
+  set(confdir ${current_test_directory}/etc/bareos)
+
+  set(logdir ${current_test_directory}/log)
+  set(tmpdir ${current_test_directory}/tmp)
+  set(working_dir ${current_test_directory}/working)
+
+  file(MAKE_DIRECTORY ${archivedir})
+  file(MAKE_DIRECTORY ${confdir})
+  file(MAKE_DIRECTORY ${logdir})
+  file(MAKE_DIRECTORY ${tmpdir})
+  file(MAKE_DIRECTORY ${working_dir})
+
+  # common to all tests, set above and commented out here
+
+  #set(hostname ${current_test_directory}/)
+  # directories where things are loaded
+  #set(backenddir ${current_test_directory}/)
+  #set(plugindir ${current_test_directory}/)
+
+  #set(sbindir ${current_test_directory}/sbin)
+  #set(bindir ${current_test_directory}/)
+  #set(scriptdir ${current_test_directory}/)
+
   ConfigureFilesToRegress("regress"  "tests/${TEST_NAME}" "*" @ONLY)
-  add_test(${TEST_NAME} ${tests_dir}/${TEST_NAME}/${TEST_NAME})
+  configure_file("config.in" "tests/${TEST_NAME}/config" @ONLY)
+  add_test(NAME ${TEST_NAME}
+    COMMAND ${tests_dir}/${TEST_NAME}/testrunner
+    WORKING_DIRECTORY ${tests_dir}/${TEST_NAME})
+  math(EXPR BASEPORT "${BASEPORT} + 10")
+
+
+
 endforeach()
 
 

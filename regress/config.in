@@ -6,18 +6,18 @@ db_password=""
 PROJECT_BINARY_DIR=@PROJECT_BINARY_DIR@
 bin=${PROJECT_BINARY_DIR}/bin
 
-tests_own_dir=${PROJECT_BINARY_DIR}/tests/${TestName}
+current_test_directory=${PROJECT_BINARY_DIR}/tests/@TEST_NAME@
 
-conf=${tests_own_dir}/etc/bareos
+conf=${current_test_directory}/etc/bareos
 confdir=${conf}
 configs=${conf}
 BAREOS_CONFIG_DIR=${conf}
 
-working=${tests_own_dir}/working
+working=${current_test_directory}/working
 working_dir=${working}
 
 
-dumps=${tests_own_dir}/dumps
+dumps=${current_test_directory}/dumps
 plugindir=${PROJECT_BINARY_DIR}/plugins
 plugindirtmp=${PROJECT_BINARY_DIR}/pluginstmp
 rscripts=${PROJECT_BINARY_DIR}/scripts
@@ -32,4 +32,5 @@ export BAREOS_CONFIG_DIR=${conf}
 export BAREOS_SCRIPTS_DIR=${scripts}
 export BAREOS_SBIN_DIR=${bin}
 export BAREOS_WORKING_DIR=${working}
-export BASEPORT=8101
+export BASEPORT=@BASEPORT@
+export scripts

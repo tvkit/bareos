@@ -112,7 +112,7 @@ cleanup()
 #
 setup_data()
 {
-    SRC=${1:-data/small.tgz}
+    SRC=${1:-../../data/small.tgz}
     RC=0
 
     if [ -z "$SRC" ]; then

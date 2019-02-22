@@ -15,6 +15,7 @@ BAREOS_CONFIG_DIR=${conf}
 
 working=${current_test_directory}/working
 working_dir=${working}
+tmp=${current_test_directory}/tmp
 
 
 dumps=${current_test_directory}/dumps
@@ -23,7 +24,6 @@ plugindirtmp=${PROJECT_BINARY_DIR}/pluginstmp
 rscripts=${PROJECT_BINARY_DIR}/scripts
 scripts=${PROJECT_BINARY_DIR}/scripts
 src=${PROJECT_BINARY_DIR}/src
-tmp=${PROJECT_BINARY_DIR}/tmp
 tmpsrc=${PROJECT_BINARY_DIR}/tmpsrc
 DBTYPE=@DEFAULT_DB_TYPE@
 
@@ -39,3 +39,4 @@ export db_name
 export db_password
 export db_user
 export DBTYPE
+export tmp

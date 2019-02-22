@@ -4,6 +4,8 @@
 #   then restore it.
 #
 TestName="backup-bareos-test"
+export TestName
+
 JobName=backup-bareos-fd
 . scripts/functions
 

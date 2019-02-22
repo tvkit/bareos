@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh -x
 #
 # bareos-ctl-dir This shell script takes care of starting and stopping
 #		 the bareos Director daemon
@@ -8,6 +8,8 @@
 export PSCMD="@PSCMD@"
 export PS="ps"
 export AWK="@AWK@"
+export PIDOF="@PIDOF@"
+export PGREP="@PGREP@"
 
 BAREOS_DIRECTOR_BINARY="${BAREOS_BIN_DIR:-@sbindir@/bareos-dir}"
 export BAREOS_CONFIG_DIR=${BAREOS_CONFIG_DIR:-@confdir@}
@@ -16,6 +18,8 @@ BAREOS_DIRECTOR_USER=${BAREOS_DIRECTOR_USER:-@dir_user@}
 BAREOS_DIRECTOR_GROUP=${BAREOS_DIRECTOR_GROUP:-@dir_group@}
 BAREOS_SCRIPT_DIR=${BAREOS_SCRIPT_DIR:-@scriptdir@}
 Bareos="@BAREOS@"
+
+echo "$0: BAREOS_CONFIG_DIR is ${BAREOS_CONFIG_DIR}"
 
 #
 # Source the generic functions.

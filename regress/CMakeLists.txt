@@ -52,7 +52,7 @@ set(DEFAULT_DB_TYPE "postgresql")
 set(archivedir "${PROJECT_BINARY_DIR}/archivedir")
 set(backenddir "${PROJECT_BINARY_DIR}/../core/src/cats")
 
-set(basename "basename")
+set(basename test)
 set(bin ${PROJECT_BINARY_DIR}/bin)
 set(bindir ${PROJECT_BINARY_DIR}/bin)
 
@@ -169,7 +169,9 @@ foreach(TEST_NAME ${SYSTEM_TESTS})
   #db parameters
 
   set(db_password "")
-  set(db_name "regress")
+  #db_name is regress-${TEST_NAME} replacing - by _
+  string(REPLACE "-" "_" db_name "regress-${TEST_NAME}")
+  #set(db_name "regress-${TEST_NAME}")
   set(db_user "regress")
 
   set(job_email root@localhost)

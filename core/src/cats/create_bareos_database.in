@@ -24,10 +24,6 @@
 # Bareos database for PostgreSQL, Ingres, MySQL, or SQLite.
 #
 
-#
-# Source the Bareos config functions.
-#
-
 # change to root dir
 cd /
 
@@ -72,7 +68,7 @@ if [ -z "${db_type}" ]; then
    db_type="${default_db_type}"
 fi
 
-echo "Creating ${db_type} database"
+echo "Creating ${db_type} database with name ${db_name}"
 
 bindir=`get_database_utility_path ${db_type}`
 if [ ! -z "${bindir}" ]; then

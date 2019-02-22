@@ -1,7 +1,7 @@
 # DB parameters
-db_name="regress"
-db_user="regress"
-db_password=""
+db_name="@db_name@"
+db_user="@db_user@"
+db_password="@db_password@"
 
 PROJECT_BINARY_DIR=@PROJECT_BINARY_DIR@
 bin=${PROJECT_BINARY_DIR}/bin
@@ -25,6 +25,7 @@ scripts=${PROJECT_BINARY_DIR}/scripts
 src=${PROJECT_BINARY_DIR}/src
 tmp=${PROJECT_BINARY_DIR}/tmp
 tmpsrc=${PROJECT_BINARY_DIR}/tmpsrc
+DBTYPE=@DEFAULT_DB_TYPE@
 
 # exported variables used by start/stop and other bareos scripts
 # to override the defaults
@@ -34,3 +35,7 @@ export BAREOS_SBIN_DIR=${bin}
 export BAREOS_WORKING_DIR=${working}
 export BASEPORT=@BASEPORT@
 export scripts
+export db_name
+export db_password
+export db_user
+export DBTYPE

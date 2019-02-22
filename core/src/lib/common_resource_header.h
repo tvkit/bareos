@@ -36,7 +36,6 @@ class CommonResourceHeader {
   char* name;                       /* Resource name */
   char* desc;                       /* Resource description */
   uint32_t rcode;                   /* Resource id or type */
-  int32_t refcnt;                   /* Reference count for releasing */
   char item_present[MAX_RES_ITEMS]; /* Set if item is present in conf file */
   char inherit_content[MAX_RES_ITEMS]; /* Set if item has inherited content */
 };

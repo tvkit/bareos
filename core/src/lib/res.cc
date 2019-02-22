@@ -1786,13 +1786,6 @@ bool BareosResource::PrintConfig(PoolMem& buff,
   int rindex;
   bool inherited = false;
 
-  /*
-   * If entry is not used, then there is nothing to print.
-   */
-  if (this->hdr.rcode < (uint32_t)my_config.r_first_ || this->hdr.refcnt <= 0) {
-    return true;
-  }
-
   rindex = this->hdr.rcode - my_config.r_first_;
 
   /*

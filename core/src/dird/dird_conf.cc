@@ -3908,7 +3908,6 @@ static void CreateAndAddUserAgentConsoleResource(ConfigurationParser& my_config)
   console.hdr.name = bstrdup("*UserAgent*");
   console.hdr.desc = bstrdup("root console definition");
   console.hdr.rcode = 1013;
-  console.hdr.refcnt = 1;
 
   AddResourceCopyToEndOfChain((UnionOfResources*)&console, R_CONSOLE);
 }

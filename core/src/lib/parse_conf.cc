@@ -681,7 +681,6 @@ void ConfigurationParser::InitResource(int type,
   res_all = ((UnionOfResources*)res_all_);
   if (initres != nullptr) { initres(res_all); }
   res_all->hdr.rcode = type;
-  res_all->hdr.refcnt = 1;
 
   /*
    * See what pass of the config parsing this is.

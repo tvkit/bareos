@@ -170,4 +170,5 @@ execute_process(COMMAND
 
 set(tests_dir ${PROJECT_BINARY_DIR}/tests)
 
-add_test(backup-bareos-test ${tests_dir}/backup-bareos-test)
+set (system_test_name backup-bareos-test)
+add_test(${system_test_name} ${tests_dir}/${system_test_name}/${system_test_name})

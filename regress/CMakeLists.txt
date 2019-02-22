@@ -20,6 +20,23 @@
 cmake_minimum_required(VERSION 3.0)
 project(bareos-regress)
 
+
+function(ConfigureFilesToRegress srcdir subdirectory globexpression configure_option)
+  MESSAGE(STATUS "ConfigureFilesToRegress from ${srcdir} to ${subdirectory} with glob ${globexpression} ${configure_option}" )
+  file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/${subdirectory})
+  file(GLOB_RECURSE ALL_FILES "${CMAKE_SOURCE_DIR}/${srcdir}/${subdirectory}/${globexpression}")
+  foreach(CURRENT_FILE ${ALL_FILES})
+    string(REPLACE "${CMAKE_SOURCE_DIR}/" "" TARGET_FILE ${CURRENT_FILE})
+    string(REPLACE ".in" "" TARGET_FILE ${TARGET_FILE})
+    MESSAGE(STATUS "configuring  ${TARGET_FILE}" )
+    string(REPLACE "${srcdir}/${subdirectory}" "" TARGET_FILE ${TARGET_FILE})
+    configure_file(${CURRENT_FILE} ${PROJECT_BINARY_DIR}/${subdirectory}/${TARGET_FILE} ${configure_option})
+    #    MESSAGE(STATUS "created ${CURRENT_FILE} ->  ${PROJECT_BINARY_DIR}/${subdirectory}/${TARGET_FILE}" )
+  endforeach()
+endfunction()
+
+
+
 # extract  db version from cats.h
 file(STRINGS ${CMAKE_SOURCE_DIR}/core/src/cats/cats.h DB_VERSION_STRING REGEX .*BDB_VERSION.*)
 string(REGEX MATCH [0-9]+ BDB_VERSION ${DB_VERSION_STRING})
@@ -51,7 +68,7 @@ set(fd_port 8102)
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 
 set(job_email "job_email")
-set(logdir "logdir")
+set(logdir "log")
 set(mon_dir_password "mon_dir_password")
 set(mon_fd_password "mon_fd_password")
 set(mon_sd_password "mon_sd_password")
@@ -84,22 +101,7 @@ set(DB_VERSION @DB_VERSION@)
 
 
 
-function(ConfigureFilesToRegress srcdir subdirectory globexpression configure_option)
-  MESSAGE(STATUS "ConfigureFilesToRegress from ${srcdir} to ${subdirectory} with glob ${globexpression} ${configure_option}" )
-  file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/${subdirectory})
-  file(GLOB_RECURSE ALL_FILES "${CMAKE_SOURCE_DIR}/${srcdir}/${subdirectory}/${globexpression}")
-  foreach(CURRENT_FILE ${ALL_FILES})
-    string(REPLACE "${CMAKE_SOURCE_DIR}/" "" TARGET_FILE ${CURRENT_FILE})
-    string(REPLACE ".in" "" TARGET_FILE ${TARGET_FILE})
-    MESSAGE(STATUS "configuring  ${TARGET_FILE}" )
-    string(REPLACE "${srcdir}/${subdirectory}" "" TARGET_FILE ${TARGET_FILE})
-    configure_file(${CURRENT_FILE} ${PROJECT_BINARY_DIR}/${subdirectory}/${TARGET_FILE} ${configure_option})
-    #    MESSAGE(STATUS "created ${CURRENT_FILE} ->  ${PROJECT_BINARY_DIR}/${subdirectory}/${TARGET_FILE}" )
-  endforeach()
-endfunction()
 
-
-ConfigureFilesToRegress("regress"  "tests" "*" @ONLY)
 ConfigureFilesToRegress("regress"  "." "config.in" @ONLY)
 ConfigureFilesToRegress("regress"  "data" "*.tgz" COPYONLY)
 
@@ -147,6 +149,13 @@ foreach(CURRENT_FILE ${ALL_FILES})
 endforeach()
 
 
+set(tests_dir ${PROJECT_BINARY_DIR}/tests)
+set(SYSTEM_TESTS backup-bareos-test)
+foreach(TEST_NAME ${SYSTEM_TESTS})
+  ConfigureFilesToRegress("regress"  "tests/${TEST_NAME}" "*" @ONLY)
+  add_test(${TEST_NAME} ${tests_dir}/${TEST_NAME}/${TEST_NAME})
+endforeach()
+
 
 # create symlinks for the binaries
 
@@ -168,7 +177,4 @@ execute_process(COMMAND
 execute_process(COMMAND
   ${CMAKE_COMMAND} -E create_symlink ${scriptdir}/bareos ${bindir}/bareos)
 
-set(tests_dir ${PROJECT_BINARY_DIR}/tests)
 
-set (system_test_name backup-bareos-test)
-add_test(${system_test_name} ${tests_dir}/${system_test_name}/${system_test_name})

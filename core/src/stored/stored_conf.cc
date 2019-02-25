@@ -697,7 +697,6 @@ static void DumpResource(int type,
  */
 static bool SaveResource(int type, ResourceItem* items, int pass)
 {
-  UnionOfResources* res;
   int rindex = type - R_FIRST;
   int i;
   int error = 0;
@@ -729,8 +728,8 @@ static bool SaveResource(int type, ResourceItem* items, int pass)
    * record.
    */
   if (pass == 2) {
+    UnionOfResources* res = nullptr;
     DeviceResource* dev = nullptr;
-    int errstat;
 
     switch (type) {
       case R_DEVICE:
@@ -786,6 +785,7 @@ static bool SaveResource(int type, ResourceItem* items, int pass)
             dev->changer_res = (AutochangerResource*)&res->res_changer;
           }
 
+          int errstat;
           if ((errstat = RwlInit(&res->res_changer.changer_lock,
                                  PRIO_SD_ACH_ACCESS)) != 0) {
             BErrNo be;
@@ -813,31 +813,37 @@ static bool SaveResource(int type, ResourceItem* items, int pass)
     return (error == 0);
   }
 
-  /*
-   * Common
-   */
   if (!error) {
-    res = (UnionOfResources*)malloc(resources[rindex].size);
-    memcpy(res, &res_all, resources[rindex].size);
+    UnionOfResources* new_resource;
+    switch (resources[rindex].rcode) {
+      case R_DEVICE: {
+        DeviceResource* p = new DeviceResource(res_all.res_dev);
+        new_resource = reinterpret_cast<UnionOfResources*>(p);
+        break;
+      }
+      default:
+        new_resource = (UnionOfResources*)malloc(resources[rindex].size);
+        memcpy(new_resource, &res_all, resources[rindex].size);
+        break;
+    }
     if (!res_head[rindex]) {
-      res_head[rindex] = (CommonResourceHeader*)res; /* store first entry */
+      res_head[rindex] =
+          (CommonResourceHeader*)new_resource; /* store first entry */
     } else {
+      /* Add new resource to end of chain */
       CommonResourceHeader *next, *last;
-      /*
-       * Add new res to end of chain
-       */
       for (last = next = res_head[rindex]; next; next = next->next) {
         last = next;
-        if (bstrcmp(next->name, res->res_dir.name())) {
+        if (bstrcmp(next->name, new_resource->res_dir.name())) {
           Emsg2(M_ERROR_TERM, 0,
                 _("Attempt to define second \"%s\" resource named \"%s\" is "
                   "not permitted.\n"),
-                resources[rindex].name, res->res_dir.name());
+                resources[rindex].name, new_resource->res_dir.name());
         }
       }
-      last->next = (CommonResourceHeader*)res;
-      Dmsg2(90, "Inserting %s res: %s\n", my_config->res_to_str(type),
-            res->res_dir.name());
+      last->next = (CommonResourceHeader*)new_resource;
+      Dmsg2(90, "Inserting %s new_resource: %s\n", my_config->res_to_str(type),
+            new_resource->res_dir.name());
     }
   }
   return (error == 0);

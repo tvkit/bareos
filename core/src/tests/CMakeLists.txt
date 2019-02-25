@@ -159,6 +159,17 @@ target_link_libraries(test_connection_setup ${LINK_LIBRARIES})
 gtest_discover_tests(test_connection_setup TEST_PREFIX gtest:)
 
 
+####### test_stored_multi_device ###############################
+add_executable(test_stored_multi_device
+  multi_device_test.cc
+)
+
+target_link_libraries(test_stored_multi_device ${LINK_LIBRARIES})
+
+add_test(NAME test_stored_multi_device COMMAND test_stored_multi_device)
+gtest_discover_tests(test_stored_multi_device)
+
+
 ####### test_ndmp_address_translate ###############################
 add_executable(test_ndmp_address_translate
   ndmp_address_translate_test.cc

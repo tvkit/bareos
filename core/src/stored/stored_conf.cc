@@ -110,6 +110,7 @@ DeviceResource::DeviceResource()
     , unmount_command(nullptr)
     , write_part_command(nullptr)
     , free_space_command(nullptr)
+    , multi_devices_count(0)
 
     , dev(nullptr)
     , changer_res(nullptr)
@@ -276,6 +277,7 @@ static ResourceItem dev_items[] = {
   {"EofOnErrorIsEot", CFG_TYPE_BOOL, ITEM(res_dev.eof_on_error_is_eot), 0, CFG_ITEM_DEFAULT, NULL, "18.2.4-",
       "If Yes, Bareos will treat any read error at an end-of-file mark as end-of-tape. You should only set "
       "this option if your tape-drive fails to detect end-of-tape while reading."},
+  {"MultiDevicesCount", CFG_TYPE_PINT32, ITEM(res_dev.multi_devices_count), 0, CFG_ITEM_DEFAULT, "0", NULL, NULL},
   {NULL, 0, {0}, 0, 0, NULL, NULL, NULL}};
 
 /**
@@ -559,6 +561,14 @@ static void ParseConfigCb(LEX* lc, ResourceItem* item, int index, int pass)
   }
 }
 
+static void CreateMultiDevice(ConfigurationParser& my_config)
+{
+  CommonResourceHeader* p = nullptr;
+  while ((p = my_config.GetNextRes(R_DEVICE, p))) {
+    DeviceResource* device = reinterpret_cast<DeviceResource*>(p);
+  }
+}
+
 static void ConfigReadyCallback(ConfigurationParser& my_config)
 {
   std::map<int, std::string> map{
@@ -570,6 +580,7 @@ static void ConfigReadyCallback(ConfigurationParser& my_config)
       {R_DEVICE, "R_DEVICE"},
       {R_AUTOCHANGER, "R_AUTOCHANGER"}};
   my_config.InitializeQualifiedResourceNameTypeConverter(map);
+  CreateMultiDevice(my_config);
 }
 
 ConfigurationParser* InitSdConfig(const char* configfile, int exit_code)
@@ -870,6 +881,8 @@ static void FreeResource(CommonResourceHeader* sres, int type)
   if (res->res_dir.hdr.name) { free(res->res_dir.hdr.name); }
   if (res->res_dir.hdr.desc) { free(res->res_dir.hdr.desc); }
 
+  bool resource_uses_smalloc_memory = true;
+
   switch (type) {
     case R_DIRECTOR:
       if (res->res_dir.password_.value) { free(res->res_dir.password_.value); }
@@ -976,6 +989,7 @@ static void FreeResource(CommonResourceHeader* sres, int type)
       }
       break;
     case R_DEVICE:
+      resource_uses_smalloc_memory = false;
       if (res->res_dev.media_type) { free(res->res_dev.media_type); }
       if (res->res_dev.device_name) { free(res->res_dev.device_name); }
       if (res->res_dev.device_options) { free(res->res_dev.device_options); }
@@ -1009,10 +1023,18 @@ static void FreeResource(CommonResourceHeader* sres, int type)
       Dmsg1(0, _("Unknown resource type %d\n"), type);
       break;
   }
-  /*
-   * Common stuff again -- free the resource, recurse to next one
-   */
-  if (res) { free(res); }
+    /*
+     * Common stuff again -- free the resource, recurse to next one
+     */
+#ifdef SMARTALLOC
+  if (resource_uses_smalloc_memory) {
+    if (res) { free(res); }
+  } else {
+    delete res;
+  }
+#else
+#error "Check free of resource memory"
+#endif
   if (nres) { my_config->FreeResourceCb_(nres, type); }
 }
 

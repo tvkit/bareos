@@ -177,19 +177,20 @@ class DeviceResource : public BareosResource {
   uint16_t autodeflate; /**< Perform auto deflation in this IO direction */
   uint16_t autoinflate; /**< Perform auto inflation in this IO direction */
   utime_t
-      vol_poll_interval;    /**< Interval between polling volume during mount */
-  int64_t max_volume_size;  /**< Max bytes to put on one volume */
-  int64_t max_file_size;    /**< Max file size in bytes */
-  int64_t volume_capacity;  /**< Advisory capacity */
-  int64_t max_spool_size;   /**< Max spool size for all jobs */
+      vol_poll_interval;   /**< Interval between polling volume during mount */
+  int64_t max_volume_size; /**< Max bytes to put on one volume */
+  int64_t max_file_size;   /**< Max file size in bytes */
+  int64_t volume_capacity; /**< Advisory capacity */
+  int64_t max_spool_size;  /**< Max spool size for all jobs */
   int64_t max_job_spool_size; /**< Max spool size for any single job */
 
-  int64_t max_part_size;    /**< Max part size */
-  char* mount_point;        /**< Mount point for require mount devices */
-  char* mount_command;      /**< Mount command */
-  char* unmount_command;    /**< Unmount command */
-  char* write_part_command; /**< Write part command */
-  char* free_space_command; /**< Free space command */
+  int64_t max_part_size;        /**< Max part size */
+  char* mount_point;            /**< Mount point for require mount devices */
+  char* mount_command;          /**< Mount command */
+  char* unmount_command;        /**< Unmount command */
+  char* write_part_command;     /**< Write part command */
+  char* free_space_command;     /**< Free space command */
+  uint32_t multi_devices_count; /**< Number of multi devices */
 
   /*
    * The following are set at runtime

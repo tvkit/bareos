@@ -1,9 +1,7 @@
 /*
    BAREOS® - Backup Archiving REcovery Open Sourced
 
-   Copyright (C) 2000-2012 Free Software Foundation Europe e.V.
-   Copyright (C) 2011-2012 Planets Communications B.V.
-   Copyright (C) 2013-2016 Bareos GmbH & Co. KG
+   Copyright (C) 2019-2019 Bareos GmbH & Co. KG
 
    This program is Free Software; you can redistribute it and/or
    modify it under the terms of version three of the GNU Affero General Public
@@ -21,31 +19,25 @@
    02110-1301, USA.
 */
 
-#include "stored_globals.h"
+#include "gtest/gtest.h"
+#include "include/bareos.h"
+#include "lib/parse_conf.h"
+#include "stored/stored_conf.h"
+#include "stored/stored_globals.h"
 
-namespace storagedaemon {
+typedef std::unique_ptr<ConfigurationParser> PConfigParser;
 
-ConfigurationParser* my_config = nullptr;
+static void InitGlobals() { storagedaemon::my_config = nullptr; }
 
-StorageResource* me;
-char* configfile;
-
-void* start_heap = nullptr;
-bool init_done = false;
-uint32_t vol_session_time;
-
-static std::mutex mutex_;
-static uint32_t vol_session_id_ = 0;
-
-uint32_t NewVolSessionId()
+TEST(Stored, MultiDeviceTest)
 {
-  uint32_t id;
+  std::string path_to_config =
+      PROJECT_SOURCE_DIR "/src/tests/configs/stored_multi_device/";
 
-  mutex_.lock();
-  vol_session_id_++;
-  id = vol_session_id_;
-  mutex_.unlock();
-  return id;
+  PConfigParser my_config(
+      storagedaemon::InitSdConfig(path_to_config.c_str(), M_INFO));
+  storagedaemon::my_config = my_config.get();
+
+  ASSERT_TRUE(my_config->ParseConfig());
+  ASSERT_TRUE(true);
 }
-
-} /* namespace storagedaemon */

@@ -157,7 +157,9 @@ endforeach()
 
 
 set(tests_dir ${PROJECT_BINARY_DIR}/tests)
-set(SYSTEM_TESTS backup-bareos-test backup-bareos-test2)
+set(SYSTEM_TESTS
+  backup-bareos-test)
+
 set(BASEPORT 60001)
 
 foreach(TEST_NAME ${SYSTEM_TESTS})

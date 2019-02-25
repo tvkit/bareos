@@ -1,8 +1,11 @@
-#!/bin/sh -x
+#!/bin/sh
+echo "$0: disabled"
+${scripts}/bareos-config initialize_database_driver
+. ${scripts}/functions
 
-#
-# Script to setup running Bareos regression tests
-#
+print_debug "drop database \"${db_name}\" (${DBTYPE})"
+#${scripts}/drop_bareos_tables ${DBTYPE} >/dev/null 2>&1
+${scripts}/drop_bareos_database ${DBTYPE} >/dev/null 2>&1
 
 BAREOS_SOURCE=$(cd .. && pwd)
 
@@ -109,3 +112,10 @@ mv bin/bareos-dir.d/console/admin.conf.example bin/bareos-dir.d/console/admin.co
 echo "webui can be started with  'php -S 127.0.0.1:9100 -t ../webui/public/'"
 
 exit 0
+/bin/cp -f ${rscripts}/bareos-dir.conf ${conf}/bareos-dir.conf
+/bin/cp -f ${rscripts}/bareos-sd.conf ${conf}/bareos-sd.conf
+/bin/cp -f ${rscripts}/bareos-fd.conf ${conf}/bareos-fd.conf
+/bin/cp -f ${rscripts}/bconsole.conf ${conf}/bconsole.conf
+/bin/cp -f ${rscripts}/bconsole.conf ${conf}/bat.conf
+
+${rscripts}/set_tape_options

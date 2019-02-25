@@ -114,7 +114,7 @@ ConfigureFilesToRegress("regress"  "data" "*.tgz" COPYONLY)
 
 ConfigureFilesToRegress("regress"  "scripts" "functions" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "cleanup" @ONLY)
-ConfigureFilesToRegress("regress"  "scripts" "copy-confs" @ONLY)
+ConfigureFilesToRegress("regress"  "scripts" "setup" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "check_for_zombie_jobs" @ONLY)
 ConfigureFilesToRegress("regress"  "scripts" "diff.pl.in" @ONLY)
 

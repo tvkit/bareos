@@ -30,6 +30,7 @@
 
 #define NEED_JANSSON_NAMESPACE 1
 #include "include/bareos.h"
+#include "stored/stored_conf.h"
 #include "stored/stored.h"
 #include "stored/stored_globals.h"
 #include "stored/sd_backends.h"
@@ -60,6 +61,61 @@ static void DumpResource(int type,
  */
 static UnionOfResources res_all;
 static int32_t res_all_size = sizeof(res_all);
+
+DeviceResource::DeviceResource()
+    : BareosResource()
+    , media_type(nullptr)
+    , device_name(nullptr)
+    , device_options(nullptr)
+    , diag_device_name(nullptr)
+    , changer_name(nullptr)
+    , changer_command(nullptr)
+    , alert_command(nullptr)
+    , spool_directory(nullptr)
+    , dev_type(B_UNKNOWN_DEV)
+    , label_type(B_BAREOS_LABEL)
+    , autoselect(true)
+    , norewindonclose(true)
+    , drive_tapealert_enabled(false)
+    , drive_crypto_enabled(false)
+    , query_crypto_status(false)
+    , collectstats(false)
+    , eof_on_error_is_eot(false)
+    , drive(-1)
+    , drive_index(-1)
+    , cap_bits{0}
+    , max_changer_wait(300)
+    , max_rewind_wait(300)
+    , max_open_wait(300)
+    , max_open_vols(1)
+    , label_block_size(64512)
+    , min_block_size(0)
+    , max_block_size(0)
+    , max_network_buffer_size(0)
+    , max_concurrent_jobs(0)
+    , autodeflate_algorithm(0)
+    , autodeflate_level(6)
+    , autodeflate(0)
+    , autoinflate(0)
+    , vol_poll_interval(300)
+    , max_volume_size(0)
+    , max_file_size(1000000000)
+    , volume_capacity(0)
+    , max_spool_size(0)
+    , max_job_spool_size(0)
+
+    , max_part_size(0)
+    , mount_point(nullptr)
+    , mount_command(nullptr)
+    , unmount_command(nullptr)
+    , write_part_command(nullptr)
+    , free_space_command(nullptr)
+
+    , dev(nullptr)
+    , changer_res(nullptr)
+{
+  return;
+}
 
 /* clang-format off */
 

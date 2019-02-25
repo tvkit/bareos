@@ -168,7 +168,6 @@ class DeviceResource : public BareosResource {
   uint32_t label_block_size;    /**< block size of the label block*/
   uint32_t min_block_size;      /**< Current Minimum block size */
   uint32_t max_block_size;      /**< Current Maximum block size */
-  uint32_t max_volume_jobs;     /**< Max jobs to put on one volume */
   uint32_t max_network_buffer_size; /**< Max network buf size */
   uint32_t max_concurrent_jobs;     /**< Maximum concurrent jobs this drive */
   uint32_t autodeflate_algorithm;   /**< Compression algorithm to use for
@@ -179,7 +178,6 @@ class DeviceResource : public BareosResource {
   uint16_t autoinflate; /**< Perform auto inflation in this IO direction */
   utime_t
       vol_poll_interval;    /**< Interval between polling volume during mount */
-  int64_t max_volume_files; /**< Max files to put on one volume */
   int64_t max_volume_size;  /**< Max bytes to put on one volume */
   int64_t max_file_size;    /**< Max file size in bytes */
   int64_t volume_capacity;  /**< Advisory capacity */
@@ -199,7 +197,8 @@ class DeviceResource : public BareosResource {
   Device* dev; /* Pointer to physical dev -- set at runtime */
   AutochangerResource* changer_res; /* Pointer to changer res if any */
 
-  DeviceResource() : BareosResource() {}
+  DeviceResource();
+  DeviceResource(const DeviceResource& other) = default;
 };
 
 union UnionOfResources {

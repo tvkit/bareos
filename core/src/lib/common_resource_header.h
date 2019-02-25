@@ -38,6 +38,18 @@ class CommonResourceHeader {
   uint32_t rcode;                   /* Resource id or type */
   char item_present[MAX_RES_ITEMS]; /* Set if item is present in conf file */
   char inherit_content[MAX_RES_ITEMS]; /* Set if item has inherited content */
+
+  CommonResourceHeader()
+      : next(nullptr)
+      , name(nullptr)
+      , desc(nullptr)
+      , rcode(0)
+      , item_present{0}
+      , inherit_content{0}
+  {
+    return;
+  }
+  CommonResourceHeader(const CommonResourceHeader& other) = default;
 };
 
 #endif /* BAREOS_LIB_COMMON_RESOURCE_HEADER_ */

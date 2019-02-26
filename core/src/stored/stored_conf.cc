@@ -309,7 +309,8 @@ static ResourceTable resources[] = {
   {"Ndmp", ndmp_items, R_NDMP, sizeof(NdmpResource)},
   {"Storage", store_items, R_STORAGE, sizeof(StorageResource),
       [](void *res) { return new ((StorageResource *)res) StorageResource(); }},
-  {"Device", dev_items, R_DEVICE, sizeof(DeviceResource)},
+  {"Device", dev_items, R_DEVICE, sizeof(DeviceResource),
+      [](void *res) { return new ((DeviceResource *)res) DeviceResource(); }},
   {"Messages", msgs_items, R_MSGS, sizeof(MessagesResource)},
   {"Autochanger", changer_items, R_AUTOCHANGER, sizeof(AutochangerResource)},
   {NULL, NULL, 0}};

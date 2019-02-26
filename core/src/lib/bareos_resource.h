@@ -43,6 +43,11 @@ class BareosResource {
                    bool verbose = false);
 
   BareosResource() = default;
+  BareosResource& operator=(const BareosResource& rhs)
+  {
+    hdr = rhs.hdr;
+    return *this;
+  }
 };
 
 #endif /* BAREOS_LIB_BAREOS_RESOURCE_H_ */

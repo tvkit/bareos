@@ -60,6 +60,17 @@ class CommonResourceHeader {
     ::memcpy(item_present, other.item_present, MAX_RES_ITEMS);
     ::memcpy(inherit_content, other.inherit_content, MAX_RES_ITEMS);
   }
+
+  CommonResourceHeader& operator=(const CommonResourceHeader& rhs)
+  {
+    next = rhs.next;
+    name = rhs.name;
+    desc = rhs.desc;
+    rcode = rhs.rcode;
+    ::memcpy(item_present, rhs.item_present, MAX_RES_ITEMS);
+    ::memcpy(inherit_content, rhs.inherit_content, MAX_RES_ITEMS);
+    return *this;
+  }
 };
 
 #endif /* BAREOS_LIB_COMMON_RESOURCE_HEADER_ */

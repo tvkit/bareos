@@ -199,6 +199,63 @@ DeviceResource::DeviceResource(const DeviceResource& other)
   changer_res = other.changer_res;
 }
 
+DeviceResource& DeviceResource::operator=(const DeviceResource& rhs)
+{
+  BareosResource::operator=(rhs);
+  media_type = rhs.media_type;
+  device_name = rhs.device_name;
+  device_options = rhs.device_options;
+  diag_device_name = rhs.diag_device_name;
+  changer_name = rhs.changer_name;
+  changer_command = rhs.changer_command;
+  alert_command = rhs.alert_command;
+  spool_directory = rhs.spool_directory;
+  dev_type = rhs.dev_type;
+  label_type = rhs.label_type;
+  autoselect = rhs.autoselect;
+  norewindonclose = rhs.norewindonclose;
+  drive_tapealert_enabled = rhs.drive_tapealert_enabled;
+  drive_crypto_enabled = rhs.drive_crypto_enabled;
+  query_crypto_status = rhs.query_crypto_status;
+  collectstats = rhs.collectstats;
+  eof_on_error_is_eot = rhs.eof_on_error_is_eot;
+  drive = rhs.drive;
+  drive_index = rhs.drive_index;
+  memcpy(cap_bits, rhs.cap_bits, CAP_BYTES);
+  max_changer_wait = rhs.max_changer_wait;
+  max_rewind_wait = rhs.max_rewind_wait;
+  max_open_wait = rhs.max_open_wait;
+  max_open_vols = rhs.max_open_vols;
+  label_block_size = rhs.label_block_size;
+  min_block_size = rhs.min_block_size;
+  max_block_size = rhs.max_block_size;
+  max_network_buffer_size = rhs.max_network_buffer_size;
+  max_concurrent_jobs = rhs.max_concurrent_jobs;
+  autodeflate_algorithm = rhs.autodeflate_algorithm;
+  autodeflate_level = rhs.autodeflate_level;
+  autodeflate = rhs.autodeflate;
+  autoinflate = rhs.autoinflate;
+  vol_poll_interval = rhs.vol_poll_interval;
+  max_volume_size = rhs.max_volume_size;
+  max_file_size = rhs.max_file_size;
+  volume_capacity = rhs.volume_capacity;
+  max_spool_size = rhs.max_spool_size;
+  max_job_spool_size = rhs.max_job_spool_size;
+
+  max_part_size = rhs.max_part_size;
+  mount_point = rhs.mount_point;
+  mount_command = rhs.mount_command;
+  unmount_command = rhs.unmount_command;
+  write_part_command = rhs.write_part_command;
+  free_space_command = rhs.free_space_command;
+  multi_devices_count = rhs.multi_devices_count;
+
+  dev = rhs.dev;
+  changer_res = rhs.changer_res;
+
+  return *this;
+}
+
 /* clang-format off */
 
 /**
@@ -673,11 +730,11 @@ static void CreateMultiDevice(ConfigurationParser& my_config)
 
   std::string basename(multi_device_resource->name());
 
-  /* change the name of the existing resource */
+  /* change the name of the existing resource ___1 */
   CreateMultiDeviceName(multi_device_resource, basename, 1);
   --multi_devices_count;
 
-  /* clone the found resource */
+  /* clone the found resource and attach names ___2, ___3 ... */
   for (uint32_t i = 0; i < multi_devices_count; i++) {
     DeviceResource* copied_device_resource =
         new DeviceResource(*multi_device_resource);
@@ -973,7 +1030,8 @@ static bool SaveResource(int type, ResourceItem* items, int pass)
     UnionOfResources* new_resource;
     switch (resources[rindex].rcode) {
       case R_DEVICE: {
-        DeviceResource* p = new DeviceResource(res_all.res_dev);
+        DeviceResource* p = new DeviceResource();
+        *p = res_all.res_dev;
         new_resource = reinterpret_cast<UnionOfResources*>(p);
         break;
       }

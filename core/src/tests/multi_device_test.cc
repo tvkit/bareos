@@ -82,7 +82,8 @@ TEST(Storagedaemon, MultiDeviceTest_CountAllAutomaticallyCreatedResources)
   EXPECT_EQ(count, 3);
 }
 
-static uint32_t CheckNamesOfThreeDeviceResources(ConfigurationParser& my_config)
+static uint32_t CheckNamesOfAllThreeConfiguredDeviceResources(
+    ConfigurationParser& my_config)
 {
   uint32_t count_str_ok = 0;
   uint32_t count_devices = 0;
@@ -125,7 +126,7 @@ TEST(Storagedaemon, MultiDeviceTest_CheckNamesOfAutomaticallyCreatedResources)
 
   ASSERT_TRUE(my_config->ParseConfig());
 
-  auto count = CheckNamesOfThreeDeviceResources(*my_config);
+  auto count = CheckNamesOfAllThreeConfiguredDeviceResources(*my_config);
 
   EXPECT_EQ(count, 3);
 }

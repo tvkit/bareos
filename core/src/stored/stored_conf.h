@@ -200,6 +200,7 @@ class DeviceResource : public BareosResource {
 
   DeviceResource();
   DeviceResource(const DeviceResource& other);
+  DeviceResource& operator=(const DeviceResource& rhs);
 };
 
 union UnionOfResources {

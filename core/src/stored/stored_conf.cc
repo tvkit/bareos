@@ -112,6 +112,7 @@ DeviceResource::DeviceResource()
     , write_part_command(nullptr)
     , free_space_command(nullptr)
     , multi_devices_count(0)
+    , source_multidevice(nullptr)
 
     , dev(nullptr)
     , changer_res(nullptr)
@@ -194,6 +195,7 @@ DeviceResource::DeviceResource(const DeviceResource& other)
     free_space_command = bstrdup(other.free_space_command);
   }
   multi_devices_count = other.multi_devices_count;
+  source_multidevice = other.source_multidevice;
 
   dev = other.dev;
   changer_res = other.changer_res;
@@ -249,6 +251,7 @@ DeviceResource& DeviceResource::operator=(const DeviceResource& rhs)
   write_part_command = rhs.write_part_command;
   free_space_command = rhs.free_space_command;
   multi_devices_count = rhs.multi_devices_count;
+  source_multidevice = rhs.source_multidevice;
 
   dev = rhs.dev;
   changer_res = rhs.changer_res;
@@ -700,13 +703,14 @@ static void ParseConfigCb(LEX* lc, ResourceItem* item, int index, int pass)
   }
 }
 
-static void CreateMultiDeviceName(DeviceResource* d,
-                                  const std::string& basename,
-                                  int number)
+static void CreateAndAssignMultiDeviceName(DeviceResource* d,
+                                           const std::string& basename,
+                                           int number)
 {
   std::string tmp_name = basename;
-  tmp_name += "___";
-  tmp_name += std::to_string(number);
+  char b[5];
+  ::sprintf(b, "%04d", number < 10000 ? number : 9999);
+  tmp_name += b;
   free(d->hdr.name);
   d->hdr.name = bstrdup(tmp_name.c_str());
 }
@@ -714,9 +718,9 @@ static void CreateMultiDeviceName(DeviceResource* d,
 static void CreateMultiDevice(ConfigurationParser& my_config)
 {
   DeviceResource* multi_device_resource = nullptr;
-  uint32_t multi_devices_count = 0;
 
   /* find the first multi-device resource */
+  uint32_t multi_devices_count = 0;
   CommonResourceHeader* p = nullptr;
   while ((p = my_config.GetNextRes(R_DEVICE, p))) {
     multi_device_resource = reinterpret_cast<DeviceResource*>(p);
@@ -730,18 +734,20 @@ static void CreateMultiDevice(ConfigurationParser& my_config)
 
   std::string basename(multi_device_resource->name());
 
-  /* change the name of the existing resource ___1 */
-  CreateMultiDeviceName(multi_device_resource, basename, 1);
+  /* change the name of the existing resource 0001 */
+  CreateAndAssignMultiDeviceName(multi_device_resource, basename, 1);
   --multi_devices_count;
 
-  /* clone the found resource and attach names ___2, ___3 ... */
+  /* copy the found resource and attach names 0002, 0003 ... */
   for (uint32_t i = 0; i < multi_devices_count; i++) {
     DeviceResource* copied_device_resource =
         new DeviceResource(*multi_device_resource);
-    CreateMultiDeviceName(copied_device_resource, basename, i + 2);
+    CreateAndAssignMultiDeviceName(copied_device_resource, basename, i + 2);
+    copied_device_resource->source_multidevice = multi_device_resource;
     AppendToResourcesChain(
         reinterpret_cast<UnionOfResources*>(copied_device_resource),
         copied_device_resource->hdr.rcode);
+    copied_device_resource->changer_res->device->append(copied_device_resource);
   }
 }
 

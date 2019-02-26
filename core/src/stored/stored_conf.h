@@ -191,6 +191,7 @@ class DeviceResource : public BareosResource {
   char* write_part_command;     /**< Write part command */
   char* free_space_command;     /**< Free space command */
   uint32_t multi_devices_count; /**< Number of multi devices */
+  DeviceResource* source_multidevice; /**< Cloned from this device */
 
   /*
    * The following are set at runtime

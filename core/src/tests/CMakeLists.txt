@@ -166,8 +166,7 @@ add_executable(test_stored_multi_device
 
 target_link_libraries(test_stored_multi_device ${LINK_LIBRARIES})
 
-add_test(NAME test_stored_multi_device COMMAND test_stored_multi_device)
-gtest_discover_tests(test_stored_multi_device)
+gtest_discover_tests(test_stored_multi_device TEST_PREFIX gtest:)
 
 
 ####### test_ndmp_address_translate ###############################

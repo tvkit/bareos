@@ -54,6 +54,7 @@ static void DumpResource(int type,
                          void* sock,
                          bool hide_sensitive_data,
                          bool verbose);
+static void AppendToResourcesChain(UnionOfResources* new_resource, int type);
 
 /**
  * We build the current resource here statically,
@@ -116,6 +117,86 @@ DeviceResource::DeviceResource()
     , changer_res(nullptr)
 {
   return;
+}
+
+DeviceResource::DeviceResource(const DeviceResource& other)
+    : BareosResource(other)
+    , media_type(nullptr)
+    , device_name(nullptr)
+    , device_options(nullptr)
+    , diag_device_name(nullptr)
+    , changer_name(nullptr)
+    , changer_command(nullptr)
+    , alert_command(nullptr)
+    , spool_directory(nullptr)
+    , mount_point(nullptr)
+    , mount_command(nullptr)
+    , unmount_command(nullptr)
+    , write_part_command(nullptr)
+    , free_space_command(nullptr)
+{
+  if (other.media_type) { media_type = bstrdup(other.media_type); }
+  if (other.device_name) { device_name = bstrdup(other.device_name); }
+  if (other.device_options) { device_options = bstrdup(other.device_options); }
+  if (other.diag_device_name) {
+    diag_device_name = bstrdup(other.diag_device_name);
+  }
+  if (other.changer_name) { changer_name = bstrdup(other.changer_name); }
+  if (other.changer_command) {
+    changer_command = bstrdup(other.changer_command);
+  }
+  if (other.alert_command) { alert_command = bstrdup(other.alert_command); }
+  if (other.spool_directory) {
+    spool_directory = bstrdup(other.spool_directory);
+  }
+  dev_type = other.dev_type;
+  label_type = other.label_type;
+  autoselect = other.autoselect;
+  norewindonclose = other.norewindonclose;
+  drive_tapealert_enabled = other.drive_tapealert_enabled;
+  drive_crypto_enabled = other.drive_crypto_enabled;
+  query_crypto_status = other.query_crypto_status;
+  collectstats = other.collectstats;
+  eof_on_error_is_eot = other.eof_on_error_is_eot;
+  drive = other.drive;
+  drive_index = other.drive_index;
+  memcpy(cap_bits, other.cap_bits, CAP_BYTES);
+  max_changer_wait = other.max_changer_wait;
+  max_rewind_wait = other.max_rewind_wait;
+  max_open_wait = other.max_open_wait;
+  max_open_vols = other.max_open_vols;
+  label_block_size = other.label_block_size;
+  min_block_size = other.min_block_size;
+  max_block_size = other.max_block_size;
+  max_network_buffer_size = other.max_network_buffer_size;
+  max_concurrent_jobs = other.max_concurrent_jobs;
+  autodeflate_algorithm = other.autodeflate_algorithm;
+  autodeflate_level = other.autodeflate_level;
+  autodeflate = other.autodeflate;
+  autoinflate = other.autoinflate;
+  vol_poll_interval = other.vol_poll_interval;
+  max_volume_size = other.max_volume_size;
+  max_file_size = other.max_file_size;
+  volume_capacity = other.volume_capacity;
+  max_spool_size = other.max_spool_size;
+  max_job_spool_size = other.max_job_spool_size;
+
+  max_part_size = other.max_part_size;
+  if (other.mount_point) { mount_point = bstrdup(other.mount_point); }
+  if (other.mount_command) { mount_command = bstrdup(other.mount_command); }
+  if (other.unmount_command) {
+    unmount_command = bstrdup(other.unmount_command);
+  }
+  if (other.write_part_command) {
+    write_part_command = bstrdup(other.write_part_command);
+  }
+  if (other.free_space_command) {
+    free_space_command = bstrdup(other.free_space_command);
+  }
+  multi_devices_count = other.multi_devices_count;
+
+  dev = other.dev;
+  changer_res = other.changer_res;
 }
 
 /* clang-format off */
@@ -562,11 +643,48 @@ static void ParseConfigCb(LEX* lc, ResourceItem* item, int index, int pass)
   }
 }
 
+static void CreateMultiDeviceName(DeviceResource* d,
+                                  const std::string& basename,
+                                  int number)
+{
+  std::string tmp_name = basename;
+  tmp_name += "___";
+  tmp_name += std::to_string(number);
+  free(d->hdr.name);
+  d->hdr.name = bstrdup(tmp_name.c_str());
+}
+
 static void CreateMultiDevice(ConfigurationParser& my_config)
 {
+  DeviceResource* multi_device_resource = nullptr;
+  uint32_t multi_devices_count = 0;
+
+  /* find the first multi-device resource */
   CommonResourceHeader* p = nullptr;
   while ((p = my_config.GetNextRes(R_DEVICE, p))) {
-    DeviceResource* device = reinterpret_cast<DeviceResource*>(p);
+    multi_device_resource = reinterpret_cast<DeviceResource*>(p);
+    if (multi_device_resource->multi_devices_count) {
+      multi_devices_count = multi_device_resource->multi_devices_count;
+      break;
+    }
+  }
+
+  if (multi_devices_count == 0) { return; }
+
+  std::string basename(multi_device_resource->name());
+
+  /* change the name of the existing resource */
+  CreateMultiDeviceName(multi_device_resource, basename, 1);
+  --multi_devices_count;
+
+  /* clone the found resource */
+  for (uint32_t i = 0; i < multi_devices_count; i++) {
+    DeviceResource* copied_device_resource =
+        new DeviceResource(*multi_device_resource);
+    CreateMultiDeviceName(copied_device_resource, basename, i + 2);
+    AppendToResourcesChain(
+        reinterpret_cast<UnionOfResources*>(copied_device_resource),
+        copied_device_resource->hdr.rcode);
   }
 }
 
@@ -699,6 +817,32 @@ static void DumpResource(int type,
     my_config->DumpResourceCb_(type,
                                (CommonResourceHeader*)res->res_dir.hdr.next,
                                sendit, sock, hide_sensitive_data, verbose);
+  }
+}
+
+static void AppendToResourcesChain(UnionOfResources* new_resource, int type)
+{
+  int rindex = type - R_FIRST;
+
+  if (!res_head[rindex]) {
+    /* store first entry */
+    res_head[rindex] = (CommonResourceHeader*)new_resource;
+  } else {
+    /* Add new resource to end of chain */
+    CommonResourceHeader *next, *last;
+    for (last = next = res_head[rindex]; next; next = next->next) {
+      last = next;
+      if (bstrcmp(next->name, new_resource->res_dir.name())) {
+        Emsg2(M_ERROR_TERM, 0,
+              _("Attempt to define second \"%s\" resource named \"%s\" is "
+                "not permitted.\n"),
+              resources[rindex].name, new_resource->res_dir.name());
+        return;
+      }
+    }
+    last->next = (CommonResourceHeader*)new_resource;
+    Dmsg2(90, "Inserting %s new_resource: %s\n", my_config->res_to_str(type),
+          new_resource->res_dir.name());
   }
 }
 
@@ -838,25 +982,7 @@ static bool SaveResource(int type, ResourceItem* items, int pass)
         memcpy(new_resource, &res_all, resources[rindex].size);
         break;
     }
-    if (!res_head[rindex]) {
-      res_head[rindex] =
-          (CommonResourceHeader*)new_resource; /* store first entry */
-    } else {
-      /* Add new resource to end of chain */
-      CommonResourceHeader *next, *last;
-      for (last = next = res_head[rindex]; next; next = next->next) {
-        last = next;
-        if (bstrcmp(next->name, new_resource->res_dir.name())) {
-          Emsg2(M_ERROR_TERM, 0,
-                _("Attempt to define second \"%s\" resource named \"%s\" is "
-                  "not permitted.\n"),
-                resources[rindex].name, new_resource->res_dir.name());
-        }
-      }
-      last->next = (CommonResourceHeader*)new_resource;
-      Dmsg2(90, "Inserting %s new_resource: %s\n", my_config->res_to_str(type),
-            new_resource->res_dir.name());
-    }
+    AppendToResourcesChain(new_resource, type);
   }
   return (error == 0);
 }

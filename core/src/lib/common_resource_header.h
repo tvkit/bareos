@@ -49,7 +49,17 @@ class CommonResourceHeader {
   {
     return;
   }
-  CommonResourceHeader(const CommonResourceHeader& other) = default;
+
+  CommonResourceHeader(const CommonResourceHeader& other)
+      : CommonResourceHeader()
+  {
+    /* do not copy next because that is part of the resource chain */
+    if (other.name) { name = bstrdup(other.name); }
+    if (other.desc) { desc = bstrdup(other.desc); }
+    rcode = other.rcode;
+    ::memcpy(item_present, other.item_present, MAX_RES_ITEMS);
+    ::memcpy(inherit_content, other.inherit_content, MAX_RES_ITEMS);
+  }
 };
 
 #endif /* BAREOS_LIB_COMMON_RESOURCE_HEADER_ */

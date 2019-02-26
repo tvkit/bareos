@@ -199,7 +199,7 @@ class DeviceResource : public BareosResource {
   AutochangerResource* changer_res; /* Pointer to changer res if any */
 
   DeviceResource();
-  DeviceResource(const DeviceResource& other) = default;
+  DeviceResource(const DeviceResource& other);
 };
 
 union UnionOfResources {

@@ -412,6 +412,7 @@ bool do_mac_run(JCR *jcr)
    char ec1[50];
    const char *Type;
    bool ok = true;
+   bool acquire_fail = false;
    BSOCK *dir = jcr->dir_bsock;
 
    switch(jcr->getJobType()) {
@@ -464,6 +465,7 @@ bool do_mac_run(JCR *jcr)
        */
       if (!acquire_device_for_read(jcr->read_dcr)) {
          ok = false;
+         acquire_fail = true;
          goto bail_out;
       }
 
@@ -579,6 +581,7 @@ bool do_mac_run(JCR *jcr)
       if (!acquire_device_for_read(jcr->read_dcr) ||
           !acquire_device_for_append(jcr->dcr)) {
          ok = false;
+         acquire_fail = true;
          goto bail_out;
       }
 
@@ -618,7 +621,7 @@ bail_out:
       jcr->setJobStatus(JS_ErrorTerminated);
    }
 
-   if (!jcr->remote_replicate && jcr->dcr) {
+   if (!acquire_fail && !jcr->remote_replicate && jcr->dcr) {
       /*
        * Don't use time_t for job_elapsed as time_t can be 32 or 64 bits,
        *   and the subsequent Jmsg() editing will break

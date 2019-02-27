@@ -4,7 +4,7 @@
 # Also scan logs for ERROR messages
 #
 
-. ./config
+. ./environment
 
 # check_for_zombie_jobs storage=STORAGE [client=localhost-fd]
 

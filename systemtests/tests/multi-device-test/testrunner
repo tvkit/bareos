@@ -3,7 +3,7 @@
 # Run a simple backup
 #   then restore it.
 #
-TestName="backup-bareos-test"
+TestName="$(basename "$(pwd)")"
 export TestName
 
 JobName=backup-bareos-fd
@@ -45,22 +45,19 @@ run job=backup-to-pool3 level=Full yes
 run job=backup-to-pool1 level=Full yes
 run job=backup-to-pool2 level=Full yes
 run job=backup-to-pool3 level=Full yes
-run job=backup-to-pool1 level=Full yes
-run job=backup-to-pool2 level=Full yes
-run job=backup-to-pool3 level=Full yes
 status storage=File
 status storage=File
 status storage=File
 status storage=File
 status storage=File
 status storage=File
-@sleep 1
+@#sleep 1
 status storage=File
 status storage=File
 status storage=File
 status storage=File
 status storage=File
-@sleep 1
+@#sleep 1
 status storage=File
 status storage=File
 status storage=File
@@ -103,15 +100,21 @@ messages
 quit
 END_OF_DATA
 
-#
-# Now do a second backup after making a few changes
-#
-echo "test test" > ${BackupDirectory}/xxx
-
 run_bareos
 check_for_zombie_jobs storage=File
 stop_bareos
 
 check_two_logs
 check_restore_diff ${BackupDirectory}
+
+#make sure all MultiFileStorage devices are used
+grep "Using Device \"MultiFileStorage0001\"" ${tmp}/log1.out 2>&1 >/dev/null &&
+grep "Using Device \"MultiFileStorage0002\"" ${tmp}/log1.out 2>&1 >/dev/null &&
+grep "Using Device \"MultiFileStorage0003\"" ${tmp}/log1.out 2>&1 >/dev/null
+if test $? -ne 0 ; then
+  echo "Not all MultiFileStorage devices are used."
+  estat=1;
+fi
+
 end_test
+

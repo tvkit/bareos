@@ -158,7 +158,8 @@ endforeach()
 set(tests_dir ${PROJECT_BINARY_DIR}/tests)
 set(SYSTEM_TESTS
   backup-bareos-test
-  backup-bareos-test2)
+  backup-bareos-test2
+  multi-device-test)
 
 set(BASEPORT 42001)
 

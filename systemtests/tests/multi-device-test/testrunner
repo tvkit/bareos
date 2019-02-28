@@ -6,7 +6,7 @@
 TestName="$(basename "$(pwd)")"
 export TestName
 
-JobName=backup-bareos-fd
+JobName=backup-to-pool1
 . ./environment
 . ${scripts}/functions
 
@@ -93,6 +93,7 @@ messages
 @# now do a restore
 @#
 @$out $tmp/log2.out
+wait
 restore where=$tmp/bareos-restores select all done
 yes
 wait

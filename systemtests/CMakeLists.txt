@@ -223,7 +223,7 @@ foreach(TEST_NAME ${SYSTEM_TESTS})
 
   # create a bin/bareos and bin/bconsole script
   # in every testdir for start/stop and bconsole
-  file(MAKE_DIRECTORY "tests/${TEST_NAME}/bin")
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}/bin")
   configure_file("bin/bconsole" "tests/${TEST_NAME}/bin/bconsole" COPYONLY)
   configure_file("bin/bareos" "tests/${TEST_NAME}/bin/bareos" COPYONLY)
 

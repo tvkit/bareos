@@ -40,6 +40,8 @@ messages
 @#
 @# now do a restore
 @#
+setdebug storage trace=1 level=500
+setdebug director trace=1 level=500
 @$out $tmp/log2.out
 wait
 restore client=bareos-fd fileset=SelfTest where=$tmp/bareos-restores select all done

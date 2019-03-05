@@ -31,7 +31,6 @@ messages
 setdebug level=100 storage=File
 label volume=TestVolume001 storage=File pool=Full
 run job=$JobName yes
-@sleep 1
 status director
 status client
 status storage=File
@@ -40,8 +39,6 @@ messages
 @#
 @# now do a restore
 @#
-setdebug storage trace=1 level=500
-setdebug director trace=1 level=500
 @$out $tmp/log2.out
 wait
 restore client=bareos-fd fileset=SelfTest where=$tmp/bareos-restores select all done

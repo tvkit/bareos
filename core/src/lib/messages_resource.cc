@@ -23,14 +23,11 @@
 
 #include "lib/messages_resource.h"
 
-pthread_mutex_t MessagesResource::fides_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t MessagesResource::mutex_ = PTHREAD_MUTEX_INITIALIZER;
 
 MessagesResource::MessagesResource()
-    : mail_cmd(nullptr)
-    , operator_cmd(nullptr)
-    , timestamp_format(nullptr)
-    , dest_chain(nullptr)
-    , SendMsg{0}
+    : dest_chain_(nullptr)
+    , send_msg_types_{0}
 
     , in_use_(false)
     , closing_(false)
@@ -38,23 +35,26 @@ MessagesResource::MessagesResource()
   return;
 }
 
+void MessagesResource::CopyToStaticMemory(CommonResourceHeader* p) const
+{
+  MessagesResource* r = dynamic_cast<MessagesResource*>(p);
+  if (r) { *r = *this; }
+}
+
 MessagesResource::~MessagesResource()
 {
   DEST *d, *old;
-  for (d = dest_chain; d;) {
-    if (d->where) { free(d->where); }
-    if (d->mail_cmd) { free(d->mail_cmd); }
-    if (d->timestamp_format) { free(d->timestamp_format); }
-    old = d;     /* save pointer to release */
-    d = d->next; /* point to next buffer */
-    free(old);   /* free the destination item */
+  for (d = dest_chain_; d;) {
+    old = d;      /* save pointer to release */
+    d = d->next_; /* point to next buffer */
+    delete old;
   }
-  dest_chain = NULL;
+  dest_chain_ = nullptr;
 }
 
-void MessagesResource::lock() { P(fides_mutex); }
+void MessagesResource::lock() { P(mutex_); }
 
-void MessagesResource::unlock() { V(fides_mutex); }
+void MessagesResource::unlock() { V(mutex_); }
 
 void MessagesResource::WaitNotInUse()
 {

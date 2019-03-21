@@ -27,9 +27,6 @@
 #include "lib/bareos_resource.h"
 
 class MessagesResource : public BareosResource {
-  /*
-   * Members
-   */
  public:
   char* mail_cmd;                         /* Mail command */
   char* operator_cmd;                     /* Operator command */
@@ -42,39 +39,8 @@ class MessagesResource : public BareosResource {
   bool closing_; /* Set when closing message resource */
 
  public:
-  /*
-   * Methods
-   */
-  void ClearInUse()
-  {
-    lock();
-    in_use_ = false;
-    unlock();
-  }
-  void SetInUse()
-  {
-    WaitNotInUse();
-    in_use_ = true;
-    unlock();
-  }
-  void SetClosing() { closing_ = true; }
-  bool GetClosing() { return closing_; }
-  void ClearClosing()
-  {
-    lock();
-    closing_ = false;
-    unlock();
-  }
-  bool IsClosing()
-  {
-    lock();
-    bool rtn = closing_;
-    unlock();
-    return rtn;
-  }
-
-  MessagesResource() = default;
-  virtual ~MessagesResource() = default;
+  MessagesResource();
+  virtual ~MessagesResource();
 
   void CopyToStaticMemory(CommonResourceHeader* p) const override
   {
@@ -82,12 +48,21 @@ class MessagesResource : public BareosResource {
     if (r) { *r = *this; }
   };
 
-  void WaitNotInUse(); /* in message.c */
-  void lock();         /* in message.c */
-  void unlock();       /* in message.c */
+  void ClearInUse();
+  void SetInUse();
+  void SetClosing();
+  bool GetClosing();
+  void ClearClosing();
+  bool IsClosing();
+  void WaitNotInUse();
+  void lock();
+  void unlock();
   bool PrintConfig(PoolMem& buff,
                    bool hide_sensitive_data = false,
                    bool verbose = false);
+
+ private:
+  static pthread_mutex_t fides_mutex;
 };
 
 #endif /* BAREOS_LIB_MESSAGES_RESOURCE_H_ */

@@ -165,7 +165,7 @@ struct MessageQeueItem {
   dlink link;
   int type;
   utime_t mtime;
-  char msg[1];
+  char msg[1];  // Ueb
 };
 
 class JobControlRecord;
@@ -217,7 +217,7 @@ void RemMsgDest(MessagesResource* msg, int dest, int type, char* where);
 void Jmsg(JobControlRecord* jcr, int type, utime_t mtime, const char* fmt, ...);
 void DispatchMessage(JobControlRecord* jcr, int type, utime_t mtime, char* buf);
 void InitConsoleMsg(const char* wd);
-void FreeMsgsRes(MessagesResource* msgs);
+void FreeMsgsRes(MessagesResource* msgs);  // Ueb
 void DequeueMessages(JobControlRecord* jcr);
 void SetTrace(int trace_flag);
 bool GetTrace(void);

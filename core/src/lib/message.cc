@@ -79,7 +79,6 @@ void setup_tsd_key();
 /*
  * Allow only one thread to tweak d->fd at a time
  */
-static pthread_mutex_t fides_mutex = PTHREAD_MUTEX_INITIALIZER;
 static MessagesResource* daemon_msgs; /* Global messages */
 static char* catalog_db = NULL;       /* Database type */
 static const char* log_timestamp_format = "%d-%b %H:%M";
@@ -112,26 +111,6 @@ static const char* bstrrpath(const char* start, const char* end)
     if (IsPathSeparator(*end)) { break; }
   }
   return end;
-}
-
-/*
- * Some message class methods
- */
-void MessagesResource::lock() { P(fides_mutex); }
-
-void MessagesResource::unlock() { V(fides_mutex); }
-
-/*
- * Wait for not in use variable to be clear
- */
-void MessagesResource::WaitNotInUse() /* leaves fides_mutex set */
-{
-  lock();
-  while (in_use_ || closing_) {
-    unlock();
-    Bmicrosleep(0, 200); /* wait */
-    lock();
-  }
 }
 
 /*
@@ -287,8 +266,7 @@ void InitMsg(JobControlRecord* jcr,
    * If msg is NULL, initialize global chain for STDOUT and syslog
    */
   if (msg == NULL) {
-    daemon_msgs = (MessagesResource*)malloc(sizeof(MessagesResource));
-    memset(daemon_msgs, 0, sizeof(MessagesResource));
+    daemon_msgs = new MessagesResource;
     for (i = 1; i <= M_MAX; i++) {
       AddMsgDest(daemon_msgs, MD_STDOUT, i, NULL, NULL, NULL);
     }
@@ -311,17 +289,15 @@ void InitMsg(JobControlRecord* jcr,
   }
 
   if (jcr) {
-    jcr->jcr_msgs = (MessagesResource*)malloc(sizeof(MessagesResource));
-    memset(jcr->jcr_msgs, 0, sizeof(MessagesResource));
+    jcr->jcr_msgs = new MessagesResource;
     jcr->jcr_msgs->dest_chain = temp_chain;
     memcpy(jcr->jcr_msgs->SendMsg, msg->SendMsg, sizeof(msg->SendMsg));
   } else {
     /*
      * If we have default values, release them now
      */
-    if (daemon_msgs) { FreeMsgsRes(daemon_msgs); }
-    daemon_msgs = (MessagesResource*)malloc(sizeof(MessagesResource));
-    memset(daemon_msgs, 0, sizeof(MessagesResource));
+    if (daemon_msgs) { delete daemon_msgs; }
+    daemon_msgs = new MessagesResource;
     daemon_msgs->dest_chain = temp_chain;
     memcpy(daemon_msgs->SendMsg, msg->SendMsg, sizeof(msg->SendMsg));
   }
@@ -638,34 +614,12 @@ void CloseMsg(JobControlRecord* jcr)
   FreePoolMemory(cmd);
   Dmsg0(850, "Done walking message chain.\n");
   if (jcr) {
-    FreeMsgsRes(msgs);
+    delete msgs;
     msgs = NULL;
   } else {
     msgs->ClearClosing();
   }
   Dmsg0(850, "===End close msg resource\n");
-}
-
-/*
- * Free memory associated with Messages resource
- */
-void FreeMsgsRes(MessagesResource* msgs)
-{
-  DEST *d, *old;
-
-  /*
-   * Walk down the message chain releasing allocated buffers
-   */
-  for (d = msgs->dest_chain; d;) {
-    if (d->where) { free(d->where); }
-    if (d->mail_cmd) { free(d->mail_cmd); }
-    if (d->timestamp_format) { free(d->timestamp_format); }
-    old = d;     /* save pointer to release */
-    d = d->next; /* point to next buffer */
-    free(old);   /* free the destination item */
-  }
-  msgs->dest_chain = NULL;
-  free(msgs); /* free the head */
 }
 
 /*
@@ -678,8 +632,8 @@ void FreeMsgsRes(MessagesResource* msgs)
 void TermMsg()
 {
   Dmsg0(850, "Enter TermMsg\n");
-  CloseMsg(NULL);           /* close global chain */
-  FreeMsgsRes(daemon_msgs); /* free the resources */
+  CloseMsg(NULL);     /* close global chain */
+  delete daemon_msgs; /* f ree the resources */
   daemon_msgs = NULL;
   if (con_fd) {
     fflush(con_fd);

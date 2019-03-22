@@ -477,12 +477,7 @@ void ConfigurationParser::StoreStdstr(LEX* lc,
                                       int pass)
 {
   LexGetToken(lc, BCT_STRING);
-  if (pass == 1) {
-    if (*(item->strValue)) { /* free old item */
-      free(*(item->strValue));
-    }
-    *(item->strValue) = new std::string(lc->str);
-  }
+  if (pass == 1) { *(item->strValue) = lc->str; }
   ScanToEol(lc);
   SetBit(index, item->static_resource->item_present_);
   ClearBit(index, item->static_resource->inherit_content_);
@@ -520,13 +515,10 @@ void ConfigurationParser::StoreStdstrdir(LEX* lc,
 {
   LexGetToken(lc, BCT_STRING);
   if (pass == 1) {
-    if (*(item->strValue)) { /* free old item */
-      delete (*(item->value));
-    }
     if (lc->str[0] != '|') {
       DoShellExpansion(lc->str, SizeofPoolMemory(lc->str));
     }
-    *(item->strValue) = new std::string(lc->str);
+    *(item->strValue) = std::string(lc->str);
   }
   ScanToEol(lc);
   SetBit(index, item->static_resource->item_present_);
@@ -1636,7 +1628,7 @@ static bool HasDefaultValue(ResourceItem* item)
         break;
       case CFG_TYPE_STDSTR:
       case CFG_TYPE_STDSTRDIR:
-        is_default = bstrcmp((*item->strValue)->c_str(), item->default_value);
+        is_default = bstrcmp((*item->strValue).c_str(), item->default_value);
         break;
       case CFG_TYPE_INT16:
         is_default =
@@ -1692,8 +1684,7 @@ static bool HasDefaultValue(ResourceItem* item)
         break;
       case CFG_TYPE_STDSTR:
       case CFG_TYPE_STDSTRDIR:
-        is_default =
-            (*(item->strValue)) == nullptr || (*(item->strValue))->empty();
+        is_default = (*(item->strValue)).empty();
         break;
       case CFG_TYPE_INT16:
         is_default = (*(item->i16value) == 0);
@@ -1816,9 +1807,9 @@ bool BareosResource::PrintConfig(PoolMem& buff,
       case CFG_TYPE_STDSTRDIR:
         if (print_item && *(items[i].value) != NULL) {
           Dmsg2(200, "%s = \"%s\"\n", items[i].name,
-                (*items[i].strValue)->c_str());
+                (*items[i].strValue).c_str());
           Mmsg(temp, "%s = \"%s\"\n", items[i].name,
-               (*items[i].strValue)->c_str());
+               (*items[i].strValue).c_str());
           IndentConfigItem(cfg_str, 1, temp.c_str(), inherited);
         }
         break;

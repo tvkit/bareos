@@ -1,61 +1,103 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import concat from 'lodash/concat'
+import map from 'lodash/map'
+
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     socket: {
-      isConnected: false,
-      message: [],
-      reconnectError: false
-    }
+      // todo: find out how these properties could be created on first access
+      // binding to them is impossible when they are not present
+      console: null,
+      api2: null,
+    },
   },
   mutations: {
-    initializeStore (state) {
-      // Check if the ID exists
-      if (localStorage.getItem('store')) {
-        // Replace the state object with the stored item
-        this.replaceState(
-          Object.assign(state, JSON.parse(localStorage.getItem('store')))
-        )
+    initializeStore(state) {
+      // checkout store data from localStorage
+      // if (localStorage.getItem('store')) {
+      //   // Replace the state object with the stored item
+      //   this.replaceState(
+      //       Object.assign(state, JSON.parse(localStorage.getItem('store'))),
+      //   )
+      // }
+    },
+    INIT_SOCKET(state, event) {
+      state.socket[event.socket] = {
+        message: [],
+        isConnected: true,
       }
     },
-    SOCKET_ONOPEN (state, event) {
-      Vue.prototype.$socket = event.currentTarget
-      state.socket.isConnected = true
-      Vue.prototype.$socket.send('.api 2')
-      console.log('SOCKET_ONOPEN')
+    APPEND_MESSAGE(state, event) {
+      if (!state.socket[event.socket]) {
+        state.socket[event.socket] = {
+          message: [],
+        }
+      }
+      const buffer = state.socket[event.socket]
+      let count = buffer.message.length
+      const rearranged = map(event.message.trimRight().split('\n'),
+          (v) => {return { data: v, src: event.src, id: count++ }})
+      buffer.message = concat(buffer.message, rearranged)
     },
-    SOCKET_ONCLOSE (state, event) {
-      state.socket.isConnected = false
-      console.log('SOCKET_ONCLOSE')
-    },
-    SOCKET_ONERROR (state, event) {
-      console.error(state, event)
-      console.log('SOCKET_ONERROR')
+    APPEND_OBJECT(state, event) {
+      const buffer = state.socket[event.socket]
+      let count = buffer.message.length
+      const o = { data: JSON.parse(event.message), src: event.src, id: count++ }
+      buffer.message = concat(buffer.message, o)
     },
     // default handler called for all methods
-    SOCKET_ONMESSAGE (state, message) {
-      state.socket.message.push(message.data)
-      console.log('SOCKET_ONMESSAGE')
-      console.log(message)
-    },
-    // mutations for reconnect methods
-    SOCKET_RECONNECT (state, count) {
-      console.info(state, count)
-      console.log('SOCKET_ORECONNECT')
-    },
-    SOCKET_RECONNECT_ERROR (state) {
-      state.socket.reconnectError = true
-      console.log('SOCKET_ONRECONNECT_ERROR')
-    },
-    sendMessage: function (context, message) {
-      Vue.prototype.$socket.send(message)
-    },
-    receiveMessage: function () {
-      return this.state.socket.message
-    }
   },
-  actions: {}
+  actions: {
+    SOCKET_ONOPEN(context, event) {
+      context.commit('INIT_SOCKET', event)
+
+      if (event.socket == 'api2') {
+        Vue.prototype.$log.info('api2 connected... switching to api2')
+        Vue.prototype.$wsSend(event.socket, '.api 2')
+      }
+    },
+    SOCKET_ONCLOSE(state, event) {
+      state.socket[event.socket].isConnected = false
+    },
+    SOCKET_ONERROR(state, event) {
+      Vue.prototype.$log.error(state, event)
+      Vue.prototype.$log.debug('SOCKET_ERROR')
+    },
+    SOCKET_ONMESSAGE(context, message) {
+      if (message.socket === 'console') {
+        context.commit('APPEND_MESSAGE', {
+          socket: message.socket,
+          message: message.data,
+          src: 'socket',
+        })
+      } else if (message.socket === 'api2') {
+        context.commit('APPEND_OBJECT', {
+          socket: message.socket,
+          message: message.data,
+          src: 'socket',
+        })
+      }
+    },
+    async sendMessage(context, message) {
+      context.commit('APPEND_MESSAGE', {
+        socket: 'console',
+        message,
+        src: 'local',
+      })
+      Vue.prototype.$wsSend('console', message)
+    },
+  },
+  getters: {
+    messages: (state) => (socketName) => {
+      if (!state.socket[socketName]) {
+        state.commit('INIT_SOCKET', { socket: socketName })
+      }
+      return state.socket[socketName].message
+    },
+  },
 })

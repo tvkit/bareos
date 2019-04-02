@@ -1,5 +1,9 @@
 # webui
 
+Provides Console connection to bareos-dir websocket service.
+uses <https://github.com/bareos/bareos/tree/dev/franku/master/websockets> 
+to be running
+
 ## Project setup
 ```
 npm install
@@ -25,5 +29,10 @@ npm run test
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## to do
+
+* Terminal area may be full height on start
+* make VUE_APP_SOCKET address configurable 
+* fix url /chat into something suitable
+* use logger instead of console 
+* commit event on store

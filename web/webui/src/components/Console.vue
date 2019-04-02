@@ -1,67 +1,134 @@
 <template>
-    <div class="console" id="terminal"></div>
+  <div class="console" v-on:click="focusInput()">
+    <div class="console-container" id="console-container">
+      <div class="console-row" v-bind:class="[mes.src]"
+           v-for="mes in message"
+           v-bind:key="mes.id">
+        <span v-if="mes.src == 'local'" class="console-local-prompt">*</span>
+        <pre>{{ mes.data }}</pre>
+      </div>
+      <div class="console-input">
+        <span class="console-local-prompt">*</span>
+        <input class="console-prompt"
+               ref="consolePrompt"
+               v-on:keypress.enter="submit"
+               placeholder="help" type="text"
+               v-model="command"
+        >
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-
-import Terminal from '../Xterm'
-
 export default {
   name: 'Console',
-  props: {
-    terminal: {
-      type: Object,
-      default: {}
+  data() {
+    return {
+      command: '',
     }
   },
-  data () {
-    return {
-      term: null,
-      terminalSocket: null
-    }
+  computed: {
+    message() {
+      this.scrollToEnd()
+      return this.$store.getters.messages('console')
+    },
   },
   methods: {
-    runRealTerminal () {
-      console.log('webSocket is finished')
+    focusInput() {
+      const el = this.$refs.consolePrompt
+      this.$nextTick(function() {el.focus()})
     },
-    errorRealTerminal () {
-      console.log('error')
+    sendCommand: async function(data) {
+      try {
+        await this.$store.dispatch('sendMessage', data)
+      } catch (e) {
+        this.$log.error(e)
+      }
     },
-    closeRealTerminal () {
-      console.log('close')
+    submit: function() {
+      this.sendCommand(this.command)
+      this.command = ''
     },
-    ondataRealTerminal (data) {
-      console.log('ondata')
-      console.log(data)
+    scrollToEnd: function() {
+      this.$nextTick(() => {
+        const container = this.$el.querySelector('#console-container')
+        container.scrollTop = container.scrollHeight
+      })
     },
-    onmessageRealTerminal (data) {
-      console.log('onmessage')
-      console.log(data.data)
-    }
   },
-  mounted () {
-    console.log('pid : ' + this.terminal.pid + ' is on ready')
-    let terminalContainer = document.getElementById('terminal')
-    this.term = new Terminal({
-      // cursorBlink: true,
-      cols: 128,
-      rows: 32
-    })
-    this.term.open(terminalContainer)
-    this.terminalSocket = this.$socket
-    this.terminalSocket.onopen = this.runRealTerminal
-    this.terminalSocket.onclose = this.closeRealTerminal
-    this.terminalSocket.onerror = this.errorRealTerminal
-    this.term.attach(this.terminalSocket)
-    this.terminalSocket.onmessage = (data) => { this.onmessageRealTerminal(data) }
-    this.term.on('data', (data) => { this.ondataRealTerminal(data) })
-    this.term._initialized = true
-    console.log('mounted is going on')
-    this.term.fit()
+  beforeDestroy() {
   },
-  beforeDestroy () {
-    this.terminalSocket.close()
-    this.term.destroy()
-  }
 }
 </script>
+
+<style lang="scss">
+  pre {
+    // white-space: pre-wrap;       /* Since CSS 2.1 */
+    // white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    // word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  }
+
+  .console {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 120px);
+    height: calc(100vh - 120px);
+    margin: auto;
+    overflow: no-content;
+    background-color: black;
+  }
+
+  .console-container {
+    overflow-y: scroll;
+    overflow-x: scroll;
+    margin-left: 10px;
+    margin-right: 0px;
+    overflow: auto;
+    scroll-behavior: smooth;
+  }
+
+  .console-local-prompt {
+    color: greenyellow;
+    margin-right: 1em;
+  }
+
+  .console-socket-prompt {
+    color: deepskyblue;
+    margin-right: 1em;
+  }
+
+  .console-row {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    color: lightgray;
+  }
+
+  .console-input {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+
+  }
+
+  .console-prompt {
+    margin: auto;
+    width: 100%;
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    border: 0;
+  }
+
+  .socket {
+  }
+
+  .local {
+
+  }
+
+  textarea:focus, input:focus{
+    outline: none;
+  }
+</style>

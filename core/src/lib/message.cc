@@ -231,7 +231,6 @@ void InitMsg(JobControlRecord* jcr,
              MessagesResource* msg,
              job_code_callback_t job_code_callback)
 {
-  DEST *d, *dnew, *temp_chain = NULL;
   int i;
 
   if (jcr == NULL && msg == NULL) {
@@ -278,15 +277,16 @@ void InitMsg(JobControlRecord* jcr,
   /*
    * Walk down the message resource chain duplicating it for the current Job.
    */
-  for (d = msg->dest_chain_; d; d = d->next_) {
-    dnew = new DEST;
+  std::vector<DEST*> temp_chain;
+
+  for (DEST* d : msg->dest_chain_) {
+    DEST* dnew = new DEST;
     *dnew = *d;
-    dnew->next_ = temp_chain;
+    temp_chain.push_back(dnew);
     dnew->file_pointer_ = NULL;
     dnew->mail_filename_.clear();
     if (!d->mail_cmd_.empty()) { dnew->mail_cmd_ = d->mail_cmd_; }
     if (!d->where_.empty()) { dnew->where_ = d->where_; }
-    temp_chain = dnew;
   }
 
   if (jcr) {
@@ -305,7 +305,7 @@ void InitMsg(JobControlRecord* jcr,
            sizeof(msg->send_msg_types_));
   }
 
-  Dmsg2(250, "Copy message resource %p to %p\n", msg, temp_chain);
+  Dmsg2(250, "Copy message resource %p to %p\n", msg, &temp_chain);
 }
 
 /*
@@ -362,7 +362,7 @@ void AddMsgDest(MessagesResource* msg,
    * First search the existing chain and see if we
    * can simply add this msg_type to an existing entry.
    */
-  for (d = msg->dest_chain_; d; d = d->next_) {
+  for (DEST* d : msg->dest_chain_) {
     if (dest_code == d->dest_code_ &&
         ((where.empty() && d->where_.empty()) || where == d->where_)) {
       Dmsg4(850, "Add to existing d=%p msgtype=%d destcode=%d where=%s\n", d,
@@ -378,7 +378,7 @@ void AddMsgDest(MessagesResource* msg,
    * Not found, create a new entry
    */
   d = new DEST;
-  d->next_ = msg->dest_chain_;
+  msg->dest_chain_.push_back(d);
   d->dest_code_ = dest_code;
   SetBit(msg_type, d->msg_types_);        /* Set type bit in structure */
   SetBit(msg_type, msg->send_msg_types_); /* Set type bit in our local */
@@ -394,7 +394,6 @@ void AddMsgDest(MessagesResource* msg,
         "timestampformat=%s\n",
         d, msg_type, dest_code, NSTDPRNT(where), NSTDPRNT(d->mail_cmd_),
         NSTDPRNT(d->timestamp_format_));
-  msg->dest_chain_ = d;
 }
 
 /*
@@ -407,9 +406,7 @@ void RemMsgDest(MessagesResource* msg,
                 int msg_type,
                 const std::string& where)
 {
-  DEST* d;
-
-  for (d = msg->dest_chain_; d; d = d->next_) {
+  for (DEST* d : msg->dest_chain_) {
     Dmsg2(850, "Remove_msg_dest d=%p where=%s\n", d, NSTDPRNT(d->where_));
     if (BitIsSet(msg_type, d->msg_types_) && (dest_code == d->dest_code_) &&
         ((where.empty() && d->where_.empty()) || (where == d->where_))) {
@@ -475,7 +472,6 @@ static Bpipe* open_mail_pipe(JobControlRecord* jcr, POOLMEM*& cmd, DEST* d)
 void CloseMsg(JobControlRecord* jcr)
 {
   MessagesResource* msgs;
-  DEST* d;
   Bpipe* bpipe;
   POOLMEM *cmd, *line;
   int len, status;
@@ -508,7 +504,7 @@ void CloseMsg(JobControlRecord* jcr)
 
   Dmsg1(850, "===Begin close msg resource at %p\n", msgs);
   cmd = GetPoolMemory(PM_MESSAGE);
-  for (d = msgs->dest_chain_; d;) {
+  for (DEST* d : msgs->dest_chain_) {
     if (d->file_pointer_) {
       switch (d->dest_code_) {
         case MD_FILE:
@@ -615,7 +611,6 @@ void CloseMsg(JobControlRecord* jcr)
       }
       d->file_pointer_ = NULL;
     }
-    d = d->next_; /* point to next buffer */
   }
   FreePoolMemory(cmd);
   Dmsg0(850, "Done walking message chain.\n");
@@ -764,7 +759,6 @@ static inline void SendToSyslog(int mode, const char* msg)
  */
 void DispatchMessage(JobControlRecord* jcr, int type, utime_t mtime, char* msg)
 {
-  DEST* d;
   char dt[MAX_TIME_LENGTH];
   POOLMEM* mcmd;
   int len, dtlen;
@@ -858,7 +852,7 @@ void DispatchMessage(JobControlRecord* jcr, int type, utime_t mtime, char* msg)
     return;
   }
 
-  for (d = msgs->dest_chain_; d; d = d->next_) {
+  for (DEST* d : msgs->dest_chain_) {
     if (BitIsSet(type, d->msg_types_)) {
       /*
        * See if a specific timestamp format was specified for this log resource.

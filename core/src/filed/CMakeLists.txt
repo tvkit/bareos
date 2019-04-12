@@ -27,7 +27,7 @@ IF(HAVE_WIN32)
 ENDIF()
 
 set(FDSRCS accurate.cc authenticate.cc crypto.cc evaluate_job_command.cc fd_plugins.cc fileset.cc
-    sd_cmds.cc verify.cc accurate_htable.cc backup.cc dir_cmd.cc filed.cc filed_globals.cc heartbeat.cc
+    sd_cmds.cc verify.cc accurate_htable.cc backup.cc dir_cmd.cc filed_globals.cc heartbeat.cc
     socket_server.cc verify_vol.cc accurate_lmdb.cc compression.cc estimate.cc filed_conf.cc
     restore.cc status.cc)
 
@@ -47,8 +47,9 @@ IF(HAVE_WIN32)
 ENDIF()
 
 
+add_library(fd_objects STATIC ${FDSRCS})
 
-add_executable(bareos-fd ${FDSRCS})
+add_executable(bareos-fd filed.cc)
 
 SET(BAREOS_FD_LIBRARIES
          bareosfind bareos
@@ -70,8 +71,9 @@ IF(HAVE_WIN32)
 ENDIF()
 
 target_link_libraries(bareos-fd
+   fd_objects
    ${BAREOS_FD_LIBRARIES}
-         )
+)
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set_target_properties(bareos-fd PROPERTIES INSTALL_RPATH "@loader_path/../${libdir}")
